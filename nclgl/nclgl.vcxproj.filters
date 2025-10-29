@@ -87,4 +87,7 @@
       <UniqueIdentifier>{4a13117a-c481-4385-bd9e-1acd65146a21}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Third Party\SOIL\SLN\x64\Debug\SOIL.lib" />
+  </ItemGroup>
 </Project>

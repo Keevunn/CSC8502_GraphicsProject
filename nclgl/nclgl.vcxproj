@@ -56,6 +56,9 @@
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Third Party\SOIL\SLN\x64\Debug\SOIL.lib" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{98D6B51B-CB0A-4389-ADC6-24082B967C3F}</ProjectGuid>
     <RootNamespace>Shared</RootNamespace>
@@ -113,7 +116,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>..\Third Party\;$(IncludePath)</IncludePath>
-    <LibraryPath>..\Third Party\SOIL\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\Third Party\SOIL\SLN\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)</TargetName>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>

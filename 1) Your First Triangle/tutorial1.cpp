@@ -1,8 +1,8 @@
-#include "../NCLGL/window.h"
+#include "../nclgl/Window.h"
 #include "Renderer.h"
 
-int main()	{
-	Window w("My First OpenGL Triangle!", 1280, 720, false);
+int main() {
+	Window w("My First OpenGL Triangle!", 800, 600, false);
 
 	if(!w.HasInitialised()) {
 		return -1;
@@ -16,6 +16,7 @@ int main()	{
 	while(w.UpdateWindow()  && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE)){
 		renderer.RenderScene();
 		renderer.SwapBuffers();
+
 		if (Window::GetKeyboard()->KeyDown(KEYBOARD_F5)) {
 			Shader::ReloadAllShaders();
 		}
