@@ -1,7 +1,9 @@
 #include "../nclgl/window.h"
+#include "../nclgl/GameTimer.h"
 #include "Renderer.h"
 
 int main() {
+	
 	Window w("Vertex Transformation!", 800, 600, false);
 	if (!w.HasInitialised()) {
 		return -1;
@@ -15,6 +17,8 @@ int main() {
 	float scale = 100.0f;
 	float rotation = 0.0f;
 	Vector3 position(0, 0, -1500.0f);
+	float fov = 0.25;
+	GameTimer gameTime();
 
 	while (w.UpdateWindow() && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE)) {
 		if (Window::GetKeyboard()->KeyDown(KEYBOARD_1))
@@ -43,11 +47,15 @@ int main() {
 		if (Window::GetKeyboard()->KeyDown(KEYBOARD_P))
 			position.z += 1.0f;
 
+		
+
 		renderer.SetRotation(rotation);
 		renderer.SetScale(scale);
 		renderer.SetPosition(position);
+		renderer.SetFOV(fov);
 		renderer.RenderScene();
 		renderer.SwapBuffers();
+		gameTime.Tick();
 	}
 
 	return 0;
