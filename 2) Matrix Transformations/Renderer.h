@@ -4,9 +4,9 @@
 class Renderer : public OGLRenderer {
 public:
 	Renderer(Window& parent);
-	virtual ~Renderer(void);
+	virtual ~Renderer(void) override;
 
-	virtual void RenderScene();
+	virtual void RenderScene() override;
 
 	void SwitchToPerspective();
 	void SwitchToOrthographic();
@@ -23,4 +23,5 @@ protected:
 	float rotation;
 	Vector3 position;
 	float fov;
+	bool inPerspective = false;
 };

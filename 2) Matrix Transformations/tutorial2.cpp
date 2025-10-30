@@ -1,6 +1,18 @@
+#include <algorithm>
+
 #include "../nclgl/window.h"
 #include "../nclgl/GameTimer.h"
 #include "Renderer.h"
+
+const float pi = std::acos(-1);
+
+float smoothDamping(float start, float target, float t, float duration, float damping, float frequency = 1.0f) {
+	if (t > duration) t = 1.0f;
+	else t /= duration;
+	float decay = std::exp(-damping * 100 * t);
+	float oscillation = std::cos(frequency * t);
+	return target + (start - target) * decay * oscillation;
+}
 
 int main() {
 	
@@ -18,13 +30,16 @@ int main() {
 	float rotation = 0.0f;
 	Vector3 position(0, 0, -1500.0f);
 	float fov = 0.25;
-	GameTimer gameTime();
+	GameTimer* gameTime = w.GetTimer();
+	float heldTime = 0.0f;
 
 	while (w.UpdateWindow() && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE)) {
-		if (Window::GetKeyboard()->KeyDown(KEYBOARD_1))
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_1)) {
 			renderer.SwitchToOrthographic();
-		if (Window::GetKeyboard()->KeyDown(KEYBOARD_2))
-			renderer.SwitchToPerspective();
+		}
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_2)) {
+			renderer.SwitchToPerspective(); 
+		}
 
 		if (Window::GetKeyboard()->KeyDown(KEYBOARD_PLUS))  ++scale;
 		if (Window::GetKeyboard()->KeyDown(KEYBOARD_MINUS)) --scale;
@@ -47,6 +62,19 @@ int main() {
 		if (Window::GetKeyboard()->KeyDown(KEYBOARD_P))
 			position.z += 1.0f;
 
+		// Uncomment to oscillate fov between 0.25 and 0.75
+		//fov = 0.5f * static_cast<float>(abs(sin(gameTime->GetTotalTimeSeconds()))) + 0.25f;
+
+		// Uncomment for aim down (no damping) 
+		/*if (Window::GetMouse()->ButtonDown(MOUSE_RIGHT)) {
+			heldTime += gameTime->GetTimeDeltaSeconds();
+			heldTime = std::min(heldTime, 0.5f);
+			fov = (0.5f * std::sin((pi) * heldTime)) + 0.25f;
+		}
+		else {
+			fov = 0.25f;
+			heldTime = 0.0f;
+		}*/
 		
 
 		renderer.SetRotation(rotation);
@@ -55,7 +83,6 @@ int main() {
 		renderer.SetFOV(fov);
 		renderer.RenderScene();
 		renderer.SwapBuffers();
-		gameTime.Tick();
 	}
 
 	return 0;

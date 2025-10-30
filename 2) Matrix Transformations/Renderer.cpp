@@ -20,17 +20,23 @@ Renderer::~Renderer(void) {
 // Near plane set to 1
 void Renderer::SwitchToPerspective() {
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f, (float)width / (float)height, fov * 180.0f); // near z, far z, aspect ratio, horizontal fov
+	inPerspective = true;
 }
 
 // Near plane set to -1 (ref: tutorial 2 pdf, page 9)
 void Renderer::SwitchToOrthographic() {
 	projMatrix = Matrix4::Orthographic(-1.0f, 10000.0f, width / 2.0f, -width / 2.0f, height / 2.0f, -height / 2.0f); // back, front, right, left, top, bottom
+	inPerspective = false;
 }
 
 
 void Renderer::RenderScene() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	BindShader(matrixShader);
+
+	if (inPerspective) {
+		projMatrix = Matrix4::Perspective(1.0f, 10000.0f, (float)width / (float)height, fov * 180.0f); // update fov in case it changed
+	}
 
 	glUniformMatrix4fv(glGetUniformLocation(matrixShader->GetProgram(), "projMatrix"), 1, false, projMatrix.values);
 	glUniformMatrix4fv(glGetUniformLocation(matrixShader->GetProgram(), "viewMatrix"), 1, false, viewMatrix.values);
