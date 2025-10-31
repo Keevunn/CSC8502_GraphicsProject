@@ -6,14 +6,6 @@
 
 const float pi = std::acos(-1);
 
-float smoothDamping(float start, float target, float t, float duration, float damping, float frequency = 1.0f) {
-	if (t > duration) t = 1.0f;
-	else t /= duration;
-	float decay = std::exp(-damping * 100 * t);
-	float oscillation = std::cos(frequency * t);
-	return target + (start - target) * decay * oscillation;
-}
-
 int main() {
 	
 	Window w("Vertex Transformation!", 800, 600, false);
@@ -81,6 +73,8 @@ int main() {
 		renderer.SetScale(scale);
 		renderer.SetPosition(position);
 		renderer.SetFOV(fov);
+
+		renderer.UpdateScene(gameTime->GetTimeDeltaSeconds());
 		renderer.RenderScene();
 		renderer.SwapBuffers();
 	}

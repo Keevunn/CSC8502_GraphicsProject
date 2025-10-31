@@ -2,6 +2,7 @@
 
 Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	triangle = Mesh::GenerateTriangle();
+	cam = new Camera();
 
 	matrixShader = new Shader("MatrixVertex.glsl", "colourFragment.glsl");
 
@@ -15,6 +16,11 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 Renderer::~Renderer(void) {
 	delete triangle;
 	delete matrixShader;
+}
+
+void Renderer::UpdateScene(float dt) {
+	cam->UpdateCamera(dt);
+	viewMatrix = cam->BuildViewMatrix();
 }
 
 // Near plane set to 1

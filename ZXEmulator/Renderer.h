@@ -6,7 +6,7 @@ public:
 	Renderer(Window &parent);
 	 ~Renderer(void);
 	 void RenderScene()				override;
-	 void UpdateScene(float msec)	override;
+	 void UpdateScene(float dt)	override;
 
 	 void ClearPixels();
 	 void ClearAttributes(int index);

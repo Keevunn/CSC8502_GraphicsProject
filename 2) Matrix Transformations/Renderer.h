@@ -1,11 +1,13 @@
 #pragma once
 #include "../nclgl/OGLRenderer.h"
+#include "../nclgl/Camera.h"
 
 class Renderer : public OGLRenderer {
 public:
 	Renderer(Window& parent);
 	virtual ~Renderer(void) override;
 
+	virtual void UpdateScene(float dt) override;
 	virtual void RenderScene() override;
 
 	void SwitchToPerspective();
@@ -24,4 +26,6 @@ protected:
 	Vector3 position;
 	float fov;
 	bool inPerspective = false;
+
+	Camera* cam;
 };

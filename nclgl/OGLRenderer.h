@@ -52,7 +52,7 @@ public:
 	virtual ~OGLRenderer(void);
 
 	virtual void	RenderScene()		= 0;
-	virtual void	UpdateScene(float msec);
+	virtual void	UpdateScene(float dt);
 	void			SwapBuffers();
 
 	bool			HasInitialised() const;	
