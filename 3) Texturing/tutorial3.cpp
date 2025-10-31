@@ -2,7 +2,7 @@
 #include "Renderer.h"
 
 int main() {
-	Window w("Texturing!", 1280, 720,false);	 //This is all boring win32 window creation stuff!
+	Window w("Texturing!", 800, 600,false);	 //This is all boring win32 window creation stuff!
 	if(!w.HasInitialised()) {
 		return -1;
 	}

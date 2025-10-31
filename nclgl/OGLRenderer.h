@@ -58,7 +58,9 @@ public:
 	bool			HasInitialised() const;	
 	
 protected:
-	virtual void	Resize(int x, int y);	
+	virtual void	Resize(int x, int y);
+	void			SetTextureRepeating(GLuint target, bool state);
+	void			SetTextureFiltering(GLuint target, bool state);
 	void			UpdateShaderMatrices();
 	void			BindShader(Shader*s);
 
