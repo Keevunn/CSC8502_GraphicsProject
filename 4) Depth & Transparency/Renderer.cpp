@@ -39,7 +39,7 @@ void Renderer::RenderScene() {
 	glUniform1i(glGetUniformLocation(shader->GetProgram(), "diffuseTex"), 0);
 	glActiveTexture(GL_TEXTURE0);
 	for (unsigned int i{}; i < 2; ++i) {
-		glUniformMatrix4fv(glGetUniformLocation(shader->GetProgram(), "modelMatrix"), 1, false, (float*)&Matrix4::Translation(positions[i]));
+		glUniformMatrix4fv(glGetUniformLocation(shader->GetProgram(), "modelMatrix"), 1, false, (float*)Matrix4::Translation(positions[i]).values);
 		glBindTexture(GL_TEXTURE_2D, textures[i]);
 		meshes[i]->Draw();
 	}
@@ -52,10 +52,22 @@ void Renderer::MoveObject(float by) { positions[(int)modifyObject].z += by; }
 void Renderer::ToggleBlendMode() {
 	blendMode = (blendMode + 1) % 4;
 	switch (blendMode) {
-	case(0): glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); break;
-	case(1): glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR); break;
-	case(2): glBlendFunc(GL_ONE, GL_ZERO); break;
-	case(3): glBlendFunc(GL_SRC_ALPHA, GL_ONE); break;
+	case(0):
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		std::cout << "Blend Mode: Standard Alpha Blending\n";
+		break;
+	case(1):
+		glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
+		std::cout << "Blend Mode: Color Blending\n";
+		break;
+	case(2):
+		glBlendFunc(GL_ONE, GL_ZERO);
+		std::cout << "Blend Mode: No Blending\n";
+		break;
+	case(3):
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		std::cout << "Blend Mode: Additive Blending\n";
+		break;
 	};
 }
 
