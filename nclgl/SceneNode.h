@@ -8,9 +8,20 @@
 class SceneNode {
 public:
 	SceneNode(Mesh* mesh = nullptr, Vector4 colour = Vector4(1, 1, 1, 1))
-		: parent(nullptr), mesh(mesh), modelScale(Vector3(1, 1, 1)), colour(colour) {}
+		: parent(nullptr), mesh(mesh), modelScale(Vector3(1, 1, 1)), colour(colour), distanceFromCamera(0), boundingRadius(1), texture(0) {}
 
 	virtual ~SceneNode(void);
+
+	float GetBoundingRadius() const { return boundingRadius; }
+	void SetBoundingRadius(float f) { boundingRadius = f; }
+
+	float GetCameraDistance() const { return distanceFromCamera; }
+	void SetCameraDistance(float f) { distanceFromCamera = f; }
+
+	GLuint GetTexture() const { return texture; }
+	void SetTexture(GLuint tex) { texture = tex; }
+
+	static bool CompareByCameraDistance(SceneNode* a, SceneNode* b) { return a->distanceFromCamera < b->distanceFromCamera; }
 
     void SetTransform(const Matrix4& matrix) { transform = matrix; }
     const Matrix4& GetTransform() const { return transform; }
@@ -41,5 +52,9 @@ public:
 	Vector3 modelScale;
 	Vector4 colour;
 	std::vector<SceneNode*> children;
+
+	float distanceFromCamera;
+	float boundingRadius;
+	GLuint texture;
 };
 
