@@ -30,29 +30,33 @@ MeshMaterial::MeshMaterial(const std::string& filename) {
 	file >> meshCount;
 
 	materialLayers.resize(matCount);
+	// Clear the newline after the integer read
+	file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	for (int i = 0; i < matCount; ++i) {
-		string name;
-		int count;
+		string name{};
+		int count{};
 
 		std::getline(file, name);
 		file >> count;
 
 		for (int j = 0; j < count; ++j) {
-			string entryData;
+			string entryData{};
 			file >> entryData;
-			string channel;
-			string file;
+			string channel{};
+			string inFile{};
 			size_t split = entryData.find_first_of(':');
 			channel = entryData.substr(0, split);
-			file = entryData.substr(split + 1);
+			inFile = entryData.substr(split + 1);
 
-			materialLayers[i].entries.insert(std::make_pair(channel, file));
+			materialLayers[i].entries.insert(std::make_pair(channel, inFile));
 		}
+
+		file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	}
 
 	for (int i = 0; i < meshCount; ++i) {
-		int entry;
+		int entry{};
 		file >> entry;
 		meshLayers.emplace_back(&materialLayers[entry]);
 	}
