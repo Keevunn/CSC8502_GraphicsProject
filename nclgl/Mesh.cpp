@@ -505,8 +505,13 @@ Mesh* Mesh::GenerateQuad()
 	m->textureCoords[2] = Vector2(1, 1);
 	m->textureCoords[3] = Vector2(1, 0);
 
-	for (int i{}; i < 4; ++i)
+	m->normals = new Vector3[m->numVertices];
+	m->tangents = new Vector4[m->numVertices];
+	for (int i{}; i < 4; ++i) {
 		m->colours[i] = Vector4(1, 1, 1, 1);
+		m->normals[i] = Vector3(0, 0, -1);
+		m->tangents[i] = Vector4(1, 0, 0, 1);
+	}
 
 	m->BufferData();
 	return m;
