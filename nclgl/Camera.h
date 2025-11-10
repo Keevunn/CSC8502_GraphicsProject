@@ -10,7 +10,7 @@ public:
 	}
 
 	Camera(float pitch, float yaw, Vector3 position) : pitch(pitch), yaw(yaw), position(position) {}
-	~Camera(void) {}
+	~Camera(void) = default;
 
 	void UpdateCamera(float dt = 1.0f);
 

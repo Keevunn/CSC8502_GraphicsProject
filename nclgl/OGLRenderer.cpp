@@ -16,6 +16,8 @@ _-_-_-_-_-_-_-""  ""
 #include "Shader.h"
 #include <algorithm>
 
+#include "Light.h"
+
 using std::string;
 
 
@@ -229,6 +231,14 @@ void OGLRenderer::UpdateShaderMatrices()	{
 void OGLRenderer::BindShader(Shader*s) {
 	currentShader = s;
 	glUseProgram(s->GetProgram());
+}
+
+void OGLRenderer::SetShaderLight(const Light& l) {
+	auto lightPos = l.GetPosition();
+	auto lightColour = l.GetColour();
+	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "lightPos"), 1, (float*)&lightPos);
+	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightColour"), 1, (float*)&lightColour);
+	glUniform1f(glGetUniformLocation(currentShader->GetProgram(), "lightRadius"), l.GetRadius());
 }
 
 #ifdef OPENGL_DEBUGGING

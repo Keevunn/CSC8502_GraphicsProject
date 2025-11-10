@@ -44,6 +44,7 @@ HeightMap::HeightMap(const std::string& filename) {
 			indices[i++] = d;
 		}
 	}
+	GenerateNormals();
 	BufferData();
 
 	heightmapSize.x = vertexScale.x * (iWidth - 1);
