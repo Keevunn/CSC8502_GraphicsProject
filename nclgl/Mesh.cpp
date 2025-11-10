@@ -127,6 +127,52 @@ void	Mesh::BufferData()	{
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+void Mesh::GenerateTangents() {
+	if (!textureCoords) return;
+	if (!tangents) tangents = new Vector4[numVertices];
+	for (GLuint i = 0; i < numVertices; ++i)
+		tangents[i] = Vector4(0,0,0,0);
+
+	int triCount = GetTriCount();
+
+	for (int i{}; i < triCount; ++i) {
+		unsigned int a = 0, b = 0, c = 0;
+		GetVertexIndicesForTri(i, a, b, c);
+		Vector4 tangent = GenerateTangent(a, b, c);
+		tangents[a] += tangent;
+		tangents[b] += tangent;
+		tangents[c] += tangent;
+	}
+
+	for (GLuint i = 0; i < numVertices; ++i) {
+		float handedness = tangents[i].w > 0 ? 1.0f : -1.0f;
+		tangents[i].w = 0;
+		tangents[i].Normalise();
+		tangents[i].w = handedness;
+	}
+}
+
+Vector4 Mesh::GenerateTangent(int a, int b, int c) {
+	Vector3 ab = vertices[b] - vertices[a];
+	Vector3 ac = vertices[c] - vertices[a];
+
+	Vector2 tab = textureCoords[b] - textureCoords[a];
+	Vector2 tac = textureCoords[c] - textureCoords[a];
+
+	Matrix2 texMatrix = Matrix2(tab, tac);
+	texMatrix.Invert();
+
+	Vector3 tangent = ab * texMatrix.values[0] + ac * texMatrix.values[1];
+	Vector3 binormal = ab * texMatrix.values[2] + ac * texMatrix.values[3];
+	Vector3 normal = Vector3::Cross(ab, ac);
+	Vector3 biCross = Vector3::Cross(normal, tangent);
+
+	float handedness = 1;
+	if (Vector3::Dot(biCross, binormal) < 0) handedness = -1;
+
+	return Vector4(tangent.x, tangent.y, tangent.z, handedness);
+}
+
 
 /*
 * 
