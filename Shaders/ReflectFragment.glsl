@@ -16,7 +16,7 @@ out vec4 fragColour;
 
 void main(void) {
 	vec4 diffuse = texture(diffuseTex, IN.texCoord);
-	vec3 viewDir = normalize(cameraPos - IN.worldPos); // cam -> frag
+	vec3 viewDir = normalize(cameraPos - IN.worldPos); // frag -> cam
 
 	vec3 reflectDir = reflect(-viewDir, normalize(IN.normal)); // reflect viewDir around normal
 	vec4 reflectTex = texture(cubeTex, reflectDir);
