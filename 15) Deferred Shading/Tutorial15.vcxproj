@@ -132,7 +132,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Tutorial15.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Renderer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Shaders\bufferFragment.glsl" />
+    <None Include="..\Shaders\BumpVertex.glsl" />
+    <None Include="..\Shaders\combineFrag.glsl" />
+    <None Include="..\Shaders\combineVert.glsl" />
+    <None Include="..\Shaders\pointLightFrag.glsl" />
+    <None Include="..\Shaders\pointLightVert.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
