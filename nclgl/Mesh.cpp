@@ -1,5 +1,12 @@
 #include "Mesh.h"
+
+#include <assimp/material.h>
+
 #include "Matrix2.h"
+#include <assimp/mesh.h>
+#include <assimp/scene.h>
+#include <assimp/vector3.h>
+#include "AssimpNCLHelpers.h"
 
 using std::string;
 
@@ -418,6 +425,94 @@ Mesh* Mesh::LoadFromMeshFile(const string& name) {
 
 	mesh->BufferData();
 
+	return mesh;
+}
+
+void Mesh::SetVertexBoneData(unsigned int vertexID, unsigned int boneID, float weight) {
+	// Each vertex gets 4 weights and 4 indices
+	for (int i = 0; i < 4; ++i) { 
+		if (weightIndices[vertexID*4 + i] == 0) {
+			weightIndices[vertexID * 4 + i] = boneID;
+			switch (i) {
+			case 0:
+				weights[vertexID].x = weight; break;
+			case 1:
+				weights[vertexID].y = weight; break;
+			case 2:
+				weights[vertexID].z = weight; break;
+			case 3:
+				weights[vertexID].w = weight; break;
+			}
+			return;
+		}
+	}
+}
+
+void Mesh::GetBoneWeightsForVertices(const aiMesh* aiMesh) {
+	for (unsigned int boneIndex{}; boneIndex < aiMesh->mNumBones; ++boneIndex) {
+		int boneID = -1;
+		std::string boneName = aiMesh->mBones[boneIndex]->mName.C_Str();
+
+		if (!boneInfoMap.contains(boneName)) {
+			BoneInfo newInfo;
+			newInfo.id = boneCounter;
+			newInfo.offset = AssimpNCLHelpers::GetNCLMatrix(aiMesh->mBones[boneIndex]->mOffsetMatrix);
+			boneInfoMap[boneName] = newInfo;
+			boneID = boneCounter;
+			boneCounter++;
+		}
+		else {
+			boneID = boneInfoMap[boneName].id;
+		}
+		assert(boneID != -1);
+
+		auto aiWeights = aiMesh->mBones[boneIndex]->mWeights;
+		int numWeights = aiMesh->mBones[boneIndex]->mNumWeights;
+		for (int weightIndex{}; weightIndex < numWeights; ++weightIndex) {
+			auto vertID = aiWeights[weightIndex].mVertexId;
+			float weight = aiWeights[weightIndex].mWeight;
+			assert(vertID <= numVertices);
+			SetVertexBoneData(vertID, boneID, weight);
+		}
+	}
+}
+
+Mesh* Mesh::LoadFromAssimpMesh(aiMesh* aiMesh, const aiScene* scene) {
+	Mesh* mesh = new Mesh();
+
+	mesh->numVertices = aiMesh->mNumVertices;
+	mesh->numIndices = aiMesh->mNumFaces * 3; // aiProcess_Triangulate was used
+
+	mesh->vertices = new Vector3[mesh->numVertices];
+	mesh->normals = new Vector3[mesh->numVertices];
+	mesh->textureCoords = new Vector2[mesh->numVertices];
+	mesh->weights = new Vector4[mesh->numVertices];
+	mesh->weightIndices = new int[mesh->numVertices * 4];
+
+	for (int i{}; i < mesh->numVertices; ++i) {
+		mesh->vertices[i] = AssimpNCLHelpers::GetNCLVec(aiMesh->mVertices[i]);
+		mesh->normals[i] = AssimpNCLHelpers::GetNCLVec(aiMesh->mNormals[i]);
+
+		// Assimp allows models to have up to 8 different texture coords per vertex
+		if (aiMesh->mTextureCoords[0]) {
+			Vector3 texCoords3D = AssimpNCLHelpers::GetNCLVec(aiMesh->mTextureCoords[0][i]);
+			mesh->textureCoords[i] = Vector2(texCoords3D.x, texCoords3D.y);
+		}
+		else
+			mesh->textureCoords[i] = Vector2(0, 0);
+	}
+	// Weights
+	mesh->GetBoneWeightsForVertices(aiMesh);
+
+	// Indices
+	mesh->indices = new unsigned int[mesh->numIndices];
+	unsigned int indexCount = 0;
+	for (unsigned int i{}; i < aiMesh->mNumFaces; ++i) {
+		aiFace face = aiMesh->mFaces[i];
+		for (unsigned int j{}; j < face.mNumIndices; ++j)
+			mesh->indices[indexCount++] = face.mIndices[j];
+	}
+	mesh->BufferData();
 	return mesh;
 }
 

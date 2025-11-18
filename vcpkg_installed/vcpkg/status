@@ -1,0 +1,125 @@
+Package: vcpkg-cmake
+Version: 2024-04-23
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 591b577266accac31b9e736800d6d91b34825ba888a63e6c8746032232a25da6
+Status: install ok installed
+
+Package: zlib
+Version: 1.3.1
+Depends: vcpkg-cmake
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 8ee6474b409025a94714a9bb4857b0f16da280414462acd42f12e6d7bc4b16c2
+Description: A compression library
+Status: install ok installed
+
+Package: vcpkg-cmake-config
+Version: 2024-05-23
+Architecture: x64-windows
+Multi-Arch: same
+Abi: d392b7a116561c74d1e0eb2824981c4f46ca92fa6e2bdeba2545e4f9e65a94df
+Status: install ok installed
+
+Package: utfcpp
+Version: 4.0.6
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: c52bb5f29cfd6260371dfa2fd56dd0224038b9d1ae874a58bae0ea555b37b6b6
+Description: UTF-8 with C++ in a Portable Way
+Status: install ok installed
+
+Package: stb
+Version: 2024-07-29
+Port-Version: 1
+Architecture: x64-windows
+Multi-Arch: same
+Abi: f4d3023f722ea8dee849321099cc9b61a5afc7a34ea06f5bca81a79ac320d7bd
+Description: public domain header-only libraries
+Status: install ok installed
+
+Package: rapidjson
+Version: 2025-02-26
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: b819e317ef8fa303490e5bf9279a56d377c1842cc4f96a5cf1c0053ba135af8b
+Description: A fast JSON parser/generator for C++ with both SAX/DOM style API <http://rapidjson.org/>
+Status: install ok installed
+
+Package: pugixml
+Version: 1.15
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 5e7c3ec7577a8c29b38dcfd80c2254beb79a4823c0f266e0846053fb60a90a53
+Description: Light-weight, simple and fast XML parser for C++ with XPath support
+Status: install ok installed
+
+Package: polyclipping
+Version: 6.4.2
+Port-Version: 13
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 0b4b6a80376ecfdf053ad4ad352a4a4ee05f733346c47bbb3f649e37938f1418
+Description: The Clipper library performs clipping and offsetting for both lines and polygons. All four boolean clipping operations are supported - intersection, union, difference and exclusive-or. Polygons can be of any shape including self-intersecting polygons.
+Status: install ok installed
+
+Package: vcpkg-cmake-get-vars
+Version: 2025-05-29
+Depends: vcpkg-cmake
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 1e73c3c84670cd99368cc53b971d5ba655c102450d51efb297098c89e8511d3c
+Status: install ok installed
+
+Package: minizip
+Version: 1.3.1
+Port-Version: 1
+Depends: vcpkg-cmake, vcpkg-cmake-config, vcpkg-cmake-get-vars, zlib
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 17f6c9d938fd7f67b1bd42c2d4a64b3a070e07f50f0f0c493b0c94b8ec608694
+Description: Minizip zip file manipulation library
+Status: install ok installed
+
+Package: kubazip
+Version: 0.3.5
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 0c94187385bc9878220fe1e57617252377851a2a1a3ab1df4d7c19f709b0ccd3
+Description: A portable, simple zip library written in C
+Status: install ok installed
+
+Package: jhasse-poly2tri
+Version: 2023-12-27
+Port-Version: 2
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 57c22ce5514ae7190da2b556653a93dce9c69993979123ed79234c136ff2519b
+Description: Sweep-line algorithm for constrained Delaunay triangulation
+Status: install ok installed
+
+Package: draco
+Version: 1.5.7
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: e8924f7204e22c485a8c721f37f0e8be3afc5bc4c3dc8e900a1e4266fe6aec77
+Description: A library for compressing and decompressing 3D geometric meshes and point clouds. It is intended to improve the storage and transmission of 3D graphics.
+Status: install ok installed
+
+Package: assimp
+Version: 6.0.2
+Port-Version: 1
+Depends: draco, jhasse-poly2tri, kubazip, minizip, polyclipping, pugixml, rapidjson, stb, utfcpp, vcpkg-cmake, vcpkg-cmake-config, zlib
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 67567ba186c229ca5c95217951086f7ce6a093abf16bb3c4191eac818ee4e9f9
+Description: The Open Asset import library
+Status: install ok installed
+

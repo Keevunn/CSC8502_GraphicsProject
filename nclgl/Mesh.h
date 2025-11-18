@@ -18,10 +18,20 @@ _-_-_-_-_-_-_-""  ""
 
 #pragma once
 
+#include <map>
+
 #include "OGLRenderer.h"
 #include <vector>
 #include <string>
 
+struct aiScene;
+
+struct BoneInfo {
+	int id; //index in boneMatrices
+	Matrix4 offset; //transforms vertex from model space to bone space
+};
+
+class aiMesh;
 //A handy enumerator, to determine which member of the bufferObject array
 //holds which data
 enum MeshBuffer {
@@ -53,6 +63,7 @@ public:
 	void DrawSubMesh(int i);
 
 	static Mesh* LoadFromMeshFile(const std::string& name);
+	static Mesh* LoadFromAssimpMesh(aiMesh* aiMesh, const aiScene* scene);
 
 	unsigned int GetTriCount() const {
 		int primCount = indices ? numIndices : numVertices;
@@ -95,6 +106,9 @@ protected:
 	void	GenerateTangents();
 	Vector4 GenerateTangent(int a, int b, int c);
 
+	void SetVertexBoneData(unsigned int vertexID, unsigned int boneID, float weight);
+	void GetBoneWeightsForVertices(const aiMesh* aiMesh);
+
 	GLuint	arrayObject;
 
 	GLuint	bufferObject[MAX_BUFFER];
@@ -109,6 +123,9 @@ protected:
 	Vector2*		textureCoords;
 	Vector3*		normals;
 	Vector4*		tangents;
+
+	std::map<std::string, BoneInfo> boneInfoMap;
+	int boneCounter = 0;
 
 	Vector4*		weights;
 	int*			weightIndices;

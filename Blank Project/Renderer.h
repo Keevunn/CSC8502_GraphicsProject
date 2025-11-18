@@ -1,13 +1,23 @@
 #pragma once
-#include "../NCLGL/OGLRenderer.h"
+#include "nclgl/OGLRenderer.h"
 
-class Renderer : public OGLRenderer	{
+class Camera;
+class Model;
+class MeshAnimation;
+class MeshMaterial;
+
+class Renderer : public OGLRenderer {
 public:
-	Renderer(Window &parent);
-	 ~Renderer(void);
-	 void RenderScene()				override;
-	 void UpdateScene(float dt)	override;
+	Renderer(Window& parent);
+	~Renderer(void);
+
+	void RenderScene() override;
+	void UpdateScene(float dt) override;
+
 protected:
-	Mesh*	triangle;
-	Shader* basicShader;
+	Camera* camera;
+	Model* model;
+	Shader* shader;
+	vector<GLuint> matTextures;
 };
+
