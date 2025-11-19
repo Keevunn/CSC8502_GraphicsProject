@@ -8,12 +8,6 @@ Model::Model(const std::string& path) {
 	LoadModel(path);
 }
 
-// void Model::Draw(const OGLRenderer& r) {
-// 	for (Mesh* m : meshes) {
-// 		m->Draw();
-// 	}
-// }
-
 void Model::LoadModel(const std::string& path) {
 	Assimp::Importer importer;
 
@@ -51,8 +45,6 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
 			newNode->AddChild(currentMeshNode);
 		}
 
-		//meshes.push_back(mesh);
-		//ProcessMaterials(aiMesh, scene);
 		//Assign Texture
 		int matIndex = aiMesh->mMaterialIndex;
 		if (matIndex >= 0 && matIndex < textures.size()) {

@@ -155,9 +155,9 @@ Vector3 Quaternion::ToEuler() const {
 	float sqy = y * y;
 	float sqz = z * z;
 
-	euler.z = RadToDeg(asin(2 * t));
-	euler.y = RadToDeg(atan2(2 * y * w - 2 * x * z, 1.0f - 2 * sqy - 2 * sqz));
-	euler.x = RadToDeg(atan2(2 * x * w - 2 * y * z, 1.0f - 2 * sqx - 2.0f * sqz));
+	euler.z = RadToDeg(asin(2 * t)); 
+	euler.y = RadToDeg(atan2(2 * y * w - 2 * x * z, 1.0f - 2 * sqy - 2 * sqz)); 
+	euler.x = RadToDeg(atan2(2 * x * w - 2 * y * z, 1.0f - 2 * sqx - 2.0f * sqz)); 
 
 	return euler;
 }

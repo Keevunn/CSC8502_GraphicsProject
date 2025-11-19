@@ -25,5 +25,7 @@ public:
 
 	static Vector3 GetNCLVec(const aiVector3D& vec) { return Vector3{vec.x, vec.y, vec.z}; }
 	static Vector2 GetNCLVec(const aiVector2D& vec) { return Vector2{ vec.x, vec.y }; }
+
+	static Quaternion GetNCLQuat(const aiQuaternion& quat) { return Quaternion(quat.x, quat.y, quat.z, quat.w); }
 };
 
