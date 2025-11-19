@@ -16,9 +16,11 @@ void SceneNode::Draw(const OGLRenderer& r) {
 }
 
 void SceneNode::Update(float dt) {
-	if (parent) worldTransform = parent->worldTransform * transform;
-	else worldTransform = transform;
+	Matrix4 combinedTransform = transform * Matrix4::Scale(modelScale);
 
-	for (vector<SceneNode*>::iterator i = children.begin(); i != children.end(); ++i)
-		(*i)->Update(dt);
+	if (parent) worldTransform = parent->worldTransform * combinedTransform;
+	else worldTransform = combinedTransform;
+
+	for (auto& childNode : children)
+		childNode->Update(dt);
 }

@@ -26,6 +26,8 @@ public:
 		this->z = z;
 	}
 
+	Vector3(const float xyz) : x(xyz), y(xyz), z(xyz) {};
+
 	~Vector3(void){}
 
 	float x;

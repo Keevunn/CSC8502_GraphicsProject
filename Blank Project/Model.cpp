@@ -2,15 +2,17 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
+#include "nclgl/AssimpNCLHelpers.h"
+
 Model::Model(const std::string& path) {
 	LoadModel(path);
 }
 
-void Model::Draw(const OGLRenderer& r) {
-	for (Mesh* m : meshes) {
-		m->Draw();
-	}
-}
+// void Model::Draw(const OGLRenderer& r) {
+// 	for (Mesh* m : meshes) {
+// 		m->Draw();
+// 	}
+// }
 
 void Model::LoadModel(const std::string& path) {
 	Assimp::Importer importer;
@@ -25,21 +27,44 @@ void Model::LoadModel(const std::string& path) {
 	}
 
 	dir = path.substr(0, path.find_last_of('/'));
+	LoadMaterials(scene);
 
-	ProcessNode(scene->mRootNode, scene);
+	ProcessNode(scene->mRootNode, scene, this);
 }
 
-void Model::ProcessNode(aiNode* node, const aiScene* scene) {
+void Model::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
+	SceneNode* newNode = new SceneNode();
+	newNode->SetTransform(AssimpNCLHelpers::GetNCLMatrix(node->mTransformation));
+	parent->AddChild(newNode);
+
 	// Process current node's meshes
 	for (int i{}; i < node->mNumMeshes; ++i) {
-		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(Mesh::LoadFromAssimpMesh(mesh, scene));
-		ProcessMaterials(mesh, scene);
+		aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
+		Mesh* mesh = Mesh::LoadFromAssimpMesh(aiMesh, scene);
+		SceneNode* currentMeshNode = nullptr;
+		if (i == 0) {
+			currentMeshNode = newNode;
+			newNode->SetMesh(mesh);
+		}
+		else { // if this node has multiple meshes, add as child to node
+			currentMeshNode = new SceneNode(mesh);
+			newNode->AddChild(currentMeshNode);
+		}
+
+		//meshes.push_back(mesh);
+		//ProcessMaterials(aiMesh, scene);
+		//Assign Texture
+		int matIndex = aiMesh->mMaterialIndex;
+		if (matIndex >= 0 && matIndex < textures.size()) {
+			GLuint texID = textures[matIndex];
+			if (texID != 0) currentMeshNode->SetTexture(texID);
+		}
+
 	}
 	
 	// Process children nodes
 	for (int i{}; i < node->mNumChildren; ++i)
-		ProcessNode(node->mChildren[i], scene);
+		ProcessNode(node->mChildren[i], scene, newNode);
 }
 
 void Model::ProcessMaterials(aiMesh* aiMesh, const aiScene* scene) {
@@ -51,6 +76,22 @@ void Model::ProcessMaterials(aiMesh* aiMesh, const aiScene* scene) {
 
 		vector<GLuint> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 		specularTex.insert(specularTex.end(), specularMaps.begin(), specularMaps.end());
+	}
+}
+
+void Model::LoadMaterials(const aiScene* scene) {
+	textures.resize(scene->mNumMaterials, 0);
+
+	for (unsigned int i{}; i < scene->mNumMaterials; ++i) {
+		aiMaterial* mat = scene->mMaterials[i];
+
+		if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
+			aiString fileName;
+			mat->GetTexture(aiTextureType_DIFFUSE, i, &fileName);
+			std::string path = dir + "/" + fileName.C_Str();
+			GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+			textures[i] = texID;
+		}
 	}
 }
 
