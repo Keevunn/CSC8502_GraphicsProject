@@ -23,15 +23,17 @@ _-_-_-_-_-_-_-""  ""
 #include "OGLRenderer.h"
 #include <vector>
 #include <string>
+#include <unordered_map>
 
-struct aiScene;
+#include <assimp/mesh.h>
+#include <assimp/scene.h>
+
 
 struct BoneInfo {
 	int id; //index in boneMatrices
-	Matrix4 offset; //transforms vertex from model space to bone space
+	Matrix4 invBindPose; //transforms vertex from model space to bone space
 };
 
-class aiMesh;
 //A handy enumerator, to determine which member of the bufferObject array
 //holds which data
 enum MeshBuffer {
@@ -100,6 +102,9 @@ public:
 	void	GenerateNormals();
 	bool	GetVertexIndicesForTri(unsigned int i, unsigned int& a, unsigned int& b, unsigned int& c) const;
 
+	std::unordered_map<std::string, BoneInfo> GetBoneInfoMap() { return boneInfoMap; }
+	int GetBoneCount() { return boneCounter; }
+
 protected:
 	void	BufferData();
 
@@ -124,7 +129,7 @@ protected:
 	Vector3*		normals;
 	Vector4*		tangents;
 
-	std::map<std::string, BoneInfo> boneInfoMap;
+	std::unordered_map<std::string, BoneInfo> boneInfoMap;
 	int boneCounter = 0;
 
 	Vector4*		weights;

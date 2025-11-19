@@ -456,7 +456,7 @@ void Mesh::GetBoneWeightsForVertices(const aiMesh* aiMesh) {
 		if (!boneInfoMap.contains(boneName)) {
 			BoneInfo newInfo;
 			newInfo.id = boneCounter;
-			newInfo.offset = AssimpNCLHelpers::GetNCLMatrix(aiMesh->mBones[boneIndex]->mOffsetMatrix); // Inverse Bind Pose!!
+			newInfo.invBindPose = AssimpNCLHelpers::GetNCLMatrix(aiMesh->mBones[boneIndex]->mOffsetMatrix); // Inverse Bind Pose!!
 			boneInfoMap[boneName] = newInfo;
 			boneID = boneCounter;
 			boneCounter++;

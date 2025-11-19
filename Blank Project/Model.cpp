@@ -19,7 +19,7 @@ void Model::LoadModel(const std::string& path) {
 		std::cerr << "ERROR: ASSIMP: " << importer.GetErrorString() << std::endl;
 		return;
 	}
-
+	name = "Model_Root";
 	dir = path.substr(0, path.find_last_of('/'));
 	LoadMaterials(scene);
 
@@ -28,13 +28,22 @@ void Model::LoadModel(const std::string& path) {
 
 void Model::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
 	SceneNode* newNode = new SceneNode();
+	std::string nodeName = node->mName.C_Str();
+	newNode->SetName(nodeName);
 	newNode->SetTransform(AssimpNCLHelpers::GetNCLMatrix(node->mTransformation));
 	parent->AddChild(newNode);
 
-	// Process current node's meshes
+	int meshChildCount = 0;
+
+	// Process current node's mesh(es)
 	for (int i{}; i < node->mNumMeshes; ++i) {
 		aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
 		Mesh* mesh = Mesh::LoadFromAssimpMesh(aiMesh, scene);
+		
+		// Update bone information
+		boneInfoMap.merge(mesh->GetBoneInfoMap());
+		boneCounter += mesh->GetBoneCount();
+
 		SceneNode* currentMeshNode = nullptr;
 		if (i == 0) {
 			currentMeshNode = newNode;
@@ -42,6 +51,7 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
 		}
 		else { // if this node has multiple meshes, add as child to node
 			currentMeshNode = new SceneNode(mesh);
+			currentMeshNode->SetName(nodeName + "_Child" + std::to_string(meshChildCount++));
 			newNode->AddChild(currentMeshNode);
 		}
 

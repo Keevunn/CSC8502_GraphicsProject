@@ -5,7 +5,7 @@
 #include "nclgl/Quaternion.h"
 #include "nclgl/Vector3.h"
 
-class aiNodeAnim;
+struct aiNodeAnim;
 
 struct KeyPosition {
 	Vector3	position;
@@ -24,31 +24,31 @@ struct KeyScale {
 
 class Bone {
 public:
-	Bone(const std::string& name, int ID, const aiNodeAnim* channel);
+	Bone(std::string name, int ID, const aiNodeAnim* channel);
 
-	void Update(float dt);
+	void Update(float anim_dt);
 
-	int GetPositionIndex(float dt);
-	int GetRotationIndex(float dt);
-	int GetScaleIndex(float dt);
+	int GetPositionIndex(float anim_dt);
+	int GetRotationIndex(float anim_dt);
+	int GetScaleIndex(float anim_dt);
 	
 	Matrix4 GetLocalTransform() { return localTransform; }
 	std::string GetBoneName() const { return name; }
 	int GetBoneID() { return ID; }
 
 private:
-	float GetScaleFactor(float prev, float next, float dt);
+	float GetScaleFactor(float prev, float next, float anim_dt);
 
-	Matrix4 InterpolatePosition(float dt);
-	Matrix4 InterpolateRotation(float dt);
-	Matrix4 InterpolateScale(float dt);
+	Matrix4 InterpolatePosition(float anim_dt);
+	Matrix4 InterpolateRotation(float anim_dt);
+	Matrix4 InterpolateScale(float anim_dt);
 
 	std::vector<KeyPosition> positions;
 	std::vector<KeyRotation> rotations;
 	std::vector<KeyScale> scales;
 	int numPositions{};
 	int numRotations{};
-	int numScalings{};
+	int numScales{};
 
 	std::string name;
 	int ID{};

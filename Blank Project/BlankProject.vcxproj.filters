@@ -23,6 +23,12 @@
     <ClCompile Include="Bone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -34,11 +40,19 @@
     <ClInclude Include="Bone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Shaders\basicVertex.glsl" />
     <None Include="..\Shaders\TexturedFragment.glsl" />
     <None Include="..\Shaders\TexturedVertex.glsl" />
     <None Include="..\Shaders\BasicTexturedVertex.glsl" />
+    <None Include="..\Shaders\SceneFragment.glsl" />
+    <None Include="..\Shaders\SceneVertex.glsl" />
+    <None Include="..\Shaders\SkinningVertex.glsl" />
   </ItemGroup>
 </Project>

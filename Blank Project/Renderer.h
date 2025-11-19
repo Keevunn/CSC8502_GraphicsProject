@@ -1,9 +1,9 @@
 #pragma once
+#include "Animator.h"
 #include "Model.h"
 #include "nclgl/OGLRenderer.h"
 
 class Camera;
-class Model;
 class MeshAnimation;
 class MeshMaterial;
 class SceneNode;
@@ -22,8 +22,10 @@ protected:
 	void DrawNode(SceneNode* n);
 
 	Camera* camera;
-	Model* model;
 	Shader* shader;
+
+	Model* model;
 	vector<GLuint> matTextures;
+	Animator* animator;
 };
 

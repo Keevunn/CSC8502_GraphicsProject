@@ -7,7 +7,7 @@
 
 class SceneNode {
 public:
-	SceneNode(Mesh* mesh = nullptr, Vector4 colour = Vector4(1, 1, 1, 1))
+	SceneNode(Mesh* mesh = nullptr, const Vector4& colour = Vector4(1, 1, 1, 1))
 		: parent(nullptr), mesh(mesh), modelScale(Vector3(1, 1, 1)), colour(colour), distanceFromCamera(0), boundingRadius(1), texture(0) {}
 
 	virtual ~SceneNode(void);
@@ -36,6 +36,9 @@ public:
     Mesh* GetMesh() const { return mesh; }
 	void SetMesh(Mesh* m) { mesh = m; }
 
+	std::string GetName() const { return name; }
+	void SetName(const std::string& n) { name = n; }
+
     void AddChild(SceneNode* s);
 
 	virtual void Update(float dt);
@@ -46,6 +49,7 @@ public:
 
  protected:
 	SceneNode* parent;
+	std::string name; // For debugging
  	Mesh* mesh;
 	Matrix4 worldTransform;
 	Matrix4 transform;
