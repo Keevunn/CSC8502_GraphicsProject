@@ -4,10 +4,10 @@ uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projMatrix;
 
-in vec3 position;
-in vec2 texCoord;
-in vec4 jointWeights;
-in ivec4 jointIndices;
+layout(location = 0) in vec3 position;
+layout(location = 2) in vec2 texCoord;
+layout(location = 5) in vec4 jointWeights;
+layout(location = 6) in ivec4 jointIndices;
 
 uniform mat4 joints[128];
 

@@ -37,7 +37,7 @@ public:
 	void SetMesh(Mesh* m) { mesh = m; }
 
 	std::string GetName() const { return name; }
-	void SetName(const std::string& n) { name = n; }
+	void SetName(const std::string n) { name = n; }
 
     void AddChild(SceneNode* s);
 
@@ -49,7 +49,6 @@ public:
 
  protected:
 	SceneNode* parent;
-	std::string name; // For debugging
  	Mesh* mesh;
 	Matrix4 worldTransform;
 	Matrix4 transform;
@@ -60,5 +59,7 @@ public:
 	float distanceFromCamera;
 	float boundingRadius;
 	GLuint texture;
+
+	std::string name = ""; // For debugging
 };
 

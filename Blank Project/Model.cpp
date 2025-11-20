@@ -24,6 +24,7 @@ void Model::LoadModel(const std::string& path) {
 	LoadMaterials(scene);
 
 	ProcessNode(scene->mRootNode, scene, this);
+	boneCounter = boneInfoMap.size();
 }
 
 void Model::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
@@ -42,7 +43,6 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
 		
 		// Update bone information
 		boneInfoMap.merge(mesh->GetBoneInfoMap());
-		boneCounter += mesh->GetBoneCount();
 
 		SceneNode* currentMeshNode = nullptr;
 		if (i == 0) {

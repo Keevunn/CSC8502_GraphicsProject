@@ -31,7 +31,7 @@ private:
 	float duration;
 	float ticksPerSec;
 	std::vector<Bone> bones;
-	SceneNode* rootNode{};
+	SceneNode* rootNode;
 	std::unordered_map<std::string, BoneInfo> boneInfoMap;
 };
 

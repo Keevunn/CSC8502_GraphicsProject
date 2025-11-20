@@ -11,7 +11,7 @@
 Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	camera = new Camera(-3, 0, Vector3(0, 10, 4));
 
-	shader = new Shader("SkinningVertex.glsl", "SceneFragment.glsl");
+	shader = new Shader("SkinningVertex.glsl", "TexturedFragment.glsl");
 	if (!shader->LoadSuccess()) return;
 
 	model = new Model(MODELSDIR"Robot/Robot.fbx");
@@ -19,8 +19,8 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	model->SetTransform(Matrix4::Translation(Vector3(0, 0, -10)));
 	matTextures = model->GetDiffTex();
 
-	Animation walkAnim(ANIMATIONDIR"WalkForwardAnim.fbx", model);
-	animator = new Animator(&walkAnim);
+	animation = new Animation(ANIMATIONDIR"WalkForwardAnim.fbx", model);
+	animator = new Animator(animation);
 
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f, (float)width / (float)height, 45.0f);
 
@@ -34,6 +34,7 @@ Renderer::~Renderer(void) {
 	delete camera;
 	delete model;
 	delete shader;
+	delete animator;
 }
 
 void Renderer::UpdateScene(float dt) {

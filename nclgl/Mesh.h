@@ -111,8 +111,8 @@ protected:
 	void	GenerateTangents();
 	Vector4 GenerateTangent(int a, int b, int c);
 
-	void SetVertexBoneData(unsigned int vertexID, unsigned int boneID, float weight);
-	void GetBoneWeightsForVertices(const aiMesh* aiMesh);
+	void SetVertexBoneData(unsigned int vertexID, unsigned int boneID, float weight, int slot);
+	void GetBoneWeightsForVertices(const aiMesh* aiMesh, std::vector<int>& nextSlot);
 
 	GLuint	arrayObject;
 

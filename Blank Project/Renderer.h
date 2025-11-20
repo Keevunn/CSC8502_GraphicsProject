@@ -26,6 +26,7 @@ protected:
 
 	Model* model;
 	vector<GLuint> matTextures;
+	Animation* animation;
 	Animator* animator;
 };
 

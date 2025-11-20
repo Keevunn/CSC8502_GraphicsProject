@@ -428,27 +428,28 @@ Mesh* Mesh::LoadFromMeshFile(const string& name) {
 	return mesh;
 }
 
-void Mesh::SetVertexBoneData(unsigned int vertexID, unsigned int boneID, float weight) {
-	// Each vertex gets 4 weights and 4 indices
-	for (int i = 0; i < 4; ++i) { 
-		if (weightIndices[vertexID*4 + i] == 0) {
-			weightIndices[vertexID * 4 + i] = boneID;
-			switch (i) {
-			case 0:
-				weights[vertexID].x = weight; break;
-			case 1:
-				weights[vertexID].y = weight; break;
-			case 2:
-				weights[vertexID].z = weight; break;
-			case 3:
-				weights[vertexID].w = weight; break;
-			}
-			return;
-		}
+void Mesh::SetVertexBoneData(unsigned int vertexID, unsigned int boneID, float weight, int slot) {
+	// Each vertex gets 4 weights
+	if (slot >= 4) return; // Means the current vertex has all its bones set
+
+	// Set ID (joint index)
+	weightIndices[vertexID * 4 + slot] = boneID;
+
+	// Set weight
+	switch (slot) {
+	case 0:
+		weights[vertexID].x = weight; break;
+	case 1:
+		weights[vertexID].y = weight; break;
+	case 2:
+		weights[vertexID].z = weight; break;
+	case 3:
+		weights[vertexID].w = weight; break;
 	}
+	
 }
 
-void Mesh::GetBoneWeightsForVertices(const aiMesh* aiMesh) {
+void Mesh::GetBoneWeightsForVertices(const aiMesh* aiMesh, std::vector<int>& nextSlot) {
 	for (unsigned int boneIndex{}; boneIndex < aiMesh->mNumBones; ++boneIndex) {
 		int boneID = -1;
 		std::string boneName = aiMesh->mBones[boneIndex]->mName.C_Str();
@@ -472,7 +473,8 @@ void Mesh::GetBoneWeightsForVertices(const aiMesh* aiMesh) {
 			auto vertID = aiWeights[weightIndex].mVertexId;
 			float weight = aiWeights[weightIndex].mWeight;
 			assert(vertID <= numVertices);
-			SetVertexBoneData(vertID, boneID, weight);
+
+			SetVertexBoneData(vertID, boneID, weight, nextSlot[vertID]++);
 		}
 	}
 }
@@ -489,6 +491,8 @@ Mesh* Mesh::LoadFromAssimpMesh(aiMesh* aiMesh, const aiScene* scene) {
 	mesh->weights = new Vector4[mesh->numVertices];
 	mesh->weightIndices = new int[mesh->numVertices * 4];
 
+	std::vector<int> nextSlot(mesh->numVertices, 0);
+
 	for (int i{}; i < mesh->numVertices; ++i) {
 		mesh->vertices[i] = AssimpNCLHelpers::GetNCLVec(aiMesh->mVertices[i]);
 		mesh->normals[i] = AssimpNCLHelpers::GetNCLVec(aiMesh->mNormals[i]);
@@ -502,7 +506,7 @@ Mesh* Mesh::LoadFromAssimpMesh(aiMesh* aiMesh, const aiScene* scene) {
 			mesh->textureCoords[i] = Vector2(0, 0);
 	}
 	// Weights
-	mesh->GetBoneWeightsForVertices(aiMesh);
+	mesh->GetBoneWeightsForVertices(aiMesh, nextSlot);
 
 	// Indices
 	mesh->indices = new unsigned int[mesh->numIndices];
