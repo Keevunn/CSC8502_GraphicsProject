@@ -449,7 +449,7 @@ void Mesh::SetVertexBoneData(unsigned int vertexID, unsigned int boneID, float w
 	
 }
 
-void Mesh::GetBoneWeightsForVertices(const aiMesh* aiMesh, std::vector<int>& nextSlot) {
+void Mesh::GetBoneWeightsForVertices(const aiMesh* aiMesh, std::vector<int>& nextSlot, std::unordered_map<std::string, BoneInfo>& boneInfoMap, int& boneCounter) {
 	for (unsigned int boneIndex{}; boneIndex < aiMesh->mNumBones; ++boneIndex) {
 		int boneID = -1;
 		std::string boneName = aiMesh->mBones[boneIndex]->mName.C_Str();
@@ -479,7 +479,7 @@ void Mesh::GetBoneWeightsForVertices(const aiMesh* aiMesh, std::vector<int>& nex
 	}
 }
 
-Mesh* Mesh::LoadFromAssimpMesh(aiMesh* aiMesh, const aiScene* scene) {
+Mesh* Mesh::LoadFromAssimpMesh(aiMesh* aiMesh, const aiScene* scene, std::unordered_map<std::string, BoneInfo>& boneInfoMap, int& boneCounter) {
 	Mesh* mesh = new Mesh();
 
 	mesh->numVertices = aiMesh->mNumVertices;
@@ -490,6 +490,12 @@ Mesh* Mesh::LoadFromAssimpMesh(aiMesh* aiMesh, const aiScene* scene) {
 	mesh->textureCoords = new Vector2[mesh->numVertices];
 	mesh->weights = new Vector4[mesh->numVertices];
 	mesh->weightIndices = new int[mesh->numVertices * 4];
+
+	for (int i{}; i < mesh->numVertices; ++i) {
+		mesh->weights[i] = Vector4(0, 0, 0, 0);
+		for (int j{}; j < 4; ++j)
+			mesh->weightIndices[i * 4 + j] = 0;
+	}
 
 	std::vector<int> nextSlot(mesh->numVertices, 0);
 
@@ -506,7 +512,7 @@ Mesh* Mesh::LoadFromAssimpMesh(aiMesh* aiMesh, const aiScene* scene) {
 			mesh->textureCoords[i] = Vector2(0, 0);
 	}
 	// Weights
-	mesh->GetBoneWeightsForVertices(aiMesh, nextSlot);
+	mesh->GetBoneWeightsForVertices(aiMesh, nextSlot, boneInfoMap, boneCounter);
 
 	// Indices
 	mesh->indices = new unsigned int[mesh->numIndices];

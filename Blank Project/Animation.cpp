@@ -34,8 +34,7 @@ Bone* Animation::FindBone(const std::string& name) {
 void Animation::ReadBones(const aiAnimation* anim, Model& model) {
 	int size = anim->mNumChannels;
 
-	auto& modelBoneMap = model.GetBoneInfoMap();
-	int& numBones = model.GetBoneCount();
+	const auto& modelBoneMap = model.GetBoneInfoMap();
 
 	for (int i{}; i < size; ++i) {
 		auto channel = anim->mChannels[i]; // each channel represents the bones engaged in an animation and keyframes
@@ -45,10 +44,11 @@ void Animation::ReadBones(const aiAnimation* anim, Model& model) {
 		if (colonPos != std::string::npos)
 			boneName.replace(colonPos, 1, "_");
 
-		if (!modelBoneMap.contains(boneName)) 
-			modelBoneMap[boneName].id = numBones++;
-		
-		bones.emplace_back(boneName, modelBoneMap[boneName].id, channel); // constructs in-place
+		int boneID = -1;
+		if (modelBoneMap.contains(boneName))
+			boneID = modelBoneMap.at(boneName).id;
+
+		bones.emplace_back(boneName, boneID, channel); // constructs in-place
 	}
 
 	boneInfoMap = modelBoneMap;
@@ -57,7 +57,12 @@ void Animation::ReadBones(const aiAnimation* anim, Model& model) {
 void Animation::ReadHierarchyData(SceneNode& dest, const aiNode* src) {
 	assert(src);
 
-	dest.SetName(src->mName.C_Str());
+	std::string nodeName = src->mName.C_Str();
+	auto colonPos = nodeName.find_first_of(':');
+	if (colonPos != std::string::npos)
+		nodeName.replace(colonPos, 1, "_");
+
+	dest.SetName(nodeName);
 	dest.SetTransform(AssimpNCLHelpers::GetNCLMatrix(src->mTransformation));
 	for (int i{}; i < src->mNumChildren; ++i) {
 		SceneNode* newData = new SceneNode();

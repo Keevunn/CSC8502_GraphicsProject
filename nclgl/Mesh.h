@@ -65,7 +65,7 @@ public:
 	void DrawSubMesh(int i);
 
 	static Mesh* LoadFromMeshFile(const std::string& name);
-	static Mesh* LoadFromAssimpMesh(aiMesh* aiMesh, const aiScene* scene);
+	static Mesh* LoadFromAssimpMesh(::aiMesh* aiMesh, const aiScene* scene, std::unordered_map<std::string, BoneInfo>& boneInfoMap, int& boneCounter);
 
 	unsigned int GetTriCount() const {
 		int primCount = indices ? numIndices : numVertices;
@@ -102,9 +102,6 @@ public:
 	void	GenerateNormals();
 	bool	GetVertexIndicesForTri(unsigned int i, unsigned int& a, unsigned int& b, unsigned int& c) const;
 
-	std::unordered_map<std::string, BoneInfo> GetBoneInfoMap() { return boneInfoMap; }
-	int GetBoneCount() { return boneCounter; }
-
 protected:
 	void	BufferData();
 
@@ -112,7 +109,7 @@ protected:
 	Vector4 GenerateTangent(int a, int b, int c);
 
 	void SetVertexBoneData(unsigned int vertexID, unsigned int boneID, float weight, int slot);
-	void GetBoneWeightsForVertices(const aiMesh* aiMesh, std::vector<int>& nextSlot);
+	void GetBoneWeightsForVertices(const aiMesh* aiMesh, std::vector<int>& nextSlot, std::unordered_map<std::string, BoneInfo>& boneInfoMap, int& boneCounter);
 
 	GLuint	arrayObject;
 
@@ -128,9 +125,6 @@ protected:
 	Vector2*		textureCoords;
 	Vector3*		normals;
 	Vector4*		tangents;
-
-	std::unordered_map<std::string, BoneInfo> boneInfoMap;
-	int boneCounter = 0;
 
 	Vector4*		weights;
 	int*			weightIndices;

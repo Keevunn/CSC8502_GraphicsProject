@@ -24,7 +24,6 @@ void Model::LoadModel(const std::string& path) {
 	LoadMaterials(scene);
 
 	ProcessNode(scene->mRootNode, scene, this);
-	boneCounter = boneInfoMap.size();
 }
 
 void Model::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
@@ -39,10 +38,7 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
 	// Process current node's mesh(es)
 	for (int i{}; i < node->mNumMeshes; ++i) {
 		aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
-		Mesh* mesh = Mesh::LoadFromAssimpMesh(aiMesh, scene);
-		
-		// Update bone information
-		boneInfoMap.merge(mesh->GetBoneInfoMap());
+		Mesh* mesh = Mesh::LoadFromAssimpMesh(aiMesh, scene, boneInfoMap, boneCounter);
 
 		SceneNode* currentMeshNode = nullptr;
 		if (i == 0) {

@@ -32,10 +32,10 @@ void Animator::CalculateBoneTransform(const SceneNode* node, Matrix4 parentTrans
 	}
 	Matrix4 globalTransformation = parentTransform * nodeTransform;
 
-	auto boneInfoMap = currentAnim->GetBoneInfoMap();
+	const auto& boneInfoMap = currentAnim->GetBoneInfoMap();
 	if (boneInfoMap.contains(nodeName)) {
-		int index = boneInfoMap[nodeName].id;
-		finalBoneMatrices[index] = globalTransformation * boneInfoMap[nodeName].invBindPose;
+		int index = boneInfoMap.at(nodeName).id;
+		finalBoneMatrices[index] = globalTransformation * boneInfoMap.at(nodeName).invBindPose;
 	}
 
 	for (auto child = node->GetChildIteratorStart(); child < node->GetChildIteratorEnd(); ++child)
