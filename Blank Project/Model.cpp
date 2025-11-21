@@ -14,7 +14,7 @@ void Model::LoadModel(const std::string& path) {
 	// aiProcess_Triangulate: converts non-triangle faces to triangles
 	// aiProcess_GenSmoothNormals: Creates normals if missing
 	// aiProcess_CalcTangentSpace: Calculates tangents and bitangents
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_SortByPType | aiProcess_JoinIdenticalVertices);
+	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_SortByPType | aiProcess_JoinIdenticalVertices | aiProcess_LimitBoneWeights);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		std::cerr << "ERROR: ASSIMP: " << importer.GetErrorString() << std::endl;
 		return;

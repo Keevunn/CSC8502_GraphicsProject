@@ -59,6 +59,9 @@ float Bone::GetScaleFactor(const float prev, const float next, const float anim_
 }
 
 Matrix4 Bone::InterpolatePosition(const float anim_dt) {
+	bool isRootTranslationNode = name.find("Translation") != std::string::npos || name.find("Hips") != std::string::npos;
+	if (isRootTranslationNode) return Matrix4::Translation(Vector3(0, 0, 0));
+
 	if (numPositions == 1) return Matrix4::Translation(positions[0].position);
 
 	int posIndex0 = GetPositionIndex(anim_dt);
