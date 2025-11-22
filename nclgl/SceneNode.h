@@ -39,6 +39,7 @@ public:
 	std::string GetName() const { return name; }
 	void SetName(const std::string n) { name = n; }
 
+	SceneNode* GetParent() const { return parent; }
     void AddChild(SceneNode* s);
 
 	virtual void Update(float dt);

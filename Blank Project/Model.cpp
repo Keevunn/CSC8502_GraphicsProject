@@ -10,11 +10,21 @@ Model::Model(const std::string& path) {
 
 void Model::LoadModel(const std::string& path) {
 	Assimp::Importer importer;
+	//importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
 
 	// aiProcess_Triangulate: converts non-triangle faces to triangles
 	// aiProcess_GenSmoothNormals: Creates normals if missing
 	// aiProcess_CalcTangentSpace: Calculates tangents and bitangents
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_SortByPType | aiProcess_JoinIdenticalVertices | aiProcess_LimitBoneWeights);
+	const aiScene* scene = importer.ReadFile(path, 
+		aiProcess_Triangulate |
+		aiProcess_FlipUVs | 
+		aiProcess_GenSmoothNormals | 
+		aiProcess_CalcTangentSpace | 
+		aiProcess_SortByPType | 
+		aiProcess_JoinIdenticalVertices | 
+		aiProcess_LimitBoneWeights |
+		aiProcess_PopulateArmatureData);
+	
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		std::cerr << "ERROR: ASSIMP: " << importer.GetErrorString() << std::endl;
 		return;

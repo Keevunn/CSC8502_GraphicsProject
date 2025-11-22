@@ -12,14 +12,22 @@
 
 Animation::Animation(const std::string& animPath, Model* model) {
 	Assimp::Importer importer;
+	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+
 	const aiScene* scene = importer.ReadFile(animPath, aiProcess_Triangulate); // may still include mesh data (it will be ignored)
 	assert(scene && scene->mRootNode);
 
 	aiAnimation* animation = scene->mAnimations[0];
 	duration = animation->mDuration;
 	ticksPerSec = animation->mTicksPerSecond;
+
 	rootNode = new SceneNode();
-	ReadHierarchyData(*rootNode, scene->mRootNode);
+	const aiNode* skeletonRoot = scene->mRootNode->FindNode("mixamorig_Hips"); // May change between animation files (BE CAREFUL)
+	if (!skeletonRoot) skeletonRoot = scene->mRootNode;
+
+	globalInverseTransform = (AssimpNCLHelpers::GetNCLMatrix(scene->mRootNode->mTransformation)).Inverse();
+
+	ReadHierarchyData(*rootNode, skeletonRoot);
 	ReadBones(animation, *model);
 }
 
@@ -64,6 +72,7 @@ void Animation::ReadHierarchyData(SceneNode& dest, const aiNode* src) {
 
 	dest.SetName(nodeName);
 	dest.SetTransform(AssimpNCLHelpers::GetNCLMatrix(src->mTransformation));
+
 	for (int i{}; i < src->mNumChildren; ++i) {
 		SceneNode* newData = new SceneNode();
 		ReadHierarchyData(*newData, src->mChildren[i]);

@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <assimp/quaternion.h>
+#include <assimp/vector3.h>
 
 #include "nclgl/Matrix4.h"
 #include "nclgl/Quaternion.h"
@@ -8,17 +10,17 @@
 struct aiNodeAnim;
 
 struct KeyPosition {
-	Vector3	position;
+	aiVector3D	position;
 	float timeStamp;
 };
 
 struct KeyRotation {
-	Quaternion orientation;
+	aiQuaternion orientation;
 	float timeStamp;
 };
 
 struct KeyScale {
-	Vector3 scale;
+	aiVector3D scale;
 	float timeStamp;
 };
 
@@ -32,9 +34,11 @@ public:
 	int GetRotationIndex(float anim_dt);
 	int GetScaleIndex(float anim_dt);
 	
-	Matrix4 GetLocalTransform() { return localTransform; }
+	Matrix4 GetLocalTransform() const { return localTransform; }
+	aiQuaternion GetRestingRotation() const { return restingRotation; }
+
 	std::string GetBoneName() const { return name; }
-	int GetBoneID() { return ID; }
+	int GetBoneID() const { return ID; }
 
 private:
 	float GetScaleFactor(float prev, float next, float anim_dt);
@@ -53,5 +57,6 @@ private:
 	std::string name;
 	int ID{};
 	Matrix4 localTransform;
+	aiQuaternion restingRotation;
 };
 

@@ -25,5 +25,7 @@ private:
 	float deltaTime;
 
 	Matrix4 identity;
+
+	int output = 0;
 };
 

@@ -20,9 +20,11 @@ public:
 
 	float GetTicksPerSec() const { return ticksPerSec; }
 	float GetDuration() const { return duration; }
-	SceneNode& GetRootNode() const { return *rootNode; }
-	std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() { return boneInfoMap; }
 
+	SceneNode& GetRootNode() const { return *rootNode; }
+	Matrix4& GetGlobalInverseTransform() { return globalInverseTransform; }
+
+	std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() { return boneInfoMap; }
 
 private:
 	void ReadBones(const aiAnimation* anim, Model& model);
@@ -30,8 +32,11 @@ private:
 
 	float duration;
 	float ticksPerSec;
-	std::vector<Bone> bones;
+
 	SceneNode* rootNode;
+	Matrix4 globalInverseTransform;
+
+	std::vector<Bone> bones;
 	std::unordered_map<std::string, BoneInfo> boneInfoMap;
 };
 

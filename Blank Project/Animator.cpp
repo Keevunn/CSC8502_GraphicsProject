@@ -13,7 +13,7 @@ void Animator::UpdateAnimation(float dt) {
 	if (currentAnim) {
 		currentTime += currentAnim->GetTicksPerSec() * dt;
 		currentTime = fmod(currentTime, currentAnim->GetDuration());
-		CalculateBoneTransform(&currentAnim->GetRootNode(), identity);
+		CalculateBoneTransform(&currentAnim->GetRootNode(), Matrix4());
 	}
 }
 
@@ -23,6 +23,7 @@ void Animator::PlayAnimation(Animation* anim) {
 }
 
 void Animator::CalculateBoneTransform(const SceneNode* node, Matrix4 parentTransform) {
+	const auto& boneInfoMap = currentAnim->GetBoneInfoMap();
 	std::string nodeName = node->GetName();
 	Matrix4 nodeTransform = node->GetTransform();
 
@@ -32,10 +33,9 @@ void Animator::CalculateBoneTransform(const SceneNode* node, Matrix4 parentTrans
 	}
 	Matrix4 globalTransformation = parentTransform * nodeTransform;
 
-	const auto& boneInfoMap = currentAnim->GetBoneInfoMap();
 	if (boneInfoMap.contains(nodeName)) {
 		int index = boneInfoMap.at(nodeName).id;
-		finalBoneMatrices[index] = globalTransformation * boneInfoMap.at(nodeName).invBindPose;
+		finalBoneMatrices[index] = currentAnim->GetGlobalInverseTransform() * globalTransformation * boneInfoMap.at(nodeName).invBindPose;
 	}
 
 	for (auto child = node->GetChildIteratorStart(); child < node->GetChildIteratorEnd(); ++child)

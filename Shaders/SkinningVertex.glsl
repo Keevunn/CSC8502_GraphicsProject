@@ -23,10 +23,17 @@ void main(void) {
 		int jointIndex = jointIndices[i];
 		float jointWeight = jointWeights[i];
 
+		if (jointIndex == -1)
+			continue;
+		if (jointIndex >= 128) {
+			skelPos = localPos;
+			break;
+		}
+
 		skelPos += joints[jointIndex] * localPos * jointWeight;
 	}
 	
 	mat4 mvp = projMatrix * viewMatrix * modelMatrix;
-	gl_Position = mvp * vec4(skelPos.xyz, 1);
+	gl_Position = mvp * skelPos;
 	OUT.texCoord = texCoord;
 }

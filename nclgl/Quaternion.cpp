@@ -77,6 +77,28 @@ float Quaternion::Dot(const Quaternion& a, const Quaternion& b) {
 	return (a.x * b.x) + (a.y * b.y) + (a.z * b.z) + (a.w * b.w);
 }
 
+Matrix4 Quaternion::ToMatrix4() const {
+	Matrix4 mat;
+	float xx = x * x; float yy = y * y; float zz = z * z;
+	float xy = x * y; float xz = x * z; float yz = y * z;
+	float wx = w * x; float wy = w * y; float wz = w * z;
+
+	mat.values[0] = 1.0f - 2.0f * (yy + zz);
+	mat.values[1] = 2.0f * (xy - wz);
+	mat.values[2] = 2.0f * (xz + wy);
+
+	mat.values[4] = 2.0f * (xy + wz);
+	mat.values[5] = 1.0f - 2.0f * (xx + zz);
+	mat.values[6] = 2.0f * (yz - wx);
+
+	mat.values[8] = 2.0f * (xz - wy);
+	mat.values[9] = 2.0f * (yz + wx);
+	mat.values[10] = 1.0f - 2.0f * (xx + yy);
+
+	mat.values[15] = 1.0f;
+	return mat;
+}
+
 void Quaternion::Normalise() {
 	float magnitude = sqrt(x * x + y * y + z * z + w * w);
 
@@ -165,20 +187,20 @@ Vector3 Quaternion::ToEuler() const {
 //http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/
 //VERIFIED AS CORRECT - Pitch and roll are changed around as the above uses x as 'forward', whereas we use -z
 Quaternion Quaternion::EulerAnglesToQuaternion(float roll, float yaw, float pitch) {
-	float cos1 = (float)cos(DegToRad(yaw * 0.5f));
-	float cos2 = (float)cos(DegToRad(pitch * 0.5f));
-	float cos3 = (float)cos(DegToRad(roll * 0.5f));
+	float cosYaw = (float)cos(DegToRad(yaw * 0.5f));
+	float cosPitch = (float)cos(DegToRad(pitch * 0.5f));
+	float cosRoll = (float)cos(DegToRad(roll * 0.5f));
 
-	float sin1 = (float)sin(DegToRad(yaw * 0.5f));
-	float sin2 = (float)sin(DegToRad(pitch * 0.5f));
-	float sin3 = (float)sin(DegToRad(roll * 0.5f));
+	float sinYaw = (float)sin(DegToRad(yaw * 0.5f));
+	float sinPitch = (float)sin(DegToRad(pitch * 0.5f));
+	float sinRoll = (float)sin(DegToRad(roll * 0.5f));
 
 	Quaternion q;
 
-	q.x = (sin1 * sin2 * cos3) + (cos1 * cos2 * sin3);
-	q.y = (sin1 * cos2 * cos3) + (cos1 * sin2 * sin3);
-	q.z = (cos1 * sin2 * cos3) - (sin1 * cos2 * sin3);
-	q.w = (cos1 * cos2 * cos3) - (sin1 * sin2 * sin3);
+	q.x = (sinYaw * sinPitch * cosRoll) + (cosYaw * cosPitch * sinRoll);
+	q.y = (sinYaw * cosPitch * cosRoll) + (cosYaw * sinPitch * sinRoll);
+	q.z = (cosYaw * sinPitch * cosRoll) - (sinYaw * cosPitch * sinRoll);
+	q.w = (cosYaw * cosPitch * cosRoll) - (sinYaw * sinPitch * sinRoll);
 
 	return q;
 };

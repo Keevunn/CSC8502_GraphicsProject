@@ -38,7 +38,7 @@ public:
 		};
 		float array[4];
 	};
-public:
+
 	Quaternion(void);
 	Quaternion(float x, float y, float z, float w);
 	Quaternion(const Vector3& vector, float w);
@@ -51,6 +51,8 @@ public:
 	void	Normalise();
 
 	static float Dot(const Quaternion& a, const Quaternion& b);
+
+	Matrix4 ToMatrix4() const;
 
 	static Quaternion	Lerp(const Quaternion& from, const Quaternion& to, float by);
 	static Quaternion	Slerp(const Quaternion& from, const Quaternion& to, float by);

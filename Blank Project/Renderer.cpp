@@ -9,17 +9,19 @@
 #define ANIMATIONDIR "../Animations/"
 
 Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
-	camera = new Camera(-3, 0, Vector3(0, 10, 4));
+	camera = new Camera(-3, 0, Vector3(0, 7, 4));
 
 	shader = new Shader("SkinningVertex.glsl", "TexturedFragment.glsl");
 	if (!shader->LoadSuccess()) return;
 
-	model = new Model(MODELSDIR"Robot/Robot.fbx");
-	model->SetModelScale(Vector3(1.0f / 25.0f));
-	model->SetTransform(Matrix4::Translation(Vector3(0, 0, -10)));
+	model = new Model(MODELSDIR"Robot/RobotModelWithWalkAnim.fbx");
+	model->SetModelScale(Vector3(1/100.0f));
+	model->SetTransform(Matrix4::Translation(Vector3(0, 0, -20)));
 	matTextures = model->GetDiffTex();
+	matTextures.push_back(SOIL_load_OGL_texture(MODELSDIR"Robot/Robot_Base_color 5.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0));
+	if (matTextures.empty() || matTextures.at(0) == 0) return;
 
-	animation = new Animation(ANIMATIONDIR"WalkForwardAnim.fbx", model);
+	animation = new Animation(MODELSDIR"Robot/RobotModelWithWalkAnim.fbx", model);
 	animator = new Animator(animation);
 
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f, (float)width / (float)height, 45.0f);
@@ -69,7 +71,7 @@ void Renderer::DrawNode(SceneNode* n) {
 
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "diffuseTex"), 0);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, n->GetTexture());
+		glBindTexture(GL_TEXTURE_2D, matTextures[0]);
 
 		n->Draw(*this);
 	}
