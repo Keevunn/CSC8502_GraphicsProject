@@ -18,21 +18,21 @@ void Camera::UpdateCamera(float dt) {
 	Vector3 forward = rotation * Vector3(0, 0, -1); // Down the negative z axis
 	Vector3 right = rotation * Vector3(1, 0, 0); // Towards the right
 
-	float speed = 30.0f * dt; // 30 units per sec
+	float dist = speed * dt; // 30 units per sec
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_W))
-		position += forward * speed;
+		position += forward * dist;
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_S))
-		position -= forward * speed;
+		position -= forward * dist;
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_A))
-		position -= right * speed;
+		position -= right * dist;
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_D))
-		position += right * speed;
+		position += right * dist;
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_SPACE)) // Tutorial notes used shift
-		position.y += speed;
+		position.y += dist;
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_CONTROL)) // Tutorial notes used space
-		position.y -= speed;
+		position.y -= dist;
 }
 
 Matrix4 Camera::BuildViewMatrix() const {

@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "nclgl/OGLRenderer.h"
 
+class HeightMap;
 class Camera;
 class MeshAnimation;
 class MeshMaterial;
@@ -21,12 +22,18 @@ public:
 protected:
 	void DrawNode(SceneNode* n);
 
-	Camera* camera;
-	Shader* shader;
+	Camera* camera = nullptr;
 
-	Model* model;
-	vector<GLuint> matTextures;
-	Animation* animation;
-	Animator* animator;
+	Shader* modelShader = nullptr;
+	Model* model = nullptr;
+	GLuint robotTexture;
+	
+	Animation* animation = nullptr; // Might change to a vector of animations later
+	Animator* animator = nullptr;
+
+	Shader* terrainShader = nullptr;
+	HeightMap* heightMap = nullptr;
+	std::unordered_map<std::string, GLuint> concreteTextures; // texture type, texture id
+
 };
 

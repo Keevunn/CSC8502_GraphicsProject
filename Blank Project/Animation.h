@@ -14,7 +14,7 @@ class Animation {
 public:
 	Animation() = default;
 	Animation(const std::string& animPath, Model* model);
-	~Animation() = default;
+	~Animation();
 
 	Bone* FindBone(const std::string& name);
 
@@ -33,7 +33,7 @@ private:
 	float duration;
 	float ticksPerSec;
 
-	SceneNode* rootNode;
+	SceneNode* rootNode = nullptr;
 	Matrix4 globalInverseTransform;
 
 	std::vector<Bone> bones;

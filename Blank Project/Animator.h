@@ -9,7 +9,7 @@ class Animation;
 class Animator {
 public:
 	Animator(Animation* anim);
-	~Animator() = default;
+	~Animator();
 
 	void UpdateAnimation(float dt);
 	void PlayAnimation(Animation* anim);
@@ -20,12 +20,10 @@ public:
 
 private:
 	std::vector<Matrix4> finalBoneMatrices;
-	Animation* currentAnim;
+	Animation* currentAnim = nullptr;
 	float currentTime;
 	float deltaTime;
 
 	Matrix4 identity;
-
-	int output = 0;
 };
 

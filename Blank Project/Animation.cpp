@@ -31,6 +31,10 @@ Animation::Animation(const std::string& animPath, Model* model) {
 	ReadBones(animation, *model);
 }
 
+Animation::~Animation() {
+	delete rootNode;
+}
+
 
 Bone* Animation::FindBone(const std::string& name) {
 	auto iter = std::ranges::find_if(bones, [&](const Bone& bone)->bool { return bone.GetBoneName() == name; });

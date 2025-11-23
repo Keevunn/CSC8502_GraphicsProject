@@ -49,10 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\TexturedFragment.glsl" />
-    <None Include="..\Shaders\TexturedVertex.glsl" />
-    <None Include="..\Shaders\BasicTexturedVertex.glsl" />
-    <None Include="..\Shaders\SceneFragment.glsl" />
-    <None Include="..\Shaders\SceneVertex.glsl" />
     <None Include="..\Shaders\SkinningVertex.glsl" />
+    <None Include="..\Meshes\ConcreteFloor.mat" />
+    <None Include="..\Shaders\TexturedVertex.glsl" />
+    <None Include="..\Shaders\NoisyTexturedFragment.glsl" />
+    <None Include="..\Shaders\SkyboxFragment.glsl" />
+    <None Include="..\Shaders\SkyboxVertex.glsl" />
   </ItemGroup>
 </Project>

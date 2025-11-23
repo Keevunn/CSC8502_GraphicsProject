@@ -8,6 +8,10 @@ Animator::Animator(Animation* anim) : currentAnim(anim), currentTime(0), deltaTi
 	finalBoneMatrices.resize(128, identity);
 }
 
+Animator::~Animator() {
+	delete currentAnim;
+}
+
 void Animator::UpdateAnimation(float dt) {
 	deltaTime = dt;
 	if (currentAnim) {

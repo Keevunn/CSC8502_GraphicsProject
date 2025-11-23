@@ -1,0 +1,13 @@
+MeshMat
+1
+1
+1
+Concrete Floor
+6
+Diffuse:/Concrete/ConcreteFloor_diffuse.png
+Bump:/Concrete/ConcreteFloor_normal.png
+AO:/Concrete/ConcreteFloor_ao.png
+Displacement:/Concrete/ConcreteFloor_displacement.jpg
+Roughness:/Concrete/ConcreteFloor_rough.png
+Noise:/Concrete/PuddleMask.png
+0
