@@ -17,10 +17,13 @@ public:
 	void RenderScene() override;
 	void UpdateScene(float dt) override;
 
-	void SetScale(float s) const { model->SetModelScale(Vector3(s)); }
+	void SetScale(float s) const { model->SetModelScale(Vector3(s)); } // TODO Remove soon!!!
 
 protected:
 	void DrawNode(SceneNode* n);
+
+	void DrawHeightMap();
+	void DrawSkybox();
 
 	Camera* camera = nullptr;
 
@@ -30,6 +33,12 @@ protected:
 	
 	Animation* animation = nullptr; // Might change to a vector of animations later
 	Animator* animator = nullptr;
+
+	Shader* skyboxShader = nullptr;
+	Mesh* quad = nullptr;
+	GLuint cubeMap;
+
+	SceneNode* environmentRoot = nullptr;
 
 	Shader* terrainShader = nullptr;
 	HeightMap* heightMap = nullptr;

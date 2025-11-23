@@ -29,17 +29,34 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 
 	unsigned int flags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS;
 
+	// Construction yard skybox
+	cubeMap = SOIL_load_OGL_cubemap(
+		TEXTUREDIR"/ConstructionYard/px.png", TEXTUREDIR"/ConstructionYard/nx.png",
+		TEXTUREDIR"/ConstructionYard/py.png", TEXTUREDIR"/ConstructionYard/ny.png",
+		TEXTUREDIR"/ConstructionYard/pz.png", TEXTUREDIR"/ConstructionYard/nz.png",
+		SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
+	quad = Mesh::GenerateQuad();
+	skyboxShader = new Shader("SkyboxVertex.glsl", "SkyboxFragment.glsl");
+	if (!skyboxShader->LoadSuccess()) return;
+
+	// Concrete ground
 	for (const auto& [type, filename] : matEntry->entries) {
 		std::string path = TEXTUREDIR + filename;
 		GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, flags);
 		if (!texID) return;
 		concreteTextures[type] = texID;
 	}
-	const Vector3 vertexScale = Vector3(1, -0.1f, 1);
-	const Vector2 textureScale = Vector2(1 / 100.0f, 1 / 100.0f);
+
+	const Vector3 vertexScale = Vector3(16, -0.1f, 16);
+	const Vector2 textureScale = Vector2(1 / 16.0f, 1 / 16.0f);
 	heightMap = new HeightMap(TEXTUREDIR"/Concrete/PuddleMask.png", vertexScale, textureScale);
 	terrainShader = new Shader("TexturedVertex.glsl", "NoisyTexturedFragment.glsl");
 	if (!terrainShader->LoadSuccess()) return;
+
+	environmentRoot = new SceneNode();
+	environmentRoot->SetName("Root");
+
+
 
 	Vector3 dimensions = heightMap->GetHeightmapSize();
 	camera = new Camera(-3, 0, dimensions * Vector3(0.5, 2, 0.5), 200);
@@ -48,6 +65,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 	init = true;
 }
@@ -60,6 +78,11 @@ Renderer::~Renderer(void) {
 
 	delete animation;
 	delete animator;
+
+	delete skyboxShader;
+	delete quad;
+
+	delete environmentRoot;
 
 	delete terrainShader;
 	delete heightMap;
@@ -76,18 +99,8 @@ void Renderer::UpdateScene(float dt) {
 void Renderer::RenderScene() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-	BindShader(terrainShader);
-	UpdateShaderMatrices();
-
-	glUniform1i(glGetUniformLocation(terrainShader->GetProgram(), "diffuseTex"), 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, concreteTextures["Diffuse"]);
-
-	glUniform1i(glGetUniformLocation(terrainShader->GetProgram(), "noiseTex"), 1);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, concreteTextures["Noise"]);
-
-	heightMap->Draw();
+	DrawSkybox();
+	DrawHeightMap();
 
 	// Render model
 	/*BindShader(shader);
@@ -117,4 +130,30 @@ void Renderer::DrawNode(SceneNode* n) {
 
 	for (auto i = n->GetChildIteratorStart(); i != n->GetChildIteratorEnd(); ++i)
 		DrawNode(*i);
+}
+
+void Renderer::DrawHeightMap() {
+	BindShader(terrainShader);
+	UpdateShaderMatrices();
+
+	glUniform1i(glGetUniformLocation(terrainShader->GetProgram(), "diffuseTex"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, concreteTextures["Diffuse"]);
+
+	glUniform1i(glGetUniformLocation(terrainShader->GetProgram(), "noiseTex"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, concreteTextures["Noise"]);
+
+	heightMap->Draw();
+}
+
+void Renderer::DrawSkybox() {
+	glDepthMask(GL_FALSE);
+
+	BindShader(skyboxShader);
+	UpdateShaderMatrices();
+
+	quad->Draw();
+
+	glDepthMask(GL_TRUE);
 }
