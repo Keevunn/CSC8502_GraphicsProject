@@ -5,6 +5,14 @@
 #include "Mesh.h"
 #include <vector>
 
+struct MaterialTextures {
+	GLuint diffuseID = 0;
+	GLuint bumpID = 0;
+	GLuint reflectionID = 0;
+	GLuint alphaID = 0;
+	GLuint specularID = 0;
+};
+
 class SceneNode {
 public:
 	SceneNode(Mesh* mesh = nullptr, const Vector4& colour = Vector4(1, 1, 1, 1))
@@ -20,6 +28,9 @@ public:
 
 	GLuint GetTexture() const { return texture; }
 	void SetTexture(GLuint tex) { texture = tex; }
+
+	MaterialTextures GetMaterial() const { return material; }
+	void SetMaterial(MaterialTextures mat) { material = mat; }
 
 	static bool CompareByCameraDistance(SceneNode* a, SceneNode* b) { return a->distanceFromCamera < b->distanceFromCamera; }
 
@@ -59,7 +70,9 @@ public:
 
 	float distanceFromCamera;
 	float boundingRadius;
-	GLuint texture;
+	GLuint texture; // diffuse texture
+
+	MaterialTextures material;
 
 	std::string name = ""; // For debugging
 };

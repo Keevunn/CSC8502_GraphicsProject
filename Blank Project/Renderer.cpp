@@ -47,7 +47,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 		concreteTextures[type] = texID;
 	}
 
-	const Vector3 vertexScale = Vector3(16, -0.1f, 16);
+	const Vector3 vertexScale = Vector3(2, -0.1f, 2);
 	const Vector2 textureScale = Vector2(1 / 16.0f, 1 / 16.0f);
 	heightMap = new HeightMap(TEXTUREDIR"/Concrete/PuddleMask.png", vertexScale, textureScale);
 	terrainShader = new Shader("TexturedVertex.glsl", "NoisyTexturedFragment.glsl");
@@ -56,7 +56,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	environmentRoot = new SceneNode();
 	environmentRoot->SetName("Root");
 
-
+	
 
 	Vector3 dimensions = heightMap->GetHeightmapSize();
 	camera = new Camera(-3, 0, dimensions * Vector3(0.5, 2, 0.5), 200);

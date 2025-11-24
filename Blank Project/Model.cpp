@@ -75,18 +75,6 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
 		ProcessNode(node->mChildren[i], scene, newNode);
 }
 
-void Model::ProcessMaterials(aiMesh* aiMesh, const aiScene* scene) {
-	// Materials
-	if (aiMesh->mMaterialIndex >= 0) {
-		aiMaterial* material = scene->mMaterials[aiMesh->mMaterialIndex];
-		vector<GLuint> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-		diffTex.insert(diffTex.end(), diffuseMaps.begin(), diffuseMaps.end());
-
-		vector<GLuint> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-		specularTex.insert(specularTex.end(), specularMaps.begin(), specularMaps.end());
-	}
-}
-
 void Model::LoadMaterials(const aiScene* scene) {
 	textures.resize(scene->mNumMaterials, 0);
 
@@ -95,23 +83,10 @@ void Model::LoadMaterials(const aiScene* scene) {
 
 		if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
 			aiString fileName;
-			mat->GetTexture(aiTextureType_DIFFUSE, i, &fileName);
+			mat->GetTexture(aiTextureType_DIFFUSE, 0, &fileName);
 			std::string path = dir + "/" + fileName.C_Str();
 			GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 			textures[i] = texID;
 		}
 	}
 }
-
-vector<GLuint> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName) {
-	vector<GLuint> matTextures;
-	for (unsigned int i{}; i < mat->GetTextureCount(type); ++i) {
-		aiString fileName;
-		mat->GetTexture(type, i, &fileName);
-		std::string path = dir + "/" + fileName.C_Str();
-		GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-		matTextures.push_back(texID);
-	}
-	return matTextures;
-}
-

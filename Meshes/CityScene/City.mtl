@@ -1,0 +1,296 @@
+# Blender 4.2.3 LTS MTL File: 'None'
+# www.blender.org
+
+newmtl Material.007
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl Matte_dark
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.028210 0.028210 0.028210
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+
+newmtl blocking_ao_basic
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl blocking_glass_fake
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl blocking_red_plaster_weathered
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns red_plaster_weathered_rough_1k.exr
+map_Bump -bm 1.000000 red_plaster_weathered_nor_gl_1k.exr
+
+newmtl grey_plaster
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns -s 2.24119 2.24119 1 grey_plaster_rough_1k.jpg
+map_Bump -s 2.24119 2.24119 1 -bm 1.000000 grey_plaster_nor_gl_1k.exr
+
+newmtl modular_factory_facade_brick_doors.005
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd modular_factory_facade_doors_diff.png
+map_Ns modular_factory_facade_doors_rough.png
+map_refl modular_factory_facade_doors_metal.png
+map_Bump -bm 1.000000 modular_factory_facade_doors_nor_gl.png
+
+newmtl modular_factory_facade_brick_worldspace_building_01.005
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl modular_factory_facade_brick_worldspace_building_03.002
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl modular_factory_facade_brick_worldspace_building_05.002
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl modular_factory_facade_brick_worldspace_building_06.002
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl modular_factory_facade_garage.005
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns modular_factory_facade_garage_rough.png
+map_refl modular_factory_facade_garage_metal.png
+map_Bump -bm 1.000000 modular_factory_facade_garage_nor_gl.png
+
+newmtl modular_factory_facade_trim_01.006
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump -bm 1.000000 modular_factory_facade_trim_01_nor_gl.png
+
+newmtl modular_factory_facade_windows.005
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd modular_factory_facade_windows_diff.png
+map_Ns modular_factory_facade_windows_rough.png
+map_Bump -bm 1.000000 modular_factory_facade_windows_nor_gl.png
+
+newmtl modular_factory_facade_windows_glass.005
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd modular_factory_facade_windows_diff.png
+map_Ns modular_factory_facade_windows_rough.png
+map_d modular_factory_facade_windows_alpha.png
+map_Bump -bm 1.000000 modular_factory_facade_windows_nor_gl.png
+
+newmtl modular_urban_apartments_facade
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns modular_urban_apartments_facade_rough.png
+map_Bump -bm 1.000000 modular_urban_apartments_facade_nor_gl.png
+
+newmtl modular_urban_apartments_facade_building_01
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl modular_urban_apartments_facade_building_02
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns modular_urban_apartments_facade_rough.png
+map_Bump -bm 1.000000 modular_urban_apartments_facade_nor_gl.png
+
+newmtl modular_urban_apartments_facade_glass
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.100000
+illum 2
+map_Kd modular_urban_apartments_facade_objects_diff.png
+map_Ns modular_urban_apartments_facade_objects_rough.png
+map_refl modular_urban_apartments_facade_objects_metal.png
+map_d modular_urban_apartments_facade_objects_alpha.png
+map_Bump -bm 1.000000 modular_urban_apartments_facade_objects_nor_gl.png
+
+newmtl modular_urban_apartments_facade_objects
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd modular_urban_apartments_facade_objects_diff.png
+map_Ns modular_urban_apartments_facade_objects_rough.png
+map_refl modular_urban_apartments_facade_objects_metal.png
+map_Bump -bm 1.000000 modular_urban_apartments_facade_objects_nor_gl.png
+
+newmtl modular_urban_apartments_facade_trim_01
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns modular_urban_apartments_facade_trim_01_rough.png
+map_Bump -bm 1.000000 modular_urban_apartments_facade_trim_01_nor_gl.png
+
+newmtl modular_urban_apartments_facade_trim_02
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd modular_urban_apartments_facade_trim_02_diff.png
+map_Ns modular_urban_apartments_facade_trim_02_rough.png
+map_Bump -bm 1.000000 modular_urban_apartments_facade_trim_02_nor_gl.png
+
+newmtl paralax_interiors
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl ph_brick_worldspace
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns brick_wall_006_rough_2k.exr
+map_Bump -bm 1.000000 brick_wall_006_nor_gl_2k.exr
+
+newmtl street_lamp_01
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd street_lamp_01_diff_1k.jpg
+map_Ns street_lamp_01_rough_1k.exr
+map_refl street_lamp_01_metal_1k.exr
+map_Bump -bm 1.000000 street_lamp_01_nor_gl_1k.exr
+
+newmtl street_lamp_01_bulb
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd street_lamp_01_diff_1k.jpg
+map_Ns street_lamp_01_rough_1k.exr
+map_refl street_lamp_01_metal_1k.exr
+map_Bump -bm 1.000000 street_lamp_01_nor_gl_1k.exr
+
+newmtl street_lamp_01_glass
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.250000
+illum 9
+map_Kd street_lamp_01_diff_1k.jpg
+map_Ns street_lamp_01_rough_1k.exr
+map_refl street_lamp_01_metal_1k.exr
+map_Bump -bm 1.000000 street_lamp_01_nor_gl_1k.exr

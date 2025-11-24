@@ -1,0 +1,107 @@
+#include "Environment.h"
+
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+
+#include "nclgl/AssimpNCLHelpers.h"
+
+Environment::Environment(const std::string& path) {
+	Assimp::Importer importer;
+
+	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals);
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+		std::cerr << "ERROR: ASSIMP: " << importer.GetErrorString() << std::endl;
+		return;
+	}
+
+	name = "Environment_Root";
+
+	Environment::LoadMaterials(scene);
+	Environment::ProcessNode(scene->mRootNode, scene, this);
+}
+
+void Environment::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
+	SceneNode* newNode = new SceneNode();
+	std::string nodeName = node->mName.C_Str();
+	newNode->SetName(nodeName);
+	newNode->SetTransform(AssimpNCLHelpers::GetNCLMatrix(node->mTransformation));
+	parent->AddChild(newNode);
+
+	int meshChildCount = 0;
+
+	// Process current node's mesh(es)
+	for (int i{}; i < node->mNumMeshes; ++i) {
+		aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
+		Mesh* mesh = Mesh::LoadFromAssimpMesh(aiMesh, scene, boneInfoMap, boneCounter);
+
+		SceneNode* currentMeshNode = nullptr;
+		if (i == 0) {
+			currentMeshNode = newNode;
+			newNode->SetMesh(mesh);
+		}
+		else { // if this node has multiple meshes, add as child to node
+			currentMeshNode = new SceneNode(mesh);
+			currentMeshNode->SetName(nodeName + "_Child" + std::to_string(meshChildCount++));
+			newNode->AddChild(currentMeshNode);
+		}
+
+		//Assign Texture
+		int matIndex = aiMesh->mMaterialIndex;
+		if (matIndex >= 0 && matIndex < materials.size()) {
+			const MaterialTextures mat = materials[matIndex];
+
+			if (mat.diffuseID > 0) currentMeshNode->SetTexture(mat.diffuseID);
+			if (mat.alphaID > 0) currentMeshNode->SetTexture(mat.alphaID);
+			if (mat.reflectionID > 0) currentMeshNode->SetTexture(mat.reflectionID);
+			if (mat.specularID > 0) currentMeshNode->SetTexture(mat.specularID);
+			if (mat.bumpID > 0) currentMeshNode->SetTexture(mat.bumpID);
+		}
+
+	}
+
+	// Process children nodes
+	for (int i{}; i < node->mNumChildren; ++i)
+		ProcessNode(node->mChildren[i], scene, newNode);
+}
+
+void Environment::LoadMaterials(const aiScene* scene) {
+	materials.resize(scene->mNumMaterials, 0);
+
+	for (unsigned int i{}; i < scene->mNumMaterials; ++i) {
+		aiMaterial* mat = scene->mMaterials[i];
+		aiString fileName;
+		const std::string texDir = TEXTUREDIR"/CityScene";
+		unsigned int flags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS;
+
+		if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &fileName) == AI_SUCCESS) {
+			std::string path = texDir + fileName.C_Str();
+			GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			materials[i].diffuseID = texID;
+		}
+
+		if (mat->GetTexture(aiTextureType_HEIGHT, 0, &fileName) == AI_SUCCESS) {
+			std::string path = texDir + fileName.C_Str();
+			GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			materials[i].bumpID = texID;
+		}
+
+		if (mat->GetTexture(aiTextureType_SPECULAR, 0, &fileName) == AI_SUCCESS) {
+			std::string path = texDir + fileName.C_Str();
+			GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			materials[i].specularID = texID;
+		}
+
+		if (mat->GetTexture(aiTextureType_REFLECTION, 0, &fileName) == AI_SUCCESS) {
+			std::string path = texDir + fileName.C_Str();
+			GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, flags);
+			materials[i].reflectionID = texID;
+		}
+
+		if (mat->GetTexture(aiTextureType_OPACITY, 0, &fileName) == AI_SUCCESS) {
+			std::string path = texDir + fileName.C_Str();
+			GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			materials[i].alphaID = texID;
+		}
+	}
+}
+
