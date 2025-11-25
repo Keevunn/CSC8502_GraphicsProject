@@ -152,6 +152,7 @@ Renderer::~Renderer(void) {
 void Renderer::RenderScene() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	viewMatrix = camera->BuildViewMatrix();
 
 	DrawSkybox();
 
@@ -190,9 +191,10 @@ void Renderer::GenerateScreenTexture(GLuint& into, bool depth) {
 
 void Renderer::FillBuffers() {
 	glBindFramebuffer(GL_FRAMEBUFFER, bufferFBO);
-	//glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	glClearColor(0, 0, 0, 0); // Clear to transparent black so combine shader discards empty pixels
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-	viewMatrix = camera->BuildViewMatrix();
+	
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f, (float)width / (float)height, 45.0f);
 
 	DrawHeightMap();
@@ -244,8 +246,10 @@ void Renderer::CombineBuffers() {
 
 void Renderer::DrawSkybox() {
 	glDepthMask(GL_FALSE);
-
 	BindShader(skyboxShader);
+
+	projMatrix = Matrix4::Perspective(1.0f, 10000.0f, (float)width / (float)height, 45.0f);
+
 	UpdateShaderMatrices();
 
 	quad->Draw();
@@ -287,7 +291,6 @@ void Renderer::DrawHeightMap() {
 void Renderer::DrawNode(SceneNode* n, Shader* shader) {
 	if (n->GetMesh()) {
 		modelMatrix = n->GetWorldTransform();
-		glUniformMatrix4fv(glGetUniformLocation(modelShader->GetProgram(), "modelMatrix"), 1, false, modelMatrix.values);
 
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "diffuseTex"), 0);
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "bumpTex"), 1);
@@ -341,7 +344,7 @@ void Renderer::DrawSun() {
 	quad->Draw();
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+	glClearColor(0, 0, 0, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

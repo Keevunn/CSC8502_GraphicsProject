@@ -16,8 +16,7 @@ out vec4 specularOutput;
 void main() {
 	vec2 texCoord = vec2(gl_FragCoord.xy * pixelSize);
 	float depth = texture(depthTex, texCoord.xy).r;
-	if (depth >= 1) // Don't light the skybox
-		discard;
+
 
 	vec3 ndcPos = vec3(texCoord, depth) * 2 - 1;
 	vec4 invClipPos = inverseProjView * vec4(ndcPos, 1);

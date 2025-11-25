@@ -10,11 +10,12 @@ out Vertex {
 } OUT;
 
 void main(void) {
+	gl_Position = vec4(position, 1.0);
+
 	vec3 pos = position;
 	mat4 invProj = inverse(projMatrix);
 	pos.xy *= vec2(invProj[0][0], invProj[1][1]);
 	pos.z = -1.0f;
 
 	OUT.viewDir = transpose(mat3(viewMatrix)) * normalize(pos);
-	gl_Position = vec4(position, 1.0);
 }
