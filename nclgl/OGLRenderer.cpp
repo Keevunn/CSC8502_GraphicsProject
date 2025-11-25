@@ -241,6 +241,13 @@ void OGLRenderer::SetShaderLight(const Light& l) {
 	glUniform1f(glGetUniformLocation(currentShader->GetProgram(), "lightRadius"), l.GetRadius());
 }
 
+void OGLRenderer::SetShaderLight(const DirectionalLight& l) {
+	auto lightDir = l.GetDirection();
+	auto lightColour = l.GetColour();
+	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "lightDir"), 1, (float*)&lightDir);
+	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightColour"), 1, (float*)&lightColour);
+}
+
 #ifdef OPENGL_DEBUGGING
 void OGLRenderer::DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)	{
 		string sourceName;

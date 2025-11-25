@@ -29,10 +29,10 @@ void SceneNode::Draw(const OGLRenderer& r) {
 }
 
 void SceneNode::Update(float dt) {
-	Matrix4 combinedTransform = transform * Matrix4::Scale(modelScale);
+	if (parent) worldTransform = parent->worldTransform * transform;
+	else worldTransform = transform;
 
-	if (parent) worldTransform = parent->worldTransform * combinedTransform;
-	else worldTransform = combinedTransform;
+	worldTransform = worldTransform * Matrix4::Scale(modelScale);
 
 	for (auto& childNode : children)
 		childNode->Update(dt);

@@ -19,6 +19,7 @@ _-_-_-_-_-_-_-""  ""
 #include <fstream>
 #include <vector>
 
+#include "DirectionalLight.h"
 #include "KHR\khrplatform.h"
 #include "glad\glad.h"
 
@@ -64,6 +65,7 @@ protected:
 	void			UpdateShaderMatrices();
 	void			BindShader(Shader*s);
 	void			SetShaderLight(const Light& l);
+	void			SetShaderLight(const DirectionalLight& l);
 
 	void StartDebugGroup(const std::string& s) {
 		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, (GLsizei)s.length(), s.c_str());

@@ -8,9 +8,9 @@
 Environment::Environment(const std::string& path) {
 	Assimp::Importer importer;
 
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals);
+	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_GlobalScale | aiProcess_CalcTangentSpace);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-		std::cerr << "ERROR: ASSIMP: " << importer.GetErrorString() << std::endl;
+		std::cerr << "ERROR: ASSIMP: " << importer.GetErrorString() << "\n";
 		return;
 	}
 
@@ -20,11 +20,14 @@ Environment::Environment(const std::string& path) {
 	Environment::ProcessNode(scene->mRootNode, scene, this);
 }
 
-void Environment::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
+void Environment::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent, Matrix4 parentTransform) {
+	Matrix4 localTransform = AssimpNCLHelpers::GetNCLMatrix(node->mTransformation);
+	Matrix4 worldTransform = parentTransform * localTransform;
+
 	SceneNode* newNode = new SceneNode();
 	std::string nodeName = node->mName.C_Str();
 	newNode->SetName(nodeName);
-	newNode->SetTransform(AssimpNCLHelpers::GetNCLMatrix(node->mTransformation));
+	newNode->SetTransform(localTransform);
 	parent->AddChild(newNode);
 
 	int meshChildCount = 0;
@@ -49,57 +52,64 @@ void Environment::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* par
 		int matIndex = aiMesh->mMaterialIndex;
 		if (matIndex >= 0 && matIndex < materials.size()) {
 			const MaterialTextures mat = materials[matIndex];
-
-			if (mat.diffuseID > 0) currentMeshNode->SetTexture(mat.diffuseID);
-			if (mat.alphaID > 0) currentMeshNode->SetTexture(mat.alphaID);
-			if (mat.reflectionID > 0) currentMeshNode->SetTexture(mat.reflectionID);
-			if (mat.specularID > 0) currentMeshNode->SetTexture(mat.specularID);
-			if (mat.bumpID > 0) currentMeshNode->SetTexture(mat.bumpID);
+			currentMeshNode->SetMaterial(mat);
 		}
 
 	}
 
 	// Process children nodes
 	for (int i{}; i < node->mNumChildren; ++i)
-		ProcessNode(node->mChildren[i], scene, newNode);
+		ProcessNode(node->mChildren[i], scene, newNode, worldTransform);
 }
 
 void Environment::LoadMaterials(const aiScene* scene) {
-	materials.resize(scene->mNumMaterials, 0);
+	materials.resize(scene->mNumMaterials);
 
 	for (unsigned int i{}; i < scene->mNumMaterials; ++i) {
 		aiMaterial* mat = scene->mMaterials[i];
 		aiString fileName;
-		const std::string texDir = TEXTUREDIR"/CityScene";
+		GLuint texID;
+		const std::string texDir = TEXTUREDIR"/FactoryWithRoad/";
 		unsigned int flags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS;
 
 		if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &fileName) == AI_SUCCESS) {
 			std::string path = texDir + fileName.C_Str();
-			GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, flags);
+			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
 			materials[i].diffuseID = texID;
 		}
 
 		if (mat->GetTexture(aiTextureType_HEIGHT, 0, &fileName) == AI_SUCCESS) {
 			std::string path = texDir + fileName.C_Str();
-			GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
 			materials[i].bumpID = texID;
 		}
 
 		if (mat->GetTexture(aiTextureType_SPECULAR, 0, &fileName) == AI_SUCCESS) {
 			std::string path = texDir + fileName.C_Str();
-			GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
+			materials[i].specularID = texID;
+		}
+		if (mat->GetTexture(aiTextureType_SHININESS, 0, &fileName) == AI_SUCCESS) {
+			std::string path = texDir + fileName.C_Str();
+			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, flags);
+			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
 			materials[i].specularID = texID;
 		}
 
 		if (mat->GetTexture(aiTextureType_REFLECTION, 0, &fileName) == AI_SUCCESS) {
 			std::string path = texDir + fileName.C_Str();
-			GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, flags);
+			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, flags);
+			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
 			materials[i].reflectionID = texID;
 		}
 
 		if (mat->GetTexture(aiTextureType_OPACITY, 0, &fileName) == AI_SUCCESS) {
 			std::string path = texDir + fileName.C_Str();
-			GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
 			materials[i].alphaID = texID;
 		}
 	}

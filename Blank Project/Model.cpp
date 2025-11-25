@@ -36,7 +36,7 @@ void Model::LoadModel(const std::string& path) {
 	ProcessNode(scene->mRootNode, scene, this);
 }
 
-void Model::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
+void Model::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent, Matrix4 parentTransform) {
 	SceneNode* newNode = new SceneNode();
 	std::string nodeName = node->mName.C_Str();
 	newNode->SetName(nodeName);
