@@ -12,15 +12,23 @@ out vec4 fragColour;
 
 void main() {
 	vec4 diffuseSample = texture(diffuseTex, IN.texCoord);
-	if (diffuseSample.a == 0.0)
-		discard;
 
-	vec3 diffuse = diffuseSample.rgb;
+	// Skybox Check
+	if (diffuseSample.a == 0.0) discard; 
+
+	vec3 albedo = diffuseSample.rgb;
+	float metallic = clamp((diffuseSample.a - 0.1)/0.9, 0.0, 1.0); // Restore 0.0 - 1.0 range
+
 	vec3 light = texture(diffuseLight, IN.texCoord).rgb;
 	vec3 specular = texture(specularLight, IN.texCoord).rgb;
 
-	fragColour.xyz = diffuse * 0.1;
-	fragColour.xyz += diffuse * light;
-	fragColour.xyz += specular;
+	// Metal: coloured (albedo), Plastic: white
+	vec3 specColour = mix(vec3(1), albedo, metallic);
+	// Metal: black (no diffuse reflection)
+	vec3 diffFactor = vec3(1 - metallic);
+
+	fragColour.xyz = albedo * 0.1; // ambient
+	fragColour.xyz += albedo * light * diffFactor; // diffuse
+	fragColour.xyz += specular * specColour; // specular
 	fragColour.a = 1;
 }

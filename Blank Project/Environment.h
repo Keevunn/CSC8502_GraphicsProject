@@ -1,9 +1,9 @@
 #pragma once
-#include "Model.h"
+#include "RobotModel.h"
 
 #include "nclgl/Light.h"
 
-class Environment : public Model {
+class Environment : public RobotModel {
 public:
 	Environment(const std::string& path);
 

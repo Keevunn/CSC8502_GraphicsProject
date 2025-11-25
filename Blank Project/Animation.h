@@ -6,14 +6,14 @@
 #include <assimp/anim.h>
 
 #include "Bone.h"
-#include "Model.h"
+#include "RobotModel.h"
 
 #include "nclgl/Mesh.h"
 
 class Animation {
 public:
 	Animation() = default;
-	Animation(const std::string& animPath, Model* model);
+	Animation(const std::string& animPath, RobotModel* model);
 	~Animation();
 
 	Bone* FindBone(const std::string& name);
@@ -27,7 +27,7 @@ public:
 	std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() { return boneInfoMap; }
 
 private:
-	void ReadBones(const aiAnimation* anim, Model& model);
+	void ReadBones(const aiAnimation* anim, RobotModel& model);
 	void ReadHierarchyData(SceneNode& dest, const aiNode* src);
 
 	float duration;

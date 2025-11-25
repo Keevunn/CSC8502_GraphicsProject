@@ -5,10 +5,13 @@
 
 #include "nclgl/AssimpNCLHelpers.h"
 
+// "Lamp Post" (https://skfb.ly/oEOxW) by Rares Orza - skypro86 is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+// "Generic Factory with smoke towers" (https://skfb.ly/onQpR) by assetfactory
+
 Environment::Environment(const std::string& path) {
 	Assimp::Importer importer;
 
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_GlobalScale | aiProcess_CalcTangentSpace);
+	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_GlobalScale | aiProcess_CalcTangentSpace);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		std::cerr << "ERROR: ASSIMP: " << importer.GetErrorString() << "\n";
 		return;
@@ -69,7 +72,7 @@ void Environment::LoadMaterials(const aiScene* scene) {
 		aiMaterial* mat = scene->mMaterials[i];
 		aiString fileName;
 		GLuint texID;
-		const std::string texDir = TEXTUREDIR"/FactoryWithRoad/";
+		const std::string texDir = TEXTUREDIR"/Factory/";
 		unsigned int flags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS;
 
 		if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &fileName) == AI_SUCCESS) {
@@ -79,22 +82,19 @@ void Environment::LoadMaterials(const aiScene* scene) {
 			materials[i].diffuseID = texID;
 		}
 
-		if (mat->GetTexture(aiTextureType_HEIGHT, 0, &fileName) == AI_SUCCESS) {
+		if (mat->GetTexture(aiTextureType_NORMALS, 0, &fileName) == AI_SUCCESS || 
+			mat->GetTexture(aiTextureType_HEIGHT, 0, &fileName) == AI_SUCCESS) {
 			std::string path = texDir + fileName.C_Str();
-			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, flags);
 			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
 			materials[i].bumpID = texID;
 		}
 
-		if (mat->GetTexture(aiTextureType_SPECULAR, 0, &fileName) == AI_SUCCESS) {
+		if (mat->GetTexture(aiTextureType_SPECULAR, 0, &fileName) == AI_SUCCESS ||
+			mat->GetTexture(aiTextureType_SHININESS, 0, &fileName) == AI_SUCCESS ||
+			mat->GetTexture(aiTextureType_DIFFUSE_ROUGHNESS, 0, &fileName) == AI_SUCCESS) {
 			std::string path = texDir + fileName.C_Str();
 			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
-			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
-			materials[i].specularID = texID;
-		}
-		if (mat->GetTexture(aiTextureType_SHININESS, 0, &fileName) == AI_SUCCESS) {
-			std::string path = texDir + fileName.C_Str();
-			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, flags);
 			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
 			materials[i].specularID = texID;
 		}

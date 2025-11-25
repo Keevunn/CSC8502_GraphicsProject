@@ -17,7 +17,7 @@
     <ClCompile Include="BlankProject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
+    <ClCompile Include="RobotModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bone.cpp">
@@ -32,12 +32,15 @@
     <ClCompile Include="Environment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LampPost.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
+    <ClInclude Include="RobotModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Bone.h">
@@ -50,6 +53,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Environment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LampPost.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

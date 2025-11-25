@@ -10,7 +10,7 @@
 
 #include "nclgl/AssimpNCLHelpers.h"
 
-Animation::Animation(const std::string& animPath, Model* model) {
+Animation::Animation(const std::string& animPath, RobotModel* model) {
 	Assimp::Importer importer;
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
 
@@ -43,7 +43,7 @@ Bone* Animation::FindBone(const std::string& name) {
 	return &(*iter);
 }
 
-void Animation::ReadBones(const aiAnimation* anim, Model& model) {
+void Animation::ReadBones(const aiAnimation* anim, RobotModel& model) {
 	int size = anim->mNumChannels;
 
 	const auto& modelBoneMap = model.GetBoneInfoMap();

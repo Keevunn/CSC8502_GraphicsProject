@@ -488,6 +488,10 @@ Mesh* Mesh::LoadFromAssimpMesh(aiMesh* aiMesh, const aiScene* scene, std::unorde
 	mesh->vertices = new Vector3[mesh->numVertices];
 	mesh->normals = new Vector3[mesh->numVertices];
 	mesh->textureCoords = new Vector2[mesh->numVertices];
+
+	if (aiMesh->mTangents)
+		mesh->tangents = new Vector4[mesh->numVertices];
+
 	mesh->weights = new Vector4[mesh->numVertices];
 	mesh->weightIndices = new int[mesh->numVertices * 4];
 
@@ -502,6 +506,16 @@ Mesh* Mesh::LoadFromAssimpMesh(aiMesh* aiMesh, const aiScene* scene, std::unorde
 	for (int i{}; i < mesh->numVertices; ++i) {
 		mesh->vertices[i] = AssimpNCLHelpers::GetNCLVec(aiMesh->mVertices[i]);
 		mesh->normals[i] = AssimpNCLHelpers::GetNCLVec(aiMesh->mNormals[i]);
+
+		if (aiMesh->mTangents && aiMesh->mBitangents) {
+			Vector3 tangent = AssimpNCLHelpers::GetNCLVec(aiMesh->mTangents[i]).Normalised();
+			Vector3 normal = mesh->normals[i];
+			Vector3 bicross = Vector3::Cross(normal, tangent);
+			Vector3 binormal = AssimpNCLHelpers::GetNCLVec(aiMesh->mBitangents[i]);
+
+			float handedness = Vector3::Dot(bicross, binormal) < 0 ? -1 : 1;
+			mesh->tangents[i] = Vector4(tangent.x, tangent.y, tangent.z, handedness);
+		}
 
 		// Assimp allows models to have up to 8 different texture coords per vertex
 		if (aiMesh->mTextureCoords[0]) {

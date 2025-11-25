@@ -26,7 +26,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	*/
 	
 	// Position treated as direction
-	sun = new DirectionalLight(Vector3(-0.2f, -1.0f, -0.3f), Vector4(0.7f, 0.7f, 0.75f, 1));
+	sun = new DirectionalLight(Vector3(0.2f, -1.0f, -0.3f), Vector4(0.7f, 0.7f, 0.75f, 1));
 	sunShader = new Shader("combineVert.glsl", "DirectionalLightFrag.glsl");
 
 	unsigned int flags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS;
@@ -64,12 +64,11 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	if (!environmentShader->LoadSuccess()) return;
 
 	// Load city scene
-	environment = new Environment(MESHDIR"/FactoryWithRoad/scene.gltf"); 
+	environment = new Environment(MESHDIR"/Factory/scene.gltf"); 
 
-	Matrix4 cityTransformation =	Matrix4::Translation(dimensions * Vector3(0.5, 0, 0.5) + Vector3(0,-17,0)) * 
-		Matrix4::Rotation(90, Vector3(0, 1, 0));
+	Matrix4 cityTransformation =	Matrix4::Translation(dimensions * Vector3(0.65f, 0, 0.2f));
 	environment->SetTransform(cityTransformation);
-	environment->SetModelScale(Vector3(100));
+	environment->SetModelScale(Vector3(35));
 	
 	// Point light and combine shaders
 	pointLightShader = new Shader("pointLightVert.glsl", "pointLightFrag.glsl");
@@ -112,7 +111,6 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-	glEnable(GL_BLEND);
 
 	init = true;
 }
@@ -154,13 +152,11 @@ void Renderer::RenderScene() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	viewMatrix = camera->BuildViewMatrix();
 
+	glClearColor(0.2f, 0.2f, 0.2f, 1); // In case the skybox fails
 	DrawSkybox();
 
 	FillBuffers();
-
-	DrawSun();
-	//DrawPointLights();
-
+	DrawLights();
 	CombineBuffers();
 }
 
@@ -191,6 +187,7 @@ void Renderer::GenerateScreenTexture(GLuint& into, bool depth) {
 
 void Renderer::FillBuffers() {
 	glBindFramebuffer(GL_FRAMEBUFFER, bufferFBO);
+
 	glClearColor(0, 0, 0, 0); // Clear to transparent black so combine shader discards empty pixels
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
@@ -219,6 +216,31 @@ void Renderer::FillBuffers() {
 	glBindTexture(GL_TEXTURE_2D, robotTexture);
 
 	DrawNode(model);*/
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::DrawLights() {
+	glBindFramebuffer(GL_FRAMEBUFFER, pointLightFBO);
+
+	glClearColor(0, 0, 0, 1);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+	
+
+	modelMatrix.ToIdentity();
+	UpdateShaderMatrices();
+
+	Matrix4 invViewProj = (projMatrix * viewMatrix).Inverse();
+	auto camPos_Vec3 = camera->GetPosition();
+	auto camPos = reinterpret_cast<float*>(&camPos_Vec3);
+
+	DrawSun(invViewProj, camPos);
+	DrawPointLights(invViewProj, camPos);
+
+	glDisable(GL_BLEND);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -314,13 +336,8 @@ void Renderer::DrawNode(SceneNode* n, Shader* shader) {
 }
 
 // Something sent wrong (lightPos
-void Renderer::DrawSun() {
-	glBindFramebuffer(GL_FRAMEBUFFER, pointLightFBO);
+void Renderer::DrawSun(Matrix4 invViewProj, float* camPos) {
 	BindShader(sunShader);
-
-	glClearColor(0, 0, 0, 1);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glBlendFunc(GL_ONE, GL_ONE);
 
 	glUniform1i(glGetUniformLocation(sunShader->GetProgram(), "depthTex"), 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -330,31 +347,20 @@ void Renderer::DrawSun() {
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, bufferNormalTex);
 
-	auto camPos = camera->GetPosition();
-	glUniform3fv(glGetUniformLocation(sunShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
+	glUniform3fv(glGetUniformLocation(sunShader->GetProgram(), "cameraPos"), 1, camPos);
 
 	glUniform2f(glGetUniformLocation(sunShader->GetProgram(), "pixelSize"), 1.0f / width, 1.0f / height);
 
-	modelMatrix.ToIdentity();
-	Matrix4 invViewProj = (projMatrix * viewMatrix).Inverse();
+	
 	glUniformMatrix4fv(glGetUniformLocation(sunShader->GetProgram(), "inverseProjView"), 1, false, invViewProj.values);
-	UpdateShaderMatrices();
 
 	SetShaderLight(*sun);
 	quad->Draw();
-
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glClearColor(0, 0, 0, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Renderer::DrawPointLights() {
-	glBindFramebuffer(GL_FRAMEBUFFER, pointLightFBO);
+void Renderer::DrawPointLights(Matrix4 invViewProj, float* camPos) {
 	BindShader(pointLightShader);
 
-	glClearColor(0, 0, 0, 1);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glBlendFunc(GL_ONE, GL_ONE);
 	glCullFace(GL_FRONT);
 	glDepthFunc(GL_ALWAYS);
 	glDepthMask(GL_FALSE);
@@ -367,26 +373,18 @@ void Renderer::DrawPointLights() {
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, bufferNormalTex);
 
-	auto camPos = camera->GetPosition();
 	glUniform3fv(glGetUniformLocation(pointLightShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
 
 	glUniform2f(glGetUniformLocation(pointLightShader->GetProgram(), "pixelSize"), 1.0f / width, 1.0f / height);
 
-	modelMatrix.ToIdentity();
-	Matrix4 invViewProj = (projMatrix * viewMatrix).Inverse();
 	glUniformMatrix4fv(glGetUniformLocation(pointLightShader->GetProgram(), "inverseProjView"), 1, false, invViewProj.values);
-	UpdateShaderMatrices();
 
 	for (const auto& light : pointLights) {
 		SetShaderLight(light); // TODO the light volume should be attached to the object
 		lightVolume->Draw();
 	}
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glCullFace(GL_BACK);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
-	glClearColor(0.2f, 0.2f, 0.2f, 1);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

@@ -5,9 +5,9 @@ uniform sampler2D bumpTex;
 uniform sampler2D noiseTex;
 uniform sampler2D roughnessTex;
 
-uniform bool useNoise;
-uniform bool hasRoughness;
-uniform bool hasBump;
+uniform int useNoise;
+uniform int hasRoughness;
+uniform int hasBump;
 
 in Vertex {
 	vec4 colour;
@@ -22,30 +22,37 @@ out vec4 fragColour[2];
 
 void main(void) {
 	vec4 colour = texture(diffuseTex, IN.texCoord);
-	if (colour.a < 0.1)
-		discard;
+	//if (colour.a < 0.1) discard;
 
-	if (useNoise) {
+	// R = Ambient Occlusion G = Roughness B = Metallic
+	vec3 pbrData = vec3(0, 1, 0);
+	if (hasRoughness > 0)
+		pbrData = texture(roughnessTex, IN.texCoord).rgb;
+	
+	float ao = pbrData.r;
+	float roughness = pbrData.g;
+	float metallic = pbrData.b;
+
+	colour.rgb *= ao;
+
+	if (useNoise > 0) {
 		// different scale so it doesn't line up with diffuseTex
 		float noiseValue = texture(noiseTex, IN.texCoord * 0.125).r; 
 		//mix(original, darker, strength)
 		colour.rgb = mix(colour.rgb, colour.rbg * 0.4, noiseValue); 
 	}
-	fragColour[0] = vec4(colour.rgb, 1);
+
+	// Metallic in diffuse alpha 
+	// Range 0.1 - 1.0 so its not discarded
+	fragColour[0] = vec4(colour.rgb, 0.1 + (metallic * 0.9)); 
 
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
 
 	vec3 normal = normalize(IN.normal);
-	if (hasBump) {
+	if (hasBump > 0) {
 		normal = texture2D(bumpTex, IN.texCoord).rgb * 2.0 - 1.0; // range: -1 to 1
 		normal = normalize(TBN * normalize(normal));
 	}
 
-	// Roughness stored in alpha channel
-	float roughness;
-	if (hasRoughness)
-		roughness = texture(roughnessTex, IN.texCoord).r;
-	else
-		roughness = 1;
 	fragColour[1] = vec4(normal.xyz * 0.5 + 0.5, roughness); // range: 0 to 1
 }

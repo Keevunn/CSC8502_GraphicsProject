@@ -1,6 +1,6 @@
 #pragma once
 #include "Animator.h"
-#include "Model.h"
+#include "RobotModel.h"
 #include "nclgl/OGLRenderer.h"
 
 class Environment;
@@ -24,6 +24,7 @@ public:
 protected:
 	void GenerateScreenTexture(GLuint& into, bool depth = false); // Makes a new texture
 	void FillBuffers(); // G-Buffer fill render pass 
+	void DrawLights(); // Lighting render pass
 	void CombineBuffers(); // Combination render pass
 
 	void DrawSkybox();
@@ -31,13 +32,13 @@ protected:
 	void DrawHeightMap();
 	void DrawNode(SceneNode* n, Shader* s);
 
-	void DrawSun();
-	void DrawPointLights(); // Lighting render pass
+	void DrawSun(Matrix4 invViewProj, float* camPos);
+	void DrawPointLights(Matrix4 invViewProj, float* camPos);
 
 	Camera* camera = nullptr;
 
 	Shader* modelShader = nullptr;
-	Model* model = nullptr;
+	RobotModel* model = nullptr;
 	GLuint robotTexture;
 	
 	Animation* animation = nullptr; // Might change to a vector of animations later
