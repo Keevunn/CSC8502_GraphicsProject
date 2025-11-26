@@ -1,9 +1,9 @@
 #pragma once
+#include <vector>
 #include "Matrix4.h"
+#include "Mesh.h"
 #include "Vector3.h"
 #include "Vector4.h"
-#include "Mesh.h"
-#include <vector>
 
 struct MaterialTextures {
 	GLuint diffuseID = 0;
@@ -11,12 +11,14 @@ struct MaterialTextures {
 	GLuint reflectionID = 0;
 	GLuint alphaID = 0;
 	GLuint specularID = 0;
+	GLuint metallicID = 0;
+	GLuint emissiveID = 0;
 };
 
 class SceneNode {
 public:
 	SceneNode(Mesh* mesh = nullptr, const Vector4& colour = Vector4(1, 1, 1, 1))
-		: parent(nullptr), mesh(mesh), modelScale(Vector3(1, 1, 1)), colour(colour), distanceFromCamera(0), boundingRadius(1), texture(0) {}
+		: mesh(mesh), modelScale(Vector3(1, 1, 1)), colour(colour), distanceFromCamera(0), boundingRadius(1), texture(0) {}
 
 	virtual ~SceneNode(void);
 
@@ -60,8 +62,8 @@ public:
 	std::vector<SceneNode*>::const_iterator GetChildIteratorEnd() const { return children.end(); }
 
  protected:
-	SceneNode* parent;
- 	Mesh* mesh;
+	SceneNode* parent = nullptr;
+ 	Mesh* mesh = nullptr;
 	Matrix4 worldTransform;
 	Matrix4 transform;
 	Vector3 modelScale;
@@ -74,6 +76,6 @@ public:
 
 	MaterialTextures material;
 
-	std::string name = ""; // For debugging
+	std::string name; // For debugging
 };
 

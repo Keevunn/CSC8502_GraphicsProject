@@ -21,7 +21,7 @@ public:
 	float GetTicksPerSec() const { return ticksPerSec; }
 	float GetDuration() const { return duration; }
 
-	SceneNode& GetRootNode() const { return *rootNode; }
+	SceneNode& GetRootNode() { return *rootNode; }
 	Matrix4& GetGlobalInverseTransform() { return globalInverseTransform; }
 
 	std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() { return boneInfoMap; }

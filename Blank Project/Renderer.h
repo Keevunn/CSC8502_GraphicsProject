@@ -1,4 +1,5 @@
 #pragma once
+#include "Animation.h"
 #include "Animator.h"
 #include "RobotModel.h"
 #include "nclgl/OGLRenderer.h"
@@ -31,6 +32,8 @@ protected:
 
 	void DrawHeightMap();
 	void DrawNode(SceneNode* n, Shader* s);
+	void DrawRobot();
+	void DrawRobotNode(SceneNode* n);
 
 	void DrawSun(Matrix4 invViewProj, float* camPos);
 	void DrawPointLights(Matrix4 invViewProj, float* camPos);
@@ -38,6 +41,7 @@ protected:
 	Camera* camera = nullptr;
 
 	Shader* modelShader = nullptr;
+	Shader* emissiveShader = nullptr;
 	RobotModel* model = nullptr;
 	GLuint robotTexture;
 	

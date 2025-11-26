@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <iostream>
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -21,12 +20,12 @@ Animation::Animation(const std::string& animPath, RobotModel* model) {
 	duration = animation->mDuration;
 	ticksPerSec = animation->mTicksPerSecond;
 
-	rootNode = new SceneNode();
 	const aiNode* skeletonRoot = scene->mRootNode->FindNode("mixamorig_Hips"); // May change between animation files (BE CAREFUL)
 	if (!skeletonRoot) skeletonRoot = scene->mRootNode;
 
 	globalInverseTransform = (AssimpNCLHelpers::GetNCLMatrix(scene->mRootNode->mTransformation)).Inverse();
 
+	rootNode = new SceneNode();
 	ReadHierarchyData(*rootNode, skeletonRoot);
 	ReadBones(animation, *model);
 }
@@ -34,7 +33,6 @@ Animation::Animation(const std::string& animPath, RobotModel* model) {
 Animation::~Animation() {
 	delete rootNode;
 }
-
 
 Bone* Animation::FindBone(const std::string& name) {
 	auto iter = std::ranges::find_if(bones, [&](const Bone& bone)->bool { return bone.GetBoneName() == name; });

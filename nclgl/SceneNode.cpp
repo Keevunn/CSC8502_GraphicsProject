@@ -3,7 +3,6 @@
 SceneNode::~SceneNode(void) {
 	for (unsigned int i{}; i < children.size(); ++i)
 		delete children[i];
-	parent = nullptr;
 }
 
 void SceneNode::AddChild(SceneNode* s) {
@@ -24,6 +23,8 @@ void SceneNode::Draw(const OGLRenderer& r) {
 	BindTex(2, material.reflectionID);
 	BindTex(3, material.alphaID);
 	BindTex(4, material.specularID);
+	BindTex(5, material.metallicID);
+	BindTex(6, material.emissiveID);
 
 	mesh->Draw();
 }

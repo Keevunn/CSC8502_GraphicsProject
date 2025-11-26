@@ -1,20 +1,21 @@
 #pragma once
-#include "RobotModel.h"
+#include "nclgl/SceneNode.h"
 
-#include "nclgl/Light.h"
-
-class Environment : public RobotModel {
+class Environment : public SceneNode {
 public:
+	Environment() = default;
 	Environment(const std::string& path);
 
-	std::vector<Light> GetStreetLights() { return streetBulbs; }
+	bool HasMaterials() const { return hasMaterials; }
 
-private:
-	void ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent, Matrix4 parentTransform = Matrix4()) override;
-	void LoadMaterials(const aiScene* scene) override;
+protected:
+	virtual void LoadScene(const std::string& path);
+
+	virtual void ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent);
+	virtual Mesh* LoadMesh(const aiMesh* aiMesh, const aiScene* scene);
+	virtual void LoadMaterials(const aiScene* scene, std::string texDir);
 
 	std::vector<MaterialTextures> materials;
-
-	std::vector<Light> streetBulbs;
+	bool hasMaterials = false;
 };
 

@@ -65,7 +65,8 @@ public:
 	void DrawSubMesh(int i);
 
 	static Mesh* LoadFromMeshFile(const std::string& name);
-	static Mesh* LoadFromAssimpMesh(::aiMesh* aiMesh, const aiScene* scene, std::unordered_map<std::string, BoneInfo>& boneInfoMap, int& boneCounter);
+	static Mesh* LoadFromAssimpMesh(const ::aiMesh* aiMesh, const aiScene* scene);
+	static Mesh* LoadFromAssimpMesh(const ::aiMesh* aiMesh, const aiScene* scene, std::unordered_map<std::string, BoneInfo>& boneInfoMap, int& boneCounter );
 
 	unsigned int GetTriCount() const {
 		int primCount = indices ? numIndices : numVertices;

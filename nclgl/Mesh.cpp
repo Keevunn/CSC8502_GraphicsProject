@@ -479,7 +479,13 @@ void Mesh::GetBoneWeightsForVertices(const aiMesh* aiMesh, std::vector<int>& nex
 	}
 }
 
-Mesh* Mesh::LoadFromAssimpMesh(aiMesh* aiMesh, const aiScene* scene, std::unordered_map<std::string, BoneInfo>& boneInfoMap, int& boneCounter) {
+Mesh* Mesh::LoadFromAssimpMesh(const aiMesh* aiMesh, const aiScene* scene) {
+	std::unordered_map<std::string, BoneInfo> boneInfoMap;
+	int boneCounter = -1;
+	return LoadFromAssimpMesh(aiMesh, scene, boneInfoMap, boneCounter);
+}
+
+Mesh* Mesh::LoadFromAssimpMesh(const aiMesh* aiMesh, const aiScene* scene, std::unordered_map<std::string, BoneInfo>& boneInfoMap, int& boneCounter) {
 	Mesh* mesh = new Mesh();
 
 	mesh->numVertices = aiMesh->mNumVertices;
@@ -526,7 +532,8 @@ Mesh* Mesh::LoadFromAssimpMesh(aiMesh* aiMesh, const aiScene* scene, std::unorde
 			mesh->textureCoords[i] = Vector2(0, 0);
 	}
 	// Weights
-	mesh->GetBoneWeightsForVertices(aiMesh, nextSlot, boneInfoMap, boneCounter);
+	if (boneCounter >= 0)
+		mesh->GetBoneWeightsForVertices(aiMesh, nextSlot, boneInfoMap, boneCounter);
 
 	// Indices
 	mesh->indices = new unsigned int[mesh->numIndices];

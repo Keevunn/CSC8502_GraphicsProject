@@ -9,6 +9,10 @@
 // "Generic Factory with smoke towers" (https://skfb.ly/onQpR) by assetfactory
 
 Environment::Environment(const std::string& path) {
+	LoadScene(path);
+}
+
+void Environment::LoadScene(const std::string& path) {
 	Assimp::Importer importer;
 
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_GlobalScale | aiProcess_CalcTangentSpace);
@@ -19,18 +23,15 @@ Environment::Environment(const std::string& path) {
 
 	name = "Environment_Root";
 
-	Environment::LoadMaterials(scene);
+	Environment::LoadMaterials(scene, TEXTUREDIR"/Factory/");
 	Environment::ProcessNode(scene->mRootNode, scene, this);
 }
 
-void Environment::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent, Matrix4 parentTransform) {
-	Matrix4 localTransform = AssimpNCLHelpers::GetNCLMatrix(node->mTransformation);
-	Matrix4 worldTransform = parentTransform * localTransform;
-
+void Environment::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
 	SceneNode* newNode = new SceneNode();
 	std::string nodeName = node->mName.C_Str();
 	newNode->SetName(nodeName);
-	newNode->SetTransform(localTransform);
+	newNode->SetTransform(AssimpNCLHelpers::GetNCLMatrix(node->mTransformation));
 	parent->AddChild(newNode);
 
 	int meshChildCount = 0;
@@ -38,9 +39,9 @@ void Environment::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* par
 	// Process current node's mesh(es)
 	for (int i{}; i < node->mNumMeshes; ++i) {
 		aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
-		Mesh* mesh = Mesh::LoadFromAssimpMesh(aiMesh, scene, boneInfoMap, boneCounter);
+		Mesh* mesh = LoadMesh(aiMesh, scene);
 
-		SceneNode* currentMeshNode = nullptr;
+		SceneNode* currentMeshNode;
 		if (i == 0) {
 			currentMeshNode = newNode;
 			newNode->SetMesh(mesh);
@@ -51,7 +52,8 @@ void Environment::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* par
 			newNode->AddChild(currentMeshNode);
 		}
 
-		//Assign Texture
+		//Assign Textures
+		// Assumes every mesh only has one material
 		int matIndex = aiMesh->mMaterialIndex;
 		if (matIndex >= 0 && matIndex < materials.size()) {
 			const MaterialTextures mat = materials[matIndex];
@@ -62,17 +64,21 @@ void Environment::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* par
 
 	// Process children nodes
 	for (int i{}; i < node->mNumChildren; ++i)
-		ProcessNode(node->mChildren[i], scene, newNode, worldTransform);
+		ProcessNode(node->mChildren[i], scene, newNode);
 }
 
-void Environment::LoadMaterials(const aiScene* scene) {
+Mesh* Environment::LoadMesh(const aiMesh* aiMesh, const aiScene* scene) {
+	return Mesh::LoadFromAssimpMesh(aiMesh, scene);
+}
+
+void Environment::LoadMaterials(const aiScene* scene, const std::string texDir) {
 	materials.resize(scene->mNumMaterials);
+	if (scene->mNumMaterials > 0) hasMaterials = true;
 
 	for (unsigned int i{}; i < scene->mNumMaterials; ++i) {
 		aiMaterial* mat = scene->mMaterials[i];
 		aiString fileName;
 		GLuint texID;
-		const std::string texDir = TEXTUREDIR"/Factory/";
 		unsigned int flags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS;
 
 		if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &fileName) == AI_SUCCESS) {
@@ -111,6 +117,21 @@ void Environment::LoadMaterials(const aiScene* scene) {
 			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
 			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
 			materials[i].alphaID = texID;
+		}
+
+		if (mat->GetTexture(aiTextureType_METALNESS, 0, &fileName) == AI_SUCCESS) {
+			std::string path = texDir + fileName.C_Str();
+			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
+			materials[i].metallicID = texID;
+		}
+
+		if (mat->GetTexture(aiTextureType_EMISSIVE, 0, &fileName) == AI_SUCCESS || 
+			mat->GetTexture(aiTextureType_EMISSION_COLOR, 0, &fileName) == AI_SUCCESS) {
+			std::string path = texDir + fileName.C_Str();
+			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
+			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
+			materials[i].emissiveID = texID;
 		}
 	}
 }

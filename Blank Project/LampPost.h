@@ -1,7 +1,6 @@
 #pragma once
 #include "Environment.h"
-class LampPost :
-    public Environment
+class LampPost : public Environment
 {
 };
 

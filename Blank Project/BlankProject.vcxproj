@@ -170,10 +170,13 @@
     <None Include="..\Shaders\combineFrag.glsl" />
     <None Include="..\Shaders\combineVert.glsl" />
     <None Include="..\Shaders\DirectionalLightFrag.glsl" />
+    <None Include="..\Shaders\EmissiveFrag.glsl" />
+    <None Include="..\Shaders\EmissiveVertex.glsl" />
     <None Include="..\Shaders\EnvironmentFrag.glsl" />
     <None Include="..\Shaders\NoisyTexturedFragment.glsl" />
     <None Include="..\Shaders\pointLightFrag.glsl" />
     <None Include="..\Shaders\pointLightVert.glsl" />
+    <None Include="..\Shaders\RobotFrag.glsl" />
     <None Include="..\Shaders\SceneFragment.glsl" />
     <None Include="..\Shaders\SkinningVertex.glsl" />
     <None Include="..\Shaders\SkyboxFragment.glsl" />

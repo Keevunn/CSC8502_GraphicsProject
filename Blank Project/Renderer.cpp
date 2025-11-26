@@ -13,17 +13,19 @@
 
 Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	// Load model with walk anim
-	/*model = new Model(MODELSDIR"Robot/RobotModelWithWalkAnim.fbx");
-	model->SetModelScale(Vector3(1/100.0f));
-	model->SetTransform(Matrix4::Translation(Vector3(0, 0, -20)));
+	model = new RobotModel(MESHDIR"Robot.fbx");
+	//model->SetModelScale(Vector3(1/100.0f));
+	//model->SetTransform(Matrix4::Translation(Vector3(0, 0, -20)));
 	robotTexture = SOIL_load_OGL_texture(MODELSDIR"Robot/Robot_Base_color 5.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
 	if (robotTexture == 0) return;
+	if (model->HasMaterials()) std::cout << "Robot found materials \n";
 
 	animation = new Animation(MODELSDIR"Robot/RobotModelWithWalkAnim.fbx", model);
 	animator = new Animator(animation);
-	modelShader = new Shader("SkinningVertex.glsl", "TexturedFragment.glsl");
-	if (!modelShader->LoadSuccess()) return;
-	*/
+	modelShader = new Shader("SkinningVertex.glsl", "RobotFrag.glsl");
+	emissiveShader = new Shader("EmissiveVertex.glsl", "EmissiveFrag.glsl");
+	if (!modelShader->LoadSuccess() || !emissiveShader->LoadSuccess()) return;
+	
 	
 	// Position treated as direction
 	sun = new DirectionalLight(Vector3(0.2f, -1.0f, -0.3f), Vector4(0.7f, 0.7f, 0.75f, 1));
@@ -114,14 +116,13 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 
 	init = true;
 }
-// TODO figure out how colour gets sent to the shader
+
 Renderer::~Renderer(void) {
 	delete camera;
 
 	delete modelShader;
 	delete model;
 
-	delete animation;
 	delete animator;
 
 	delete skyboxShader;
@@ -150,7 +151,7 @@ Renderer::~Renderer(void) {
 void Renderer::RenderScene() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	viewMatrix = camera->BuildViewMatrix();
+	
 
 	glClearColor(0.2f, 0.2f, 0.2f, 1); // In case the skybox fails
 	DrawSkybox();
@@ -158,15 +159,27 @@ void Renderer::RenderScene() {
 	FillBuffers();
 	DrawLights();
 	CombineBuffers();
+
+	BindShader(emissiveShader);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+	glDepthFunc(GL_LEQUAL);
+
+	DrawNode(model, emissiveShader);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_BLEND);
 }
 
 void Renderer::UpdateScene(float dt) {
 	camera->UpdateCamera(dt);
+	viewMatrix = camera->BuildViewMatrix();
 
 	environment->Update(dt);
 
-	/*model->Update(dt);
-	animator->UpdateAnimation(dt);*/
+	model->Update(dt);
+	animator->UpdateAnimation(dt);
 }
 
 void Renderer::GenerateScreenTexture(GLuint& into, bool depth) {
@@ -199,23 +212,7 @@ void Renderer::FillBuffers() {
 	BindShader(environmentShader);
 	DrawNode(environment, environmentShader);
 
-	// Draw Models
-	// Render model
-	/*BindShader(shader);
-	UpdateShaderMatrices();
-
-	auto transforms = animator->GetFinalBoneMatrices();
-	int j = glGetUniformLocation(shader->GetProgram(), "joints");
-	glUniformMatrix4fv(j, transforms.size(), false, (float*)transforms.data());
-
-	glUniformMatrix4fv(glGetUniformLocation(modelShader->GetProgram(), "modelMatrix"), 1, false, modelMatrix.values);
-	glUniform4fv(glGetUniformLocation(modelShader->GetProgram(), "nodeColour"), 1, (float*)&nodeColour);
-
-	// TODO make sure model has the robot textures
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, robotTexture);
-
-	DrawNode(model);*/
+	DrawRobot();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -313,19 +310,27 @@ void Renderer::DrawHeightMap() {
 void Renderer::DrawNode(SceneNode* n, Shader* shader) {
 	if (n->GetMesh()) {
 		modelMatrix = n->GetWorldTransform();
+		auto mat = n->GetMaterial();
+
+		auto nodeColour = n->GetColour();
+		glUniform4fv(glGetUniformLocation(modelShader->GetProgram(), "nodeColour"), 1, (float*)&nodeColour);
 
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "diffuseTex"), 0);
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "bumpTex"), 1);
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "reflectionTex"), 2);
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "alphaTex"), 3);
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "roughnessTex"), 4);
+		glUniform1i(glGetUniformLocation(shader->GetProgram(), "metallicTex"), 5);
+		glUniform1i(glGetUniformLocation(shader->GetProgram(), "emissiveTex"), 6);
 
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "useNoise"), 0);
-		auto mat = n->GetMaterial();
-		int hasRoughness = (mat.specularID > 0) ? 1 : 0;
-		glUniform1i(glGetUniformLocation(shader->GetProgram(), "hasRoughness"), hasRoughness);
+		
 		int hasBump = mat.bumpID > 0 ? 1 : 0;
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "hasBump"), hasBump);
+		int hasRoughness = (mat.specularID > 0) ? 1 : 0;
+		glUniform1i(glGetUniformLocation(shader->GetProgram(), "hasRoughness"), hasRoughness);
+		int hasOpacity = mat.alphaID > 0 ? 1 : 0;
+		glUniform1i(glGetUniformLocation(shader->GetProgram(), "hasOpacity"), hasOpacity);
 
 		UpdateShaderMatrices();
 		n->Draw(*this);
@@ -335,7 +340,40 @@ void Renderer::DrawNode(SceneNode* n, Shader* shader) {
 		DrawNode(*i, shader);
 }
 
-// Something sent wrong (lightPos
+void Renderer::DrawRobot() {
+	BindShader(modelShader);
+
+	auto transforms = animator->GetFinalBoneMatrices();
+	glUniformMatrix4fv(glGetUniformLocation(modelShader->GetProgram(), "joints"), transforms.size(), false, (float*)transforms.data());
+
+	DrawRobotNode(model);
+}
+
+void Renderer::DrawRobotNode(SceneNode* n) {
+	if (n->GetMesh()) {
+		modelMatrix = n->GetWorldTransform();
+		auto mat = n->GetMaterial();
+
+		if (mat.diffuseID == 0) {
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, robotTexture);
+		}
+
+		glUniform1i(glGetUniformLocation(modelShader->GetProgram(), "diffuseTex"), 0);
+		glUniform1i(glGetUniformLocation(modelShader->GetProgram(), "bumpTex"), 1);
+		glUniform1i(glGetUniformLocation(modelShader->GetProgram(), "reflectionTex"), 2);
+		glUniform1i(glGetUniformLocation(modelShader->GetProgram(), "alphaTex"), 3);
+		glUniform1i(glGetUniformLocation(modelShader->GetProgram(), "roughnessTex"), 4);
+		glUniform1i(glGetUniformLocation(modelShader->GetProgram(), "metallicTex"), 5);
+
+		UpdateShaderMatrices();
+		n->Draw(*this);
+	}
+
+	for (auto i = n->GetChildIteratorStart(); i != n->GetChildIteratorEnd(); ++i)
+		DrawRobotNode(*i);
+}
+
 void Renderer::DrawSun(Matrix4 invViewProj, float* camPos) {
 	BindShader(sunShader);
 
