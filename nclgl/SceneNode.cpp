@@ -20,11 +20,10 @@ void SceneNode::Draw(const OGLRenderer& r) {
 
 	BindTex(0, material.diffuseID);
 	BindTex(1, material.bumpID);
-	BindTex(2, material.reflectionID);
-	BindTex(3, material.alphaID);
-	BindTex(4, material.specularID);
-	BindTex(5, material.metallicID);
-	BindTex(6, material.emissiveID);
+	BindTex(2, material.alphaID);
+	BindTex(3, material.roughnessID);
+	BindTex(4, material.metallicID);
+	BindTex(5, material.emissiveID);
 
 	mesh->Draw();
 }

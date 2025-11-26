@@ -1,6 +1,7 @@
 #version 330 core
 
 uniform sampler2D diffuseTex;
+uniform sampler2D emissiveTex;
 uniform sampler2D diffuseLight;
 uniform sampler2D specularLight;
 
@@ -12,6 +13,7 @@ out vec4 fragColour;
 
 void main() {
 	vec4 diffuseSample = texture(diffuseTex, IN.texCoord);
+	vec3 emissive = texture(emissiveTex, IN.texCoord).rgb;
 
 	// Skybox Check
 	if (diffuseSample.a == 0.0) discard; 
@@ -30,5 +32,6 @@ void main() {
 	fragColour.xyz = albedo * 0.1; // ambient
 	fragColour.xyz += albedo * light * diffFactor; // diffuse
 	fragColour.xyz += specular * specColour; // specular
+	fragColour.xyz += emissive; // emissive
 	fragColour.a = 1;
 }

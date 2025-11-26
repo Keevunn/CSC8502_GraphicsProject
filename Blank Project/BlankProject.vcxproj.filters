@@ -35,6 +35,9 @@
     <ClCompile Include="LampPost.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Factory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -58,6 +61,9 @@
     <ClInclude Include="LampPost.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Factory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\TexturedFragment.glsl" />
@@ -77,8 +83,13 @@
     <None Include="..\Shaders\SceneFragment.glsl" />
     <None Include="..\Shaders\DirectionalLightFrag.glsl" />
     <None Include="..\Shaders\EnvironmentFrag.glsl" />
-    <None Include="..\Shaders\RobotFrag.glsl" />
     <None Include="..\Shaders\EmissiveFrag.glsl" />
     <None Include="..\Shaders\EmissiveVertex.glsl" />
+    <None Include="..\Shaders\PBRFrag.glsl" />
+    <None Include="..\Shaders\ConcreteFloorTCS.glsl" />
+    <None Include="..\Shaders\ConcreteFloorTES.glsl" />
+    <None Include="..\Shaders\ConcreteFloorVert.glsl" />
+    <None Include="..\Shaders\ConcreteFloorFrag.glsl" />
+    <None Include="..\Shaders\MixedPBRFrag.glsl" />
   </ItemGroup>
 </Project>

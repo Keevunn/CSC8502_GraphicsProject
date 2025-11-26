@@ -4,18 +4,21 @@
 class Environment : public SceneNode {
 public:
 	Environment() = default;
-	Environment(const std::string& path);
 
 	bool HasMaterials() const { return hasMaterials; }
 
 protected:
-	virtual void LoadScene(const std::string& path);
+	virtual void LoadScene(const std::string& path, const std::string pName, const int postProcessingFlags);
 
-	virtual void ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent);
+	virtual void ProcessNode(aiNode* node, const aiScene* scene, SceneNode* pParent);
+
 	virtual Mesh* LoadMesh(const aiMesh* aiMesh, const aiScene* scene);
-	virtual void LoadMaterials(const aiScene* scene, std::string texDir);
+	virtual void LoadMaterials(const aiScene* scene);
+	GLuint LoadTexture(const std::string filename, const bool useRGB = false) const;
 
-	std::vector<MaterialTextures> materials;
+	std::string texDir;
+
 	bool hasMaterials = false;
+	std::vector<MaterialTextures> materials;
 };
 

@@ -8,9 +8,8 @@
 struct MaterialTextures {
 	GLuint diffuseID = 0;
 	GLuint bumpID = 0;
-	GLuint reflectionID = 0;
 	GLuint alphaID = 0;
-	GLuint specularID = 0;
+	GLuint roughnessID = 0;
 	GLuint metallicID = 0;
 	GLuint emissiveID = 0;
 };

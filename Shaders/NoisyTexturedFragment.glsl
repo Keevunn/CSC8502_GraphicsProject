@@ -18,7 +18,8 @@ in Vertex {
 	vec3 worldPos;
 } IN;
 
-out vec4 fragColour[2];
+// 0: Colour, 1: Normal, 2: Emissive (ignored here)
+out vec4 fragColour[3];
 
 void main(void) {
 	vec4 colour = texture(diffuseTex, IN.texCoord);
@@ -55,4 +56,5 @@ void main(void) {
 	}
 
 	fragColour[1] = vec4(normal.xyz * 0.5 + 0.5, roughness); // range: 0 to 1
+	fragColour[2] = vec4(0, 0, 0, 1); 
 }

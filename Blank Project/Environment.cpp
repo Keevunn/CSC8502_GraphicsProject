@@ -5,34 +5,28 @@
 
 #include "nclgl/AssimpNCLHelpers.h"
 
-// "Lamp Post" (https://skfb.ly/oEOxW) by Rares Orza - skypro86 is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
-// "Generic Factory with smoke towers" (https://skfb.ly/onQpR) by assetfactory
-
-Environment::Environment(const std::string& path) {
-	LoadScene(path);
-}
-
-void Environment::LoadScene(const std::string& path) {
+// Loads the materials and processes each node (mesh) using SceneNode management
+void Environment::LoadScene(const std::string& path, const std::string pName, const int postProcessingFlags) {
 	Assimp::Importer importer;
 
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_GlobalScale | aiProcess_CalcTangentSpace);
+	const aiScene* scene = importer.ReadFile(path, postProcessingFlags);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		std::cerr << "ERROR: ASSIMP: " << importer.GetErrorString() << "\n";
 		return;
 	}
 
-	name = "Environment_Root";
+	name = pName;
 
-	Environment::LoadMaterials(scene, TEXTUREDIR"/Factory/");
-	Environment::ProcessNode(scene->mRootNode, scene, this);
+	LoadMaterials(scene);
+	ProcessNode(scene->mRootNode, scene, this);
 }
 
-void Environment::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* parent) {
+void Environment::ProcessNode(aiNode* node, const aiScene* scene, SceneNode* pParent) {
 	SceneNode* newNode = new SceneNode();
 	std::string nodeName = node->mName.C_Str();
 	newNode->SetName(nodeName);
 	newNode->SetTransform(AssimpNCLHelpers::GetNCLMatrix(node->mTransformation));
-	parent->AddChild(newNode);
+	pParent->AddChild(newNode);
 
 	int meshChildCount = 0;
 
@@ -71,7 +65,7 @@ Mesh* Environment::LoadMesh(const aiMesh* aiMesh, const aiScene* scene) {
 	return Mesh::LoadFromAssimpMesh(aiMesh, scene);
 }
 
-void Environment::LoadMaterials(const aiScene* scene, const std::string texDir) {
+void Environment::LoadMaterials(const aiScene* scene) {
 	materials.resize(scene->mNumMaterials);
 	if (scene->mNumMaterials > 0) hasMaterials = true;
 
@@ -79,60 +73,52 @@ void Environment::LoadMaterials(const aiScene* scene, const std::string texDir) 
 		aiMaterial* mat = scene->mMaterials[i];
 		aiString fileName;
 		GLuint texID;
-		unsigned int flags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS;
 
 		if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &fileName) == AI_SUCCESS) {
-			std::string path = texDir + fileName.C_Str();
-			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, flags);
-			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
+			texID = LoadTexture(fileName.C_Str());
 			materials[i].diffuseID = texID;
 		}
 
 		if (mat->GetTexture(aiTextureType_NORMALS, 0, &fileName) == AI_SUCCESS || 
-			mat->GetTexture(aiTextureType_HEIGHT, 0, &fileName) == AI_SUCCESS) {
-			std::string path = texDir + fileName.C_Str();
-			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, flags);
-			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
+		mat->GetTexture(aiTextureType_HEIGHT, 0, &fileName) == AI_SUCCESS) {
+			texID = LoadTexture(fileName.C_Str());
 			materials[i].bumpID = texID;
 		}
 
-		if (mat->GetTexture(aiTextureType_SPECULAR, 0, &fileName) == AI_SUCCESS ||
-			mat->GetTexture(aiTextureType_SHININESS, 0, &fileName) == AI_SUCCESS ||
-			mat->GetTexture(aiTextureType_DIFFUSE_ROUGHNESS, 0, &fileName) == AI_SUCCESS) {
-			std::string path = texDir + fileName.C_Str();
-			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
-			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
-			materials[i].specularID = texID;
-		}
-
-		if (mat->GetTexture(aiTextureType_REFLECTION, 0, &fileName) == AI_SUCCESS) {
-			std::string path = texDir + fileName.C_Str();
-			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, flags);
-			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
-			materials[i].reflectionID = texID;
+		if (mat->GetTexture(aiTextureType_DIFFUSE_ROUGHNESS, 0, &fileName) == AI_SUCCESS ||
+		mat->GetTexture(aiTextureType_SPECULAR, 0, &fileName) == AI_SUCCESS ||
+		mat->GetTexture(aiTextureType_SHININESS, 0, &fileName) == AI_SUCCESS) {
+			texID = LoadTexture(fileName.C_Str());
+			materials[i].roughnessID = texID;
 		}
 
 		if (mat->GetTexture(aiTextureType_OPACITY, 0, &fileName) == AI_SUCCESS) {
-			std::string path = texDir + fileName.C_Str();
-			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
-			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
+			texID = LoadTexture(fileName.C_Str());
 			materials[i].alphaID = texID;
 		}
 
 		if (mat->GetTexture(aiTextureType_METALNESS, 0, &fileName) == AI_SUCCESS) {
-			std::string path = texDir + fileName.C_Str();
-			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
-			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
+			texID = LoadTexture(fileName.C_Str());
 			materials[i].metallicID = texID;
 		}
 
 		if (mat->GetTexture(aiTextureType_EMISSIVE, 0, &fileName) == AI_SUCCESS || 
-			mat->GetTexture(aiTextureType_EMISSION_COLOR, 0, &fileName) == AI_SUCCESS) {
-			std::string path = texDir + fileName.C_Str();
-			texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, flags);
-			if (!texID) std::cout << "Failed texture: " << fileName.C_Str() << "\n";
+		mat->GetTexture(aiTextureType_EMISSION_COLOR, 0, &fileName) == AI_SUCCESS) {
+			texID = LoadTexture(fileName.C_Str());
 			materials[i].emissiveID = texID;
 		}
 	}
+}
+
+// If fails to load texture, prints error message, returns 0
+GLuint Environment::LoadTexture(const std::string filename, const bool useRGB) const {
+	const std::string path = texDir + filename;
+	const unsigned int flags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS;
+
+	GLuint texID = SOIL_load_OGL_texture(path.c_str(), useRGB ? SOIL_LOAD_RGB : SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, flags);
+	if (!texID) 
+		std::cout	<< "Failed texture: " << filename << "\n"
+					<< "Reason: " << SOIL_last_result() << "\n";
+	return texID;
 }
 

@@ -16,11 +16,12 @@ public:
 
 	void CalculateBoneTransform(const SceneNode* node, Matrix4 parentTransform);
 
-	std::vector<Matrix4> GetFinalBoneMatrices() { return finalBoneMatrices; }
+	std::vector<Matrix4>& GetFinalBoneMatrices() { return finalBoneMatrices; }
+	float GetCurrentTime() const { return currentTime; }
 
 private:
 	std::vector<Matrix4> finalBoneMatrices;
-	Animation* currentAnim = nullptr;
+	Animation* currentAnim = nullptr; // Might change to a vector of animations later
 	float currentTime;
 	float deltaTime;
 
