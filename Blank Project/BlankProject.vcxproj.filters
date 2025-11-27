@@ -91,5 +91,6 @@
     <None Include="..\Shaders\ConcreteFloorVert.glsl" />
     <None Include="..\Shaders\ConcreteFloorFrag.glsl" />
     <None Include="..\Shaders\MixedPBRFrag.glsl" />
+    <None Include="..\Shaders\SpotLightFrag.glsl" />
   </ItemGroup>
 </Project>

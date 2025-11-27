@@ -3,13 +3,13 @@
   "spdxVersion": "SPDX-2.2",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "documentNamespace": "https://spdx.org/spdxdocs/vcpkg-cmake-x64-windows-2024-04-23-d7a4b633-3a35-4c92-943a-f60cab1e531a",
-  "name": "vcpkg-cmake:x64-windows@2024-04-23 591b577266accac31b9e736800d6d91b34825ba888a63e6c8746032232a25da6",
+  "documentNamespace": "https://spdx.org/spdxdocs/vcpkg-cmake-x64-windows-2024-04-23-9f2d18c3-2195-4e24-806c-2a320598921d",
+  "name": "vcpkg-cmake:x64-windows@2024-04-23 7b98b16c26147c3f76e17f6633f60cb8ea9ceb24f30c79a0632191c8948043c5",
   "creationInfo": {
     "creators": [
       "Tool: vcpkg-2025-09-03-4580816534ed8fd9634ac83d46471440edd82dfe"
     ],
-    "created": "2025-11-17T21:45:01Z"
+    "created": "2025-11-27T10:35:26Z"
   },
   "relationships": [
     {
@@ -97,7 +97,7 @@
     {
       "name": "vcpkg-cmake:x64-windows",
       "SPDXID": "SPDXRef-binary",
-      "versionInfo": "591b577266accac31b9e736800d6d91b34825ba888a63e6c8746032232a25da6",
+      "versionInfo": "7b98b16c26147c3f76e17f6633f60cb8ea9ceb24f30c79a0632191c8948043c5",
       "downloadLocation": "NONE",
       "licenseConcluded": "MIT",
       "licenseDeclared": "NOASSERTION",
@@ -191,12 +191,12 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./share/vcpkg-cmake/copyright",
+      "fileName": "./share/vcpkg-cmake/vcpkg_cmake_build.cmake",
       "SPDXID": "SPDXRef-binary-file-1",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "1ee376fc340e0aa6ad6a3581c94126e741468705096ac92263048a21daa86460"
+          "checksumValue": "6d1c27080fe3e768b5e7b968d6a28a37db154ebcb214297de25f10b6713511e1"
         }
       ],
       "licenseConcluded": "NOASSERTION",
@@ -215,20 +215,8 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./share/vcpkg-cmake/vcpkg_cmake_build.cmake",
-      "SPDXID": "SPDXRef-binary-file-3",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "6d1c27080fe3e768b5e7b968d6a28a37db154ebcb214297de25f10b6713511e1"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
       "fileName": "./share/vcpkg-cmake/vcpkg_cmake_configure.cmake",
-      "SPDXID": "SPDXRef-binary-file-4",
+      "SPDXID": "SPDXRef-binary-file-3",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -240,11 +228,23 @@
     },
     {
       "fileName": "./share/vcpkg-cmake/vcpkg_cmake_install.cmake",
-      "SPDXID": "SPDXRef-binary-file-5",
+      "SPDXID": "SPDXRef-binary-file-4",
       "checksums": [
         {
           "algorithm": "SHA256",
           "checksumValue": "3ae7886dc8434fac6f1e61190cc355fdec5fbd4f60758e2de20423cf49c91369"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./share/vcpkg-cmake/copyright",
+      "SPDXID": "SPDXRef-binary-file-5",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1ee376fc340e0aa6ad6a3581c94126e741468705096ac92263048a21daa86460"
         }
       ],
       "licenseConcluded": "NOASSERTION",

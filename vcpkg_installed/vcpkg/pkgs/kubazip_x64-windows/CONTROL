@@ -3,5 +3,5 @@ Version: 0.3.5
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 0c94187385bc9878220fe1e57617252377851a2a1a3ab1df4d7c19f709b0ccd3
+Abi: 21f3be95815a2ea6d0d5b97893ae10098b169cce2dd81eb1701cab19babfede9
 Description: A portable, simple zip library written in C

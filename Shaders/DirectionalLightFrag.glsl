@@ -7,7 +7,8 @@ uniform vec2 pixelSize;
 uniform vec3 cameraPos;
 
 uniform vec3 lightDir;
-uniform vec4 lightColour;
+uniform vec4 lightDiffColour;
+uniform vec4 lightSpecColour;
 uniform mat4 inverseProjView;
 
 out vec4 diffuseOutput;
@@ -39,6 +40,6 @@ void main() {
 	float specFactor = pow(rFactor, shininess);
 	float specularIntensity = 1.0 - roughness;
 
-	diffuseOutput = vec4(lightColour.rgb * lambert, 1);
-	specularOutput = vec4(lightColour.rgb * specFactor * specularIntensity, 1);
+	diffuseOutput = vec4(lightDiffColour.rgb * lambert, 1);
+	specularOutput = vec4(lightSpecColour.rgb * specFactor * specularIntensity, 1);
 }

@@ -4,8 +4,9 @@
 class DirectionalLight : public Light {
 public:
 	DirectionalLight() = default;
-	DirectionalLight(const Vector3& pDirection, const Vector4& pColour) : direction(pDirection) {
-		colour = pColour;
+	DirectionalLight(const Vector3& pDirection, const Vector4& diffuseColour, const Vector4& specularColour) : direction(pDirection) {
+		diffColour = diffuseColour;
+		specColour = specularColour;
 	}
 
 	Vector3		GetDirection() const { return direction; }

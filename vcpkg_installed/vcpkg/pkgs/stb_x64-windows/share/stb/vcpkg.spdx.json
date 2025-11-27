@@ -3,13 +3,13 @@
   "spdxVersion": "SPDX-2.2",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "documentNamespace": "https://spdx.org/spdxdocs/stb-x64-windows-2024-07-29#1-356de80b-1539-4a78-aea5-4435a4c59d32",
-  "name": "stb:x64-windows@2024-07-29#1 f4d3023f722ea8dee849321099cc9b61a5afc7a34ea06f5bca81a79ac320d7bd",
+  "documentNamespace": "https://spdx.org/spdxdocs/stb-x64-windows-2024-07-29#1-4265650b-1a16-4280-b56a-7b8cf1bb0a12",
+  "name": "stb:x64-windows@2024-07-29#1 8f9052b2029c63611e791ec9d0f8d814905ea88a6479be07591dc36331fedf51",
   "creationInfo": {
     "creators": [
       "Tool: vcpkg-2025-09-03-4580816534ed8fd9634ac83d46471440edd82dfe"
     ],
-    "created": "2025-11-17T21:45:36Z"
+    "created": "2025-11-27T10:37:33Z"
   },
   "relationships": [
     {
@@ -194,7 +194,7 @@
     {
       "name": "stb:x64-windows",
       "SPDXID": "SPDXRef-binary",
-      "versionInfo": "f4d3023f722ea8dee849321099cc9b61a5afc7a34ea06f5bca81a79ac320d7bd",
+      "versionInfo": "8f9052b2029c63611e791ec9d0f8d814905ea88a6479be07591dc36331fedf51",
       "downloadLocation": "NONE",
       "licenseConcluded": "(MIT OR CC-PDDC)",
       "licenseDeclared": "NOASSERTION",
@@ -278,128 +278,8 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./BUILD_INFO",
-      "SPDXID": "SPDXRef-binary-file-0",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "5e7f821ab4eb804deb535baa7b41edca682d0303cf21a91908c98d5c9a7dcf4d"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_connected_components.h",
-      "SPDXID": "SPDXRef-binary-file-1",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "b325ac3476822fc836f2452d8db39775b1aa63ff474e8cbc1487224717af6dc9"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_c_lexer.h",
-      "SPDXID": "SPDXRef-binary-file-2",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "67aaa197e58d876ae6f7529ea5461d3af05a4bd1ad6ad03ddd28185a958dd91d"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_divide.h",
-      "SPDXID": "SPDXRef-binary-file-3",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "46358dedcc0f49324a602f796b13f24e00fa0e512046354ee69511997401af6c"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_ds.h",
-      "SPDXID": "SPDXRef-binary-file-4",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "3ef6d369f0ee324e60326160b7721b83bb52e123d4276322e993676555d0efdd"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_dxt.h",
-      "SPDXID": "SPDXRef-binary-file-5",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "807667ef98e0fd749cdb65cca0c2d980bc148109d2fed6f1873c81ae0f449933"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_easy_font.h",
-      "SPDXID": "SPDXRef-binary-file-6",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "7b48b52a316477766c0a7a096b33a29bcbd847b6fab4fabd32bb3fdb7cea1a60"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_herringbone_wang_tile.h",
-      "SPDXID": "SPDXRef-binary-file-7",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "36b92b60ab4af29ccdef25543ea715418245d1e8e263afaaa4121c2b09f78375"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_hexwave.h",
-      "SPDXID": "SPDXRef-binary-file-8",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "cfa1c654413ba0331ef146ec7d2c722786afd956e2a8c4e28ca61243178db567"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_image.h",
-      "SPDXID": "SPDXRef-binary-file-9",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "594c2fe35d49488b4382dbfaec8f98366defca819d916ac95becf3e75f4200b3"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
       "fileName": "./include/stb_image_resize2.h",
-      "SPDXID": "SPDXRef-binary-file-10",
+      "SPDXID": "SPDXRef-binary-file-0",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -410,80 +290,8 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./include/stb_image_write.h",
-      "SPDXID": "SPDXRef-binary-file-11",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "cbd5f0ad7a9cf4468affb36354a1d2338034f2c12473cf1a8e32053cb6914a05"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_include.h",
-      "SPDXID": "SPDXRef-binary-file-12",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "f845943b15d16db23afd9febfed173787838dadb2aba2578ad3cc6185c37830d"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_leakcheck.h",
-      "SPDXID": "SPDXRef-binary-file-13",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "e1e3b52a948f6135d9a672c4d87929f65991faf13e8b1fc1a012a06af9431219"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_perlin.h",
-      "SPDXID": "SPDXRef-binary-file-14",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "17e688447a02776fe667e0b6a5d1155bf85c827a83f787ae2d44f57699274960"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_rect_pack.h",
-      "SPDXID": "SPDXRef-binary-file-15",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "6388366a30de57c1b4c29b6eed4ed1c7d758fc1443d2dd95cfce943370bb3aa1"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/stb_sprintf.h",
-      "SPDXID": "SPDXRef-binary-file-16",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "e0b8c56e1084602290b9a17ef59f429b5293deb8cb9d8b0f20a14abc39b56520"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
       "fileName": "./include/stb_textedit.h",
-      "SPDXID": "SPDXRef-binary-file-17",
+      "SPDXID": "SPDXRef-binary-file-1",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -494,24 +302,36 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./include/stb_tilemap_editor.h",
-      "SPDXID": "SPDXRef-binary-file-18",
+      "fileName": "./include/stb_sprintf.h",
+      "SPDXID": "SPDXRef-binary-file-2",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "7d5588ab73cb6449f97a6f48e9b3903a98bb43c2f83b7a1170a43399c0929cae"
+          "checksumValue": "e0b8c56e1084602290b9a17ef59f429b5293deb8cb9d8b0f20a14abc39b56520"
         }
       ],
       "licenseConcluded": "NOASSERTION",
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./include/stb_truetype.h",
-      "SPDXID": "SPDXRef-binary-file-19",
+      "fileName": "./include/stb_dxt.h",
+      "SPDXID": "SPDXRef-binary-file-3",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "ecd30b05e0dd4fea3a13c26810dd9e1992dc379049482c393d5a19e6b5090aab"
+          "checksumValue": "807667ef98e0fd749cdb65cca0c2d980bc148109d2fed6f1873c81ae0f449933"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/stb_divide.h",
+      "SPDXID": "SPDXRef-binary-file-4",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "46358dedcc0f49324a602f796b13f24e00fa0e512046354ee69511997401af6c"
         }
       ],
       "licenseConcluded": "NOASSERTION",
@@ -519,7 +339,7 @@
     },
     {
       "fileName": "./include/stb_vorbis.c",
-      "SPDXID": "SPDXRef-binary-file-20",
+      "SPDXID": "SPDXRef-binary-file-5",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -530,8 +350,80 @@
       "copyrightText": "NOASSERTION"
     },
     {
+      "fileName": "./include/stb_tilemap_editor.h",
+      "SPDXID": "SPDXRef-binary-file-6",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7d5588ab73cb6449f97a6f48e9b3903a98bb43c2f83b7a1170a43399c0929cae"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/stb_connected_components.h",
+      "SPDXID": "SPDXRef-binary-file-7",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b325ac3476822fc836f2452d8db39775b1aa63ff474e8cbc1487224717af6dc9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/stb_ds.h",
+      "SPDXID": "SPDXRef-binary-file-8",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3ef6d369f0ee324e60326160b7721b83bb52e123d4276322e993676555d0efdd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/stb_include.h",
+      "SPDXID": "SPDXRef-binary-file-9",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f845943b15d16db23afd9febfed173787838dadb2aba2578ad3cc6185c37830d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/stb_hexwave.h",
+      "SPDXID": "SPDXRef-binary-file-10",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cfa1c654413ba0331ef146ec7d2c722786afd956e2a8c4e28ca61243178db567"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/stb_truetype.h",
+      "SPDXID": "SPDXRef-binary-file-11",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ecd30b05e0dd4fea3a13c26810dd9e1992dc379049482c393d5a19e6b5090aab"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
       "fileName": "./include/stb_voxel_render.h",
-      "SPDXID": "SPDXRef-binary-file-21",
+      "SPDXID": "SPDXRef-binary-file-12",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -542,24 +434,120 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./share/stb/copyright",
-      "SPDXID": "SPDXRef-binary-file-22",
+      "fileName": "./include/stb_perlin.h",
+      "SPDXID": "SPDXRef-binary-file-13",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "bebfe904b14301657e4e5d655c811d51fd31b97c455b9cc2d8600d6bac6cff63"
+          "checksumValue": "17e688447a02776fe667e0b6a5d1155bf85c827a83f787ae2d44f57699274960"
         }
       ],
       "licenseConcluded": "NOASSERTION",
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./share/stb/FindStb.cmake",
-      "SPDXID": "SPDXRef-binary-file-23",
+      "fileName": "./include/stb_herringbone_wang_tile.h",
+      "SPDXID": "SPDXRef-binary-file-14",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "d6d9e778ddb6e7b5d13c63a63872a7a5ddba00b1cef675a7cc7c91a9a9508d91"
+          "checksumValue": "36b92b60ab4af29ccdef25543ea715418245d1e8e263afaaa4121c2b09f78375"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/stb_easy_font.h",
+      "SPDXID": "SPDXRef-binary-file-15",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7b48b52a316477766c0a7a096b33a29bcbd847b6fab4fabd32bb3fdb7cea1a60"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/stb_image.h",
+      "SPDXID": "SPDXRef-binary-file-16",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "594c2fe35d49488b4382dbfaec8f98366defca819d916ac95becf3e75f4200b3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/stb_image_write.h",
+      "SPDXID": "SPDXRef-binary-file-17",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cbd5f0ad7a9cf4468affb36354a1d2338034f2c12473cf1a8e32053cb6914a05"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/stb_rect_pack.h",
+      "SPDXID": "SPDXRef-binary-file-18",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6388366a30de57c1b4c29b6eed4ed1c7d758fc1443d2dd95cfce943370bb3aa1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/stb_leakcheck.h",
+      "SPDXID": "SPDXRef-binary-file-19",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e1e3b52a948f6135d9a672c4d87929f65991faf13e8b1fc1a012a06af9431219"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/stb_c_lexer.h",
+      "SPDXID": "SPDXRef-binary-file-20",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "67aaa197e58d876ae6f7529ea5461d3af05a4bd1ad6ad03ddd28185a958dd91d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./BUILD_INFO",
+      "SPDXID": "SPDXRef-binary-file-21",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5e7f821ab4eb804deb535baa7b41edca682d0303cf21a91908c98d5c9a7dcf4d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./share/stb/vcpkg-cmake-wrapper.cmake",
+      "SPDXID": "SPDXRef-binary-file-22",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7580cacc3272d0ccedc17f9303524ec1a11c43f0476318fe840816478b8def40"
         }
       ],
       "licenseConcluded": "NOASSERTION",
@@ -567,7 +555,7 @@
     },
     {
       "fileName": "./share/stb/usage",
-      "SPDXID": "SPDXRef-binary-file-24",
+      "SPDXID": "SPDXRef-binary-file-23",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -578,12 +566,24 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./share/stb/vcpkg-cmake-wrapper.cmake",
+      "fileName": "./share/stb/FindStb.cmake",
+      "SPDXID": "SPDXRef-binary-file-24",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d6d9e778ddb6e7b5d13c63a63872a7a5ddba00b1cef675a7cc7c91a9a9508d91"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./share/stb/copyright",
       "SPDXID": "SPDXRef-binary-file-25",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "7580cacc3272d0ccedc17f9303524ec1a11c43f0476318fe840816478b8def40"
+          "checksumValue": "bebfe904b14301657e4e5d655c811d51fd31b97c455b9cc2d8600d6bac6cff63"
         }
       ],
       "licenseConcluded": "NOASSERTION",

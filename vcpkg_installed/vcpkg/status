@@ -2,7 +2,7 @@ Package: vcpkg-cmake
 Version: 2024-04-23
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 591b577266accac31b9e736800d6d91b34825ba888a63e6c8746032232a25da6
+Abi: 7b98b16c26147c3f76e17f6633f60cb8ea9ceb24f30c79a0632191c8948043c5
 Status: install ok installed
 
 Package: zlib
@@ -10,7 +10,7 @@ Version: 1.3.1
 Depends: vcpkg-cmake
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 8ee6474b409025a94714a9bb4857b0f16da280414462acd42f12e6d7bc4b16c2
+Abi: cdfa70ed6b3647a35739f5f29ef4366b9acab9124cb484bdea2b299af1ea86d1
 Description: A compression library
 Status: install ok installed
 
@@ -18,7 +18,7 @@ Package: vcpkg-cmake-config
 Version: 2024-05-23
 Architecture: x64-windows
 Multi-Arch: same
-Abi: d392b7a116561c74d1e0eb2824981c4f46ca92fa6e2bdeba2545e4f9e65a94df
+Abi: e1389f619d9bc78daf4c53a70fa915c49eb5a74a9d391cdf138d01696986bd05
 Status: install ok installed
 
 Package: utfcpp
@@ -26,7 +26,7 @@ Version: 4.0.6
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: c52bb5f29cfd6260371dfa2fd56dd0224038b9d1ae874a58bae0ea555b37b6b6
+Abi: b186f9544fb48989bbbfcdb24d285bb8871fe220e168517a4cfcf1506e578e58
 Description: UTF-8 with C++ in a Portable Way
 Status: install ok installed
 
@@ -35,7 +35,7 @@ Version: 2024-07-29
 Port-Version: 1
 Architecture: x64-windows
 Multi-Arch: same
-Abi: f4d3023f722ea8dee849321099cc9b61a5afc7a34ea06f5bca81a79ac320d7bd
+Abi: 8f9052b2029c63611e791ec9d0f8d814905ea88a6479be07591dc36331fedf51
 Description: public domain header-only libraries
 Status: install ok installed
 
@@ -44,7 +44,7 @@ Version: 2025-02-26
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: b819e317ef8fa303490e5bf9279a56d377c1842cc4f96a5cf1c0053ba135af8b
+Abi: 5bba6d5c29c59312207af53072ee6f716b79d45126ca924e958bb239d5894329
 Description: A fast JSON parser/generator for C++ with both SAX/DOM style API <http://rapidjson.org/>
 Status: install ok installed
 
@@ -53,7 +53,7 @@ Version: 1.15
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 5e7c3ec7577a8c29b38dcfd80c2254beb79a4823c0f266e0846053fb60a90a53
+Abi: 84c08d143f8e5f9ae8c2724333a8728f3427ef14eab58deb2b03e015de23391f
 Description: Light-weight, simple and fast XML parser for C++ with XPath support
 Status: install ok installed
 
@@ -63,7 +63,7 @@ Port-Version: 13
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 0b4b6a80376ecfdf053ad4ad352a4a4ee05f733346c47bbb3f649e37938f1418
+Abi: 7a5058d8e1da3b662c054f58ffbb2df7729c72f1b2a8a6a6104f07d42a36b462
 Description: The Clipper library performs clipping and offsetting for both lines and polygons. All four boolean clipping operations are supported - intersection, union, difference and exclusive-or. Polygons can be of any shape including self-intersecting polygons.
 Status: install ok installed
 
@@ -72,7 +72,7 @@ Version: 2025-05-29
 Depends: vcpkg-cmake
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 1e73c3c84670cd99368cc53b971d5ba655c102450d51efb297098c89e8511d3c
+Abi: 34dd5fda7a00c10456b1a1d29cf9daf18e4738996affc55ce31073d62ae0e5d3
 Status: install ok installed
 
 Package: minizip
@@ -81,7 +81,7 @@ Port-Version: 1
 Depends: vcpkg-cmake, vcpkg-cmake-config, vcpkg-cmake-get-vars, zlib
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 17f6c9d938fd7f67b1bd42c2d4a64b3a070e07f50f0f0c493b0c94b8ec608694
+Abi: 910e2f1d9bfc9b728baccbe25875186a3ec3eb77ef9986746942f1f20626d4bc
 Description: Minizip zip file manipulation library
 Status: install ok installed
 
@@ -90,7 +90,7 @@ Version: 0.3.5
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 0c94187385bc9878220fe1e57617252377851a2a1a3ab1df4d7c19f709b0ccd3
+Abi: 21f3be95815a2ea6d0d5b97893ae10098b169cce2dd81eb1701cab19babfede9
 Description: A portable, simple zip library written in C
 Status: install ok installed
 
@@ -100,7 +100,7 @@ Port-Version: 2
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 57c22ce5514ae7190da2b556653a93dce9c69993979123ed79234c136ff2519b
+Abi: 9b4fad09598929dfaa9629d1a2078d1897ff5d78e35c94119147f932d6d68bd2
 Description: Sweep-line algorithm for constrained Delaunay triangulation
 Status: install ok installed
 
@@ -109,7 +109,7 @@ Version: 1.5.7
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: e8924f7204e22c485a8c721f37f0e8be3afc5bc4c3dc8e900a1e4266fe6aec77
+Abi: 8d5846b35e238ece084d13dd88c9ec058a5be87f670d4d3e8dca9d36d4cd580c
 Description: A library for compressing and decompressing 3D geometric meshes and point clouds. It is intended to improve the storage and transmission of 3D graphics.
 Status: install ok installed
 
@@ -119,7 +119,7 @@ Port-Version: 1
 Depends: draco, jhasse-poly2tri, kubazip, minizip, polyclipping, pugixml, rapidjson, stb, utfcpp, vcpkg-cmake, vcpkg-cmake-config, zlib
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 67567ba186c229ca5c95217951086f7ce6a093abf16bb3c4191eac818ee4e9f9
+Abi: d58eaccaa175504a19936b47c99ed9824615c995a4fdfb9771a8217035cb4fc0
 Description: The Open Asset import library
 Status: install ok installed
 

@@ -19,7 +19,6 @@ _-_-_-_-_-_-_-""  ""
 #include <fstream>
 #include <vector>
 
-#include "DirectionalLight.h"
 #include "KHR\khrplatform.h"
 #include "glad\glad.h"
 
@@ -45,6 +44,8 @@ extern const Matrix4 biasMatrix;
 
 class Shader;
 class Light;
+class SpotLight;
+class DirectionalLight;
 
 class OGLRenderer	{
 public:
@@ -64,8 +65,9 @@ protected:
 	void			SetTextureFiltering(GLuint target, bool state);
 	void			UpdateShaderMatrices();
 	void			BindShader(Shader*s);
-	void			SetShaderLight(const Light& l);
-	void			SetShaderLight(const DirectionalLight& l);
+	void			SetShaderLight(const Light& l) const;
+	void			SetShaderLight(const DirectionalLight& l) const;
+	void			SetShaderLight(const SpotLight& l) const;
 
 	void StartDebugGroup(const std::string& s) {
 		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, (GLsizei)s.length(), s.c_str());

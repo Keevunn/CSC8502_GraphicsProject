@@ -40,6 +40,7 @@
     <ClCompile Include="HeightMap.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -92,6 +93,7 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="AssimpNCLHelpers.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="SpotLight.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GLAD">

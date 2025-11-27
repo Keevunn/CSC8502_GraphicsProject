@@ -4,5 +4,5 @@ Port-Version: 13
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 0b4b6a80376ecfdf053ad4ad352a4a4ee05f733346c47bbb3f649e37938f1418
+Abi: 7a5058d8e1da3b662c054f58ffbb2df7729c72f1b2a8a6a6104f07d42a36b462
 Description: The Clipper library performs clipping and offsetting for both lines and polygons. All four boolean clipping operations are supported - intersection, union, difference and exclusive-or. Polygons can be of any shape including self-intersecting polygons.

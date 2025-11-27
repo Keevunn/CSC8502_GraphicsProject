@@ -18,6 +18,7 @@ class SceneNode {
 public:
 	SceneNode(Mesh* mesh = nullptr, const Vector4& colour = Vector4(1, 1, 1, 1))
 		: mesh(mesh), modelScale(Vector3(1, 1, 1)), colour(colour), distanceFromCamera(0), boundingRadius(1), texture(0) {}
+	SceneNode(const SceneNode& other);
 
 	virtual ~SceneNode(void);
 

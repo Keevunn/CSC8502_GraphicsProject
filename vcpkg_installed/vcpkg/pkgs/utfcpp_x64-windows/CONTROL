@@ -3,5 +3,5 @@ Version: 4.0.6
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: c52bb5f29cfd6260371dfa2fd56dd0224038b9d1ae874a58bae0ea555b37b6b6
+Abi: b186f9544fb48989bbbfcdb24d285bb8871fe220e168517a4cfcf1506e578e58
 Description: UTF-8 with C++ in a Portable Way

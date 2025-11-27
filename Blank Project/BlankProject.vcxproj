@@ -188,6 +188,7 @@
     <None Include="..\Shaders\SkinningVertex.glsl" />
     <None Include="..\Shaders\SkyboxFragment.glsl" />
     <None Include="..\Shaders\SkyboxVertex.glsl" />
+    <None Include="..\Shaders\SpotLightFrag.glsl" />
     <None Include="..\Shaders\TexturedFragment.glsl" />
     <None Include="..\Shaders\TexturedVertex.glsl" />
   </ItemGroup>

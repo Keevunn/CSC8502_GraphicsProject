@@ -4,5 +4,5 @@ Port-Version: 1
 Depends: draco, jhasse-poly2tri, kubazip, minizip, polyclipping, pugixml, rapidjson, stb, utfcpp, vcpkg-cmake, vcpkg-cmake-config, zlib
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 67567ba186c229ca5c95217951086f7ce6a093abf16bb3c4191eac818ee4e9f9
+Abi: d58eaccaa175504a19936b47c99ed9824615c995a4fdfb9771a8217035cb4fc0
 Description: The Open Asset import library

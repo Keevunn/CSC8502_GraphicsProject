@@ -36,7 +36,7 @@ protected:
 	void DrawNode(SceneNode* n);
 
 	void DrawFactory();
-	void DrawLampPost();
+	void DrawLampPosts();
 
 	void DrawRobot();
 
@@ -73,10 +73,13 @@ protected:
 
 	Factory* factory = nullptr;
 	
-	RobotModel* robot = nullptr;
+	//RobotModel* robot = nullptr;
+	vector<RobotModel*> robots;
 	Animator* animator = nullptr;
+	Vector3 robotSpawnPoint;
+	Vector3 robotKillPoint;
 
-	LampPost* lampPost = nullptr;
+	vector<LampPost*> lampPosts;
 
 	// Buffers
 	Shader* combineShader = nullptr;

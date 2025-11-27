@@ -1,5 +1,23 @@
 #include "SceneNode.h"
 
+SceneNode::SceneNode(const SceneNode& other) {
+	mesh = other.mesh;
+	colour = other.colour;
+	texture = other.texture;
+	material = other.material;
+
+	transform = other.transform;
+	modelScale = other.modelScale;
+
+	distanceFromCamera = other.distanceFromCamera;
+	boundingRadius = other.boundingRadius;
+
+	name = other.name;
+
+	for (unsigned int i{}; i < other.children.size(); ++i)
+		AddChild(new SceneNode(*other.children[i]));
+}
+
 SceneNode::~SceneNode(void) {
 	for (unsigned int i{}; i < children.size(); ++i)
 		delete children[i];

@@ -3,13 +3,13 @@
   "spdxVersion": "SPDX-2.2",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "documentNamespace": "https://spdx.org/spdxdocs/vcpkg-cmake-get-vars-x64-windows-2025-05-29-a351fe01-53a1-4acb-a140-2beb3b717763",
-  "name": "vcpkg-cmake-get-vars:x64-windows@2025-05-29 1e73c3c84670cd99368cc53b971d5ba655c102450d51efb297098c89e8511d3c",
+  "documentNamespace": "https://spdx.org/spdxdocs/vcpkg-cmake-get-vars-x64-windows-2025-05-29-7805512a-4c04-445a-8ecd-1949095b6aa5",
+  "name": "vcpkg-cmake-get-vars:x64-windows@2025-05-29 34dd5fda7a00c10456b1a1d29cf9daf18e4738996affc55ce31073d62ae0e5d3",
   "creationInfo": {
     "creators": [
       "Tool: vcpkg-2025-09-03-4580816534ed8fd9634ac83d46471440edd82dfe"
     ],
-    "created": "2025-11-17T21:45:54Z"
+    "created": "2025-11-27T10:40:50Z"
   },
   "relationships": [
     {
@@ -97,7 +97,7 @@
     {
       "name": "vcpkg-cmake-get-vars:x64-windows",
       "SPDXID": "SPDXRef-binary",
-      "versionInfo": "1e73c3c84670cd99368cc53b971d5ba655c102450d51efb297098c89e8511d3c",
+      "versionInfo": "34dd5fda7a00c10456b1a1d29cf9daf18e4738996affc55ce31073d62ae0e5d3",
       "downloadLocation": "NONE",
       "licenseConcluded": "MIT",
       "licenseDeclared": "NOASSERTION",
@@ -191,44 +191,8 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./share/vcpkg-cmake-get-vars/cmake-get-vars.cmake.in",
-      "SPDXID": "SPDXRef-binary-file-1",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "2c9f7cdefba85c7a6df2e881888681e85fb4ab7593f1647ea9897d5c1df3ce66"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./share/vcpkg-cmake-get-vars/cmake_get_vars/CMakeLists.txt",
-      "SPDXID": "SPDXRef-binary-file-2",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "33c9cdd0a0945e590ea1dd6b9744c86783e6a6ca1c070943b297bb383d15f134"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./share/vcpkg-cmake-get-vars/copyright",
-      "SPDXID": "SPDXRef-binary-file-3",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "1ee376fc340e0aa6ad6a3581c94126e741468705096ac92263048a21daa86460"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
       "fileName": "./share/vcpkg-cmake-get-vars/vcpkg-port-config.cmake",
-      "SPDXID": "SPDXRef-binary-file-4",
+      "SPDXID": "SPDXRef-binary-file-1",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -240,11 +204,47 @@
     },
     {
       "fileName": "./share/vcpkg-cmake-get-vars/vcpkg_cmake_get_vars.cmake",
-      "SPDXID": "SPDXRef-binary-file-5",
+      "SPDXID": "SPDXRef-binary-file-2",
       "checksums": [
         {
           "algorithm": "SHA256",
           "checksumValue": "f80132758a6a7d0930697814c0fd2b719a06ee092bf60fab96d3d9cfef0e4c2b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./share/vcpkg-cmake-get-vars/cmake-get-vars.cmake.in",
+      "SPDXID": "SPDXRef-binary-file-3",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2c9f7cdefba85c7a6df2e881888681e85fb4ab7593f1647ea9897d5c1df3ce66"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./share/vcpkg-cmake-get-vars/copyright",
+      "SPDXID": "SPDXRef-binary-file-4",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1ee376fc340e0aa6ad6a3581c94126e741468705096ac92263048a21daa86460"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./share/vcpkg-cmake-get-vars/cmake_get_vars/CMakeLists.txt",
+      "SPDXID": "SPDXRef-binary-file-5",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "33c9cdd0a0945e590ea1dd6b9744c86783e6a6ca1c070943b297bb383d15f134"
         }
       ],
       "licenseConcluded": "NOASSERTION",

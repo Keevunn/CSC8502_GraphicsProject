@@ -3,5 +3,5 @@ Version: 1.5.7
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: e8924f7204e22c485a8c721f37f0e8be3afc5bc4c3dc8e900a1e4266fe6aec77
+Abi: 8d5846b35e238ece084d13dd88c9ec058a5be87f670d4d3e8dca9d36d4cd580c
 Description: A library for compressing and decompressing 3D geometric meshes and point clouds. It is intended to improve the storage and transmission of 3D graphics.

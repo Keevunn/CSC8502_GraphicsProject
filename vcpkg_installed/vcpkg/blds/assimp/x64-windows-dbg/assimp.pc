@@ -1,0 +1,9 @@
+libdir=C:/Users/c0086830/source/repos/CSC8502/vcpkg_installed/vcpkg/pkgs/assimp_x64-windows/debug/lib
+includedir=C:/Users/c0086830/source/repos/CSC8502/vcpkg_installed/vcpkg/pkgs/assimp_x64-windows/debug/include
+
+Name: Assimp
+Description: Import various well-known 3D model formats in an uniform manner.
+Version: 6.0.2
+Libs: -L${libdir} -lassimp
+Libs.private:  
+Cflags: -I${includedir}

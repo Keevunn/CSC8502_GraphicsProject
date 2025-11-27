@@ -4,5 +4,5 @@ Port-Version: 2
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 57c22ce5514ae7190da2b556653a93dce9c69993979123ed79234c136ff2519b
+Abi: 9b4fad09598929dfaa9629d1a2078d1897ff5d78e35c94119147f932d6d68bd2
 Description: Sweep-line algorithm for constrained Delaunay triangulation

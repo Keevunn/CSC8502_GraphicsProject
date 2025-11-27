@@ -3,13 +3,13 @@
   "spdxVersion": "SPDX-2.2",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "documentNamespace": "https://spdx.org/spdxdocs/pugixml-x64-windows-1.15-4be63e3d-d20e-4f43-84f3-9df5f602f7f2",
-  "name": "pugixml:x64-windows@1.15 5e7c3ec7577a8c29b38dcfd80c2254beb79a4823c0f266e0846053fb60a90a53",
+  "documentNamespace": "https://spdx.org/spdxdocs/pugixml-x64-windows-1.15-0673aca2-e2ec-491d-8451-76aba925ef83",
+  "name": "pugixml:x64-windows@1.15 84c08d143f8e5f9ae8c2724333a8728f3427ef14eab58deb2b03e015de23391f",
   "creationInfo": {
     "creators": [
       "Tool: vcpkg-2025-09-03-4580816534ed8fd9634ac83d46471440edd82dfe"
     ],
-    "created": "2025-11-17T21:45:46Z"
+    "created": "2025-11-27T10:39:55Z"
   },
   "relationships": [
     {
@@ -134,7 +134,7 @@
     {
       "name": "pugixml:x64-windows",
       "SPDXID": "SPDXRef-binary",
-      "versionInfo": "5e7c3ec7577a8c29b38dcfd80c2254beb79a4823c0f266e0846053fb60a90a53",
+      "versionInfo": "84c08d143f8e5f9ae8c2724333a8728f3427ef14eab58deb2b03e015de23391f",
       "downloadLocation": "NONE",
       "licenseConcluded": "MIT",
       "licenseDeclared": "NOASSERTION",
@@ -182,116 +182,8 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./bin/pugixml.dll",
-      "SPDXID": "SPDXRef-binary-file-0",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "594d3229d28d5475d23d3d4be163cfaefdd8b219d3705d5c8ee344befd368778"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./bin/pugixml.pdb",
-      "SPDXID": "SPDXRef-binary-file-1",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "0b343950851d4dd72429dab38b3b50958b10eee79adfe3abdd39d4fed2afe9d5"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./BUILD_INFO",
-      "SPDXID": "SPDXRef-binary-file-2",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "5e7f821ab4eb804deb535baa7b41edca682d0303cf21a91908c98d5c9a7dcf4d"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./debug/bin/pugixml.dll",
-      "SPDXID": "SPDXRef-binary-file-3",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "e5f8d91b5b93ce0bd440e274ba5146ff1d35fa4115703beb9c6ed2af08d3c4b3"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./debug/bin/pugixml.pdb",
-      "SPDXID": "SPDXRef-binary-file-4",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "20740ccb14da28b885bf8b634d00eb645b6d01fcdd17e07aeccb969134e945dd"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./debug/lib/pkgconfig/pugixml.pc",
-      "SPDXID": "SPDXRef-binary-file-5",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "1bd17fac6632c610a736cf4c24d94fbb1933472a4312be1589ebb62997be380c"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./debug/lib/pugixml.lib",
-      "SPDXID": "SPDXRef-binary-file-6",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "3f3fb70173726c2ae931e47762c44a143c105d0ffb5bb20be14f8b5b91f748dc"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/pugiconfig.hpp",
-      "SPDXID": "SPDXRef-binary-file-7",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "981cd9ad3313878817d7b548c9929cc09d3bc42be2c0c1dcb0d77290fc98b92d"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/pugixml.hpp",
-      "SPDXID": "SPDXRef-binary-file-8",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "2555f950fd080e02ff16f36698ddf8d4a46d3a484b9337b4cbfc6300043be734"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
       "fileName": "./lib/pkgconfig/pugixml.pc",
-      "SPDXID": "SPDXRef-binary-file-9",
+      "SPDXID": "SPDXRef-binary-file-0",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -303,47 +195,71 @@
     },
     {
       "fileName": "./lib/pugixml.lib",
-      "SPDXID": "SPDXRef-binary-file-10",
+      "SPDXID": "SPDXRef-binary-file-1",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "3f3fb70173726c2ae931e47762c44a143c105d0ffb5bb20be14f8b5b91f748dc"
+          "checksumValue": "5deabdee5f0877d3e424dd86220c671ce77693886651bd6684b9d380e441a149"
         }
       ],
       "licenseConcluded": "NOASSERTION",
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./share/pugixml/copyright",
-      "SPDXID": "SPDXRef-binary-file-11",
+      "fileName": "./include/pugixml.hpp",
+      "SPDXID": "SPDXRef-binary-file-2",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "0d0b3772af2fa45628a548a3b34583707ebcc68bb6f83ec48ca273aab4a510f1"
+          "checksumValue": "2555f950fd080e02ff16f36698ddf8d4a46d3a484b9337b4cbfc6300043be734"
         }
       ],
       "licenseConcluded": "NOASSERTION",
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./share/pugixml/pugixml-config-version.cmake",
-      "SPDXID": "SPDXRef-binary-file-12",
+      "fileName": "./include/pugiconfig.hpp",
+      "SPDXID": "SPDXRef-binary-file-3",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "99bede483b76ef0ec8650afce0b5b7d740b8756fbc191243cd235f783af25f8a"
+          "checksumValue": "981cd9ad3313878817d7b548c9929cc09d3bc42be2c0c1dcb0d77290fc98b92d"
         }
       ],
       "licenseConcluded": "NOASSERTION",
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./share/pugixml/pugixml-config.cmake",
-      "SPDXID": "SPDXRef-binary-file-13",
+      "fileName": "./bin/pugixml.pdb",
+      "SPDXID": "SPDXRef-binary-file-4",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "ea4056f6fbe349a90da9287445a1175f5e41ec8cb3e1e564503fe2c600f62ce4"
+          "checksumValue": "cb5e6ce5181f9b8544f446c686288d797372246f6a3c7f0f8e4eca2730899872"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./bin/pugixml.dll",
+      "SPDXID": "SPDXRef-binary-file-5",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "110c7a087658a67284aca84f06a875d3ae2e626e0dc738faeed92c981984dadb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./BUILD_INFO",
+      "SPDXID": "SPDXRef-binary-file-6",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5e7f821ab4eb804deb535baa7b41edca682d0303cf21a91908c98d5c9a7dcf4d"
         }
       ],
       "licenseConcluded": "NOASSERTION",
@@ -351,7 +267,7 @@
     },
     {
       "fileName": "./share/pugixml/pugixml-targets-debug.cmake",
-      "SPDXID": "SPDXRef-binary-file-14",
+      "SPDXID": "SPDXRef-binary-file-7",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -363,7 +279,7 @@
     },
     {
       "fileName": "./share/pugixml/pugixml-targets-release.cmake",
-      "SPDXID": "SPDXRef-binary-file-15",
+      "SPDXID": "SPDXRef-binary-file-8",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -374,12 +290,96 @@
       "copyrightText": "NOASSERTION"
     },
     {
+      "fileName": "./share/pugixml/pugixml-config.cmake",
+      "SPDXID": "SPDXRef-binary-file-9",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ea4056f6fbe349a90da9287445a1175f5e41ec8cb3e1e564503fe2c600f62ce4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
       "fileName": "./share/pugixml/pugixml-targets.cmake",
-      "SPDXID": "SPDXRef-binary-file-16",
+      "SPDXID": "SPDXRef-binary-file-10",
       "checksums": [
         {
           "algorithm": "SHA256",
           "checksumValue": "1d72c21d5f38cba47dfc251fe4f56a00a5e3ff51f45797235ddcbc7400b5e53e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./share/pugixml/pugixml-config-version.cmake",
+      "SPDXID": "SPDXRef-binary-file-11",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "99bede483b76ef0ec8650afce0b5b7d740b8756fbc191243cd235f783af25f8a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./share/pugixml/copyright",
+      "SPDXID": "SPDXRef-binary-file-12",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0d0b3772af2fa45628a548a3b34583707ebcc68bb6f83ec48ca273aab4a510f1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./debug/lib/pkgconfig/pugixml.pc",
+      "SPDXID": "SPDXRef-binary-file-13",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1bd17fac6632c610a736cf4c24d94fbb1933472a4312be1589ebb62997be380c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./debug/lib/pugixml.lib",
+      "SPDXID": "SPDXRef-binary-file-14",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5deabdee5f0877d3e424dd86220c671ce77693886651bd6684b9d380e441a149"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./debug/bin/pugixml.pdb",
+      "SPDXID": "SPDXRef-binary-file-15",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "50e42f158b9fb88b04b1628dd11b7d90a96cb6e7d8e09feef9576c4df836b203"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./debug/bin/pugixml.dll",
+      "SPDXID": "SPDXRef-binary-file-16",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "93c166f8019a60713a6a028db06d2a7e75d209559bc8ab2a806668e1a8be35a1"
         }
       ],
       "licenseConcluded": "NOASSERTION",

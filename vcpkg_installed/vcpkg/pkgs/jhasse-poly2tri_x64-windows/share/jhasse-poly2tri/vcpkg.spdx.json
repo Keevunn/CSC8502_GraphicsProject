@@ -3,13 +3,13 @@
   "spdxVersion": "SPDX-2.2",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "documentNamespace": "https://spdx.org/spdxdocs/jhasse-poly2tri-x64-windows-2023-12-27#2-47689b77-9813-4ff3-984d-240f3f2914ff",
-  "name": "jhasse-poly2tri:x64-windows@2023-12-27#2 57c22ce5514ae7190da2b556653a93dce9c69993979123ed79234c136ff2519b",
+  "documentNamespace": "https://spdx.org/spdxdocs/jhasse-poly2tri-x64-windows-2023-12-27#2-ce6881d0-8358-4623-94fa-1209d2ea592b",
+  "name": "jhasse-poly2tri:x64-windows@2023-12-27#2 9b4fad09598929dfaa9629d1a2078d1897ff5d78e35c94119147f932d6d68bd2",
   "creationInfo": {
     "creators": [
       "Tool: vcpkg-2025-09-03-4580816534ed8fd9634ac83d46471440edd82dfe"
     ],
-    "created": "2025-11-17T21:46:15Z"
+    "created": "2025-11-27T10:42:41Z"
   },
   "relationships": [
     {
@@ -149,7 +149,7 @@
     {
       "name": "jhasse-poly2tri:x64-windows",
       "SPDXID": "SPDXRef-binary",
-      "versionInfo": "57c22ce5514ae7190da2b556653a93dce9c69993979123ed79234c136ff2519b",
+      "versionInfo": "9b4fad09598929dfaa9629d1a2078d1897ff5d78e35c94119147f932d6d68bd2",
       "downloadLocation": "NONE",
       "licenseConcluded": "BSD-3-Clause",
       "licenseDeclared": "NOASSERTION",
@@ -221,48 +221,72 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./bin/poly2tri.dll",
+      "fileName": "./lib/poly2tri.lib",
       "SPDXID": "SPDXRef-binary-file-0",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "a0acf18a2de56eab8fa7fe8e491701c4a08a39b71cebe68780eb8c8e20621575"
+          "checksumValue": "c7f2c52363e17d3a03ccbfcc09cc5e26aac8f8c81842c364f0b027c215bc1521"
         }
       ],
       "licenseConcluded": "NOASSERTION",
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./BUILD_INFO",
+      "fileName": "./include/poly2tri/sweep/cdt.h",
       "SPDXID": "SPDXRef-binary-file-1",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "5e7f821ab4eb804deb535baa7b41edca682d0303cf21a91908c98d5c9a7dcf4d"
+          "checksumValue": "2a8b5b3a7ff1556dee5c4ac2fa7a68545627feae114eec39fe813febf1e71563"
         }
       ],
       "licenseConcluded": "NOASSERTION",
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./debug/bin/poly2tri.dll",
+      "fileName": "./include/poly2tri/sweep/sweep_context.h",
       "SPDXID": "SPDXRef-binary-file-2",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "678f62f2119038bb7102d3c725c9deaff94eab2c242d0e1ba58bec34fbe46663"
+          "checksumValue": "533f1875519c4603af618ec2708b1b6381ec2f3aca6dec09478b897ee7240f8f"
         }
       ],
       "licenseConcluded": "NOASSERTION",
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./debug/lib/poly2tri.lib",
+      "fileName": "./include/poly2tri/sweep/sweep.h",
       "SPDXID": "SPDXRef-binary-file-3",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "24053db54997dc547436f89adbd911e70f4ce962b8cc6936a2cd6642fd830d2c"
+          "checksumValue": "74fe7fe7e0668ec753293a6738596c823c6157da2392849e28d01cc2fcef5492"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/poly2tri/sweep/advancing_front.h",
+      "SPDXID": "SPDXRef-binary-file-4",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2e87053804a0087d52187f1cd1df77c2d4013c73909925b02022545127616119"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./include/poly2tri/common/utils.h",
+      "SPDXID": "SPDXRef-binary-file-5",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8e92d9d48b82d09c9cf3983e885eb7f3e261104146e298988bcb1f8ed87faddb"
         }
       ],
       "licenseConcluded": "NOASSERTION",
@@ -270,7 +294,7 @@
     },
     {
       "fileName": "./include/poly2tri/common/dll_symbol.h",
-      "SPDXID": "SPDXRef-binary-file-4",
+      "SPDXID": "SPDXRef-binary-file-6",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -282,7 +306,7 @@
     },
     {
       "fileName": "./include/poly2tri/common/shapes.h",
-      "SPDXID": "SPDXRef-binary-file-5",
+      "SPDXID": "SPDXRef-binary-file-7",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -293,20 +317,8 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./include/poly2tri/common/utils.h",
-      "SPDXID": "SPDXRef-binary-file-6",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "8e92d9d48b82d09c9cf3983e885eb7f3e261104146e298988bcb1f8ed87faddb"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
       "fileName": "./include/poly2tri/poly2tri.h",
-      "SPDXID": "SPDXRef-binary-file-7",
+      "SPDXID": "SPDXRef-binary-file-8",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -317,72 +329,24 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./include/poly2tri/sweep/advancing_front.h",
-      "SPDXID": "SPDXRef-binary-file-8",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "2e87053804a0087d52187f1cd1df77c2d4013c73909925b02022545127616119"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/poly2tri/sweep/cdt.h",
+      "fileName": "./bin/poly2tri.dll",
       "SPDXID": "SPDXRef-binary-file-9",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "2a8b5b3a7ff1556dee5c4ac2fa7a68545627feae114eec39fe813febf1e71563"
+          "checksumValue": "4b770becee53888de112e89c9aa9716453516d8bef36dd9f5894f47696d4af5a"
         }
       ],
       "licenseConcluded": "NOASSERTION",
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./include/poly2tri/sweep/sweep.h",
+      "fileName": "./BUILD_INFO",
       "SPDXID": "SPDXRef-binary-file-10",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "74fe7fe7e0668ec753293a6738596c823c6157da2392849e28d01cc2fcef5492"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./include/poly2tri/sweep/sweep_context.h",
-      "SPDXID": "SPDXRef-binary-file-11",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "533f1875519c4603af618ec2708b1b6381ec2f3aca6dec09478b897ee7240f8f"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./lib/poly2tri.lib",
-      "SPDXID": "SPDXRef-binary-file-12",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "24053db54997dc547436f89adbd911e70f4ce962b8cc6936a2cd6642fd830d2c"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./share/jhasse-poly2tri/copyright",
-      "SPDXID": "SPDXRef-binary-file-13",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "578790e1377a270831ede8c64d7c92d411b6e5a55ce32fbb84a35b376af25ee0"
+          "checksumValue": "5e7f821ab4eb804deb535baa7b41edca682d0303cf21a91908c98d5c9a7dcf4d"
         }
       ],
       "licenseConcluded": "NOASSERTION",
@@ -390,7 +354,7 @@
     },
     {
       "fileName": "./share/jhasse-poly2tri/usage",
-      "SPDXID": "SPDXRef-binary-file-14",
+      "SPDXID": "SPDXRef-binary-file-11",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -401,8 +365,20 @@
       "copyrightText": "NOASSERTION"
     },
     {
+      "fileName": "./share/jhasse-poly2tri/copyright",
+      "SPDXID": "SPDXRef-binary-file-12",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "578790e1377a270831ede8c64d7c92d411b6e5a55ce32fbb84a35b376af25ee0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
       "fileName": "./share/poly2tri/poly2triConfig-debug.cmake",
-      "SPDXID": "SPDXRef-binary-file-15",
+      "SPDXID": "SPDXRef-binary-file-13",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -414,7 +390,7 @@
     },
     {
       "fileName": "./share/poly2tri/poly2triConfig-release.cmake",
-      "SPDXID": "SPDXRef-binary-file-16",
+      "SPDXID": "SPDXRef-binary-file-14",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -426,11 +402,35 @@
     },
     {
       "fileName": "./share/poly2tri/poly2triConfig.cmake",
-      "SPDXID": "SPDXRef-binary-file-17",
+      "SPDXID": "SPDXRef-binary-file-15",
       "checksums": [
         {
           "algorithm": "SHA256",
           "checksumValue": "74c05da1cd7ffd6cd4080267233aa603db99237d6210d3793be421ba16b48b03"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./debug/lib/poly2tri.lib",
+      "SPDXID": "SPDXRef-binary-file-16",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c7f2c52363e17d3a03ccbfcc09cc5e26aac8f8c81842c364f0b027c215bc1521"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./debug/bin/poly2tri.dll",
+      "SPDXID": "SPDXRef-binary-file-17",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "91f7701f5582026563d35a15dfec27eff1cae54c93538ea7c12fb32dd27207bc"
         }
       ],
       "licenseConcluded": "NOASSERTION",

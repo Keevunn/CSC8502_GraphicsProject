@@ -1,0 +1,6 @@
+Name: draco
+Description: Draco geometry de(com)pression library.
+Version: 1.5.7
+Cflags: -IC:/Users/c0086830/source/repos/CSC8502/vcpkg_installed/vcpkg/pkgs/draco_x64-windows/debug/include
+Libs: -LC:/Users/c0086830/source/repos/CSC8502/vcpkg_installed/vcpkg/pkgs/draco_x64-windows/debug/lib -ldraco
+Libs.private: 

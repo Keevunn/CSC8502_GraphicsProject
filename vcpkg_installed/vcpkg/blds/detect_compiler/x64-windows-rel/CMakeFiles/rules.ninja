@@ -29,7 +29,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = "C:\Program Files\CMake\bin\cmake.exe" --regenerate-during-build -S"C:\Program Files\Microsoft Visual Studio\18\Community\VC\vcpkg\scripts\detect_compiler" -B"H:\MSC projects\CSC8502\vcpkg_installed\vcpkg\blds\detect_compiler\x64-windows-rel"
+  command = "C:\Program Files\CMake\bin\cmake.exe" --regenerate-during-build -S"C:\Program Files\Microsoft Visual Studio\18\Community\VC\vcpkg\scripts\detect_compiler" -BC:\Users\c0086830\source\repos\CSC8502\vcpkg_installed\vcpkg\blds\detect_compiler\x64-windows-rel
   description = Re-running CMake...
   generator = 1
 

@@ -6,5 +6,15 @@
 class LampPost : public Environment {
 public:
 	LampPost(const std::string path);
+	LampPost(const LampPost& other);
+
+	void Update(float dt) override;
+
+	SpotLight& GetLight() const { return *light; }
+
+private:
+	SpotLight* light;
+	Vector3 lightOffset;
+
 };
 

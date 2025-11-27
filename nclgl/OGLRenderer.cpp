@@ -13,10 +13,13 @@ _-_-_-_-_-_-_-""  ""
 
 */
 #include "OGLRenderer.h"
-#include "Shader.h"
+
 #include <algorithm>
 
+#include "DirectionalLight.h"
 #include "Light.h"
+#include "Shader.h"
+#include "SpotLight.h"
 
 using std::string;
 
@@ -233,19 +236,42 @@ void OGLRenderer::BindShader(Shader*s) {
 	glUseProgram(s->GetProgram());
 }
 
-void OGLRenderer::SetShaderLight(const Light& l) {
+void OGLRenderer::SetShaderLight(const Light& l) const {
 	auto lightPos = l.GetPosition();
-	auto lightColour = l.GetColour();
+	auto lightDiffColour = l.GetDiffuseColour();
+	auto lightSpecColour = l.GetSpecularColour();
+	auto lightAttenVals = l.GetAttenuationValues();
 	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "lightPos"), 1, (float*)&lightPos);
-	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightColour"), 1, (float*)&lightColour);
-	glUniform1f(glGetUniformLocation(currentShader->GetProgram(), "lightRadius"), l.GetRadius());
+	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightDiffColour"), 1, (float*)&lightDiffColour);
+	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightSpecColour"), 1, (float*)&lightSpecColour);
+	//glUniform1f(glGetUniformLocation(currentShader->GetProgram(), "lightRadius"), l.GetRadius());
+	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "attenValues"), 1, (float*)&lightAttenVals);
 }
 
-void OGLRenderer::SetShaderLight(const DirectionalLight& l) {
+void OGLRenderer::SetShaderLight(const DirectionalLight& l) const {
 	auto lightDir = l.GetDirection();
-	auto lightColour = l.GetColour();
+	auto lightDiffColour = l.GetDiffuseColour();
+	auto lightSpecColour = l.GetSpecularColour();
 	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "lightDir"), 1, (float*)&lightDir);
-	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightColour"), 1, (float*)&lightColour);
+	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightDiffColour"), 1, (float*)&lightDiffColour);
+	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightSpecColour"), 1, (float*)&lightSpecColour);
+}
+
+void OGLRenderer::SetShaderLight(const SpotLight& l) const {
+	auto lightPos = l.GetPosition();
+	auto lightDir = l.GetDirection();
+	auto lightDiffColour = l.GetDiffuseColour();
+	auto lightSpecColour = l.GetSpecularColour();
+	auto lightAttenVals = l.GetAttenuationValues();
+	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "lightPos"), 1, (float*)&lightPos);
+	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "lightDir"), 1, (float*)&lightDir);
+	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightDiffColour"), 1, (float*)&lightDiffColour);
+	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightSpecColour"), 1, (float*)&lightSpecColour);
+
+	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "attenValues"), 1, (float*)&lightAttenVals);
+
+	glUniform1f(glGetUniformLocation(currentShader->GetProgram(), "lightInnerCutoff"), cos(l.GetInnerCutoff()));
+	glUniform1f(glGetUniformLocation(currentShader->GetProgram(), "lightOuterCutoff"), cos(l.GetOuterCutoff()));
 }
 
 #ifdef OPENGL_DEBUGGING

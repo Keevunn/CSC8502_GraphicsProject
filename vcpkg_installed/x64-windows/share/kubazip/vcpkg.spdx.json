@@ -3,13 +3,13 @@
   "spdxVersion": "SPDX-2.2",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "documentNamespace": "https://spdx.org/spdxdocs/kubazip-x64-windows-0.3.5-7e9ff338-ee50-417c-aaa9-8b85c55d9192",
-  "name": "kubazip:x64-windows@0.3.5 0c94187385bc9878220fe1e57617252377851a2a1a3ab1df4d7c19f709b0ccd3",
+  "documentNamespace": "https://spdx.org/spdxdocs/kubazip-x64-windows-0.3.5-a03901b1-98c8-45a3-a5eb-0b40d7dde147",
+  "name": "kubazip:x64-windows@0.3.5 21f3be95815a2ea6d0d5b97893ae10098b169cce2dd81eb1701cab19babfede9",
   "creationInfo": {
     "creators": [
       "Tool: vcpkg-2025-09-03-4580816534ed8fd9634ac83d46471440edd82dfe"
     ],
-    "created": "2025-11-17T21:46:09Z"
+    "created": "2025-11-27T10:42:09Z"
   },
   "relationships": [
     {
@@ -134,7 +134,7 @@
     {
       "name": "kubazip:x64-windows",
       "SPDXID": "SPDXRef-binary",
-      "versionInfo": "0c94187385bc9878220fe1e57617252377851a2a1a3ab1df4d7c19f709b0ccd3",
+      "versionInfo": "21f3be95815a2ea6d0d5b97893ae10098b169cce2dd81eb1701cab19babfede9",
       "downloadLocation": "NONE",
       "licenseConcluded": "MIT",
       "licenseDeclared": "NOASSERTION",
@@ -218,48 +218,12 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./bin/kubazip.dll",
+      "fileName": "./lib/kubazip.lib",
       "SPDXID": "SPDXRef-binary-file-0",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "c9649a533b46017cee21ea525477e3d8569768cd1c7d8c76ac8b14f07ca929b5"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./BUILD_INFO",
-      "SPDXID": "SPDXRef-binary-file-1",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "5e7f821ab4eb804deb535baa7b41edca682d0303cf21a91908c98d5c9a7dcf4d"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./debug/bin/kubazip.dll",
-      "SPDXID": "SPDXRef-binary-file-2",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "c3de7cf5ac7d94e4ecda4130cd7c20afa9d042a945e12ee2478fe612914b7776"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./debug/lib/kubazip.lib",
-      "SPDXID": "SPDXRef-binary-file-3",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "3fc6f492cc0f74fb66594138cbf81c5f1deb2e04f5832b339415418d7240e443"
+          "checksumValue": "0cf67148b24796ac2ee0332dca3d1922197172b0df02c6ddbc702322fec5c128"
         }
       ],
       "licenseConcluded": "NOASSERTION",
@@ -267,7 +231,7 @@
     },
     {
       "fileName": "./include/kubazip/zip/zip.h",
-      "SPDXID": "SPDXRef-binary-file-4",
+      "SPDXID": "SPDXRef-binary-file-1",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -278,24 +242,84 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./lib/kubazip.lib",
-      "SPDXID": "SPDXRef-binary-file-5",
+      "fileName": "./bin/kubazip.dll",
+      "SPDXID": "SPDXRef-binary-file-2",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "3fc6f492cc0f74fb66594138cbf81c5f1deb2e04f5832b339415418d7240e443"
+          "checksumValue": "901e2425e712122a1b80731329dadb0b3346cdb657f8c233f43b01517523bfa2"
         }
       ],
       "licenseConcluded": "NOASSERTION",
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./share/kubazip/copyright",
+      "fileName": "./BUILD_INFO",
+      "SPDXID": "SPDXRef-binary-file-3",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5e7f821ab4eb804deb535baa7b41edca682d0303cf21a91908c98d5c9a7dcf4d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./share/zip-kuba--/zipTargets-release.cmake",
+      "SPDXID": "SPDXRef-binary-file-4",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8ae735bf41f91bd2aefb35e608b7bcbd880078f616bcc4d492dc67f1f0ca5190"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./share/zip-kuba--/zipTargets-debug.cmake",
+      "SPDXID": "SPDXRef-binary-file-5",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c28dd0355a7246284a8c86a1f34b0f3f2cbbfe52e64b69ec4dfdd963bde9aa45"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./share/zip-kuba--/zipConfigVersion.cmake",
       "SPDXID": "SPDXRef-binary-file-6",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "6c1643ab0353b42030e903654fdb3845570b741da5ffafcaf9d305e8ec79a4a0"
+          "checksumValue": "3f72a43277753e64500d1845d9e13f97c0c379c1911aadf4e1276d3c7b64bdc1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./share/zip-kuba--/zipTargets.cmake",
+      "SPDXID": "SPDXRef-binary-file-7",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5f11bfaaf9e897b28a8b1263d80dd584c0f3db07c8ae36810ae19159ef29c515"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./share/zip-kuba--/zipConfig.cmake",
+      "SPDXID": "SPDXRef-binary-file-8",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2f139d4588c9a61c54e4016e0349262c2bb1f19dc897917f85259c6b0ccac400"
         }
       ],
       "licenseConcluded": "NOASSERTION",
@@ -303,7 +327,7 @@
     },
     {
       "fileName": "./share/kubazip/kubazipConfig.cmake",
-      "SPDXID": "SPDXRef-binary-file-7",
+      "SPDXID": "SPDXRef-binary-file-9",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -315,7 +339,7 @@
     },
     {
       "fileName": "./share/kubazip/usage",
-      "SPDXID": "SPDXRef-binary-file-8",
+      "SPDXID": "SPDXRef-binary-file-10",
       "checksums": [
         {
           "algorithm": "SHA256",
@@ -326,60 +350,36 @@
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./share/zip-kuba--/zipConfig.cmake",
-      "SPDXID": "SPDXRef-binary-file-9",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "2f139d4588c9a61c54e4016e0349262c2bb1f19dc897917f85259c6b0ccac400"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./share/zip-kuba--/zipConfigVersion.cmake",
-      "SPDXID": "SPDXRef-binary-file-10",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "3f72a43277753e64500d1845d9e13f97c0c379c1911aadf4e1276d3c7b64bdc1"
-        }
-      ],
-      "licenseConcluded": "NOASSERTION",
-      "copyrightText": "NOASSERTION"
-    },
-    {
-      "fileName": "./share/zip-kuba--/zipTargets-debug.cmake",
+      "fileName": "./share/kubazip/copyright",
       "SPDXID": "SPDXRef-binary-file-11",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "c28dd0355a7246284a8c86a1f34b0f3f2cbbfe52e64b69ec4dfdd963bde9aa45"
+          "checksumValue": "6c1643ab0353b42030e903654fdb3845570b741da5ffafcaf9d305e8ec79a4a0"
         }
       ],
       "licenseConcluded": "NOASSERTION",
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./share/zip-kuba--/zipTargets-release.cmake",
+      "fileName": "./debug/lib/kubazip.lib",
       "SPDXID": "SPDXRef-binary-file-12",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "8ae735bf41f91bd2aefb35e608b7bcbd880078f616bcc4d492dc67f1f0ca5190"
+          "checksumValue": "0cf67148b24796ac2ee0332dca3d1922197172b0df02c6ddbc702322fec5c128"
         }
       ],
       "licenseConcluded": "NOASSERTION",
       "copyrightText": "NOASSERTION"
     },
     {
-      "fileName": "./share/zip-kuba--/zipTargets.cmake",
+      "fileName": "./debug/bin/kubazip.dll",
       "SPDXID": "SPDXRef-binary-file-13",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "5f11bfaaf9e897b28a8b1263d80dd584c0f3db07c8ae36810ae19159ef29c515"
+          "checksumValue": "555b52512ccb4b30abde6609da8aa9517a97077291c4f7605add16d8ed2a11ea"
         }
       ],
       "licenseConcluded": "NOASSERTION",

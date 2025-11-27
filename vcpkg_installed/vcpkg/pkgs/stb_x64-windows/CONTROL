@@ -3,5 +3,5 @@ Version: 2024-07-29
 Port-Version: 1
 Architecture: x64-windows
 Multi-Arch: same
-Abi: f4d3023f722ea8dee849321099cc9b61a5afc7a34ea06f5bca81a79ac320d7bd
+Abi: 8f9052b2029c63611e791ec9d0f8d814905ea88a6479be07591dc36331fedf51
 Description: public domain header-only libraries

@@ -3,5 +3,5 @@ Version: 1.15
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 5e7c3ec7577a8c29b38dcfd80c2254beb79a4823c0f266e0846053fb60a90a53
+Abi: 84c08d143f8e5f9ae8c2724333a8728f3427ef14eab58deb2b03e015de23391f
 Description: Light-weight, simple and fast XML parser for C++ with XPath support

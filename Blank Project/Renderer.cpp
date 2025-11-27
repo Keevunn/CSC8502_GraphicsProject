@@ -54,14 +54,14 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 
 	// Scale 1 unit = 0.1m
 	// Tex size: 1024 x 1024
-	const Vector3 vertexScale = Vector3(0.2f, 1,0.2f); // roughly 200 x 200
+	const Vector3 vertexScale = Vector3(0.2f, 1, 0.2f); // roughly 200 x 200
 	const Vector2 textureScale = Vector2(30, 30); // repeats every 8 m
 	concreteMap = new HeightMap(concreteTextures["Displacement"], vertexScale, textureScale);
 
 	concreteShader = new Shader(
-		"ConcreteFloorVert.glsl", 
+		"ConcreteFloorVert.glsl",
 		"ConcreteFloorFrag.glsl",
-		"", 
+		"",
 		"ConcreteFloorTCS.glsl",
 		"ConcreteFloorTES.glsl"); // No geometry shader
 	if (!concreteShader->LoadSuccess()) return;
@@ -71,44 +71,56 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	if (!environmentShader->LoadSuccess()) return;
 
 	// Load city scene
-	factory = new Factory(MESHDIR"/Factory/scene.gltf"); 
+	factory = new Factory(MESHDIR"/Factory/scene.gltf");
 
 	Matrix4 cityTransformation = Matrix4::Translation(dimensions * Vector3(0.65f, 0, 0.2f));
 	factory->SetTransform(cityTransformation);
 	//factory->SetModelScale(Vector3(35));
 
 	// Load robot with walk anim
-	robot = new RobotModel(MESHDIR"Robot.fbx");
-	robot->SetModelScale(Vector3(1 / 60.0f));
-	robot->SetTransform(Matrix4::Translation(dimensions * Vector3(0.5f, 0, 0.5f)));
-
+	RobotModel* robotMesh = new RobotModel(MESHDIR"Robot.fbx");
+	robotMesh->SetModelScale(Vector3(1 / 60.0f));
+	for (int i{}; i < 10; ++i) { // 10 in a line, 5m apart
+		RobotModel* r = new RobotModel(*robotMesh);
+		r->SetTransform(Matrix4::Translation(Vector3(130, 0, 60 + (i * 5))) * 
+			Matrix4::Rotation(180, Vector3(0, 1, 0)));
+		robots.push_back(r);
+	}
+	// TODO attach animators to each robot for independent movement
+	// TODO debug light positions so make sure only one is rendered
 	Animation* anim = new Animation(MODELSDIR"Robot/RobotModelWithWalkAnim.fbx", robot);
 	animator = new Animator(anim);
 	robotShader = new Shader("SkinningVertex.glsl", "PBRFrag.glsl");
 
 	// Load lamp post
-	// From debugging
-	/*	Vector3(137.997, 0, 84.7741)
-		Vector3(137.997, 0, 67.2194)
-		Vector3(114.998, 0, 67.2194)	*/
-	lampPost = new LampPost(MESHDIR"LampPost/Street_light.obj");
-	lampPost->SetModelScale(Vector3(1.5));
-	lampPost->SetTransform(
-		Matrix4::Translation(Vector3(140, 0, 80)) * Matrix4::Rotation(180, Vector3(0, 1, 0)));
-	
+	// Loads 12 lamp posts
+	LampPost* lampPostMesh = new LampPost(MESHDIR"LampPost/Street_light.obj");
+	lampPostMesh->SetModelScale(Vector3(1.5));
+	for (int i{}; i < 6; ++i) { // 6 rows
+		for (int j{}; j < 2; ++j) { // 2 columns
+			LampPost* lp = new LampPost(*lampPostMesh);
+			lp->SetTransform(
+				Matrix4::Translation(Vector3(110 + (j * 30), 0, 60 + (i * 20))) * Matrix4::Rotation(
+					j * 180, Vector3(0, 1, 0)));
+			lampPosts.push_back(lp);
+		}
+	}
+	delete lampPostMesh; // Not used anymore
+
 	// Point light and combine shaders
 	pointLightShader = new Shader("pointLightVert.glsl", "pointLightFrag.glsl");
 	combineShader = new Shader("combineVert.glsl", "combineFrag.glsl");
 	if (!pointLightShader->LoadSuccess() || !combineShader->LoadSuccess()) return;
 	lightVolume = Mesh::LoadFromMeshFile("Sphere.msh");
-	
+
 	camera = new Camera(-3, 0, dimensions * Vector3(0.525, 0.1, 0.5), 20);
 
 	// FBOs
 	glGenFramebuffers(1, &bufferFBO);
 	glGenFramebuffers(1, &pointLightFBO);
 
-	GLenum buffers[3] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2}; // Colour, Normal, Emissive textures
+	GLenum buffers[3] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
+	// Colour, Normal, Emissive textures
 	GLenum lightBuffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1}; // Diffuse, Specular
 
 	GenerateScreenTexture(bufferDepthTex, true);
@@ -144,12 +156,13 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	init = true;
 }
 
+// TODO blend maps for scene 2
+
 Renderer::~Renderer(void) {
 	delete camera;
 
 	delete robotShader;
 	delete robot;
-	delete lampPost;
 
 	delete animator;
 
@@ -197,7 +210,8 @@ void Renderer::UpdateScene(float dt) {
 	viewMatrix = camera->BuildViewMatrix();
 
 	factory->Update(dt);
-	lampPost->Update(dt);
+	for (const auto& lampPost : lampPosts)
+		lampPost->Update(dt);
 
 	robot->Update(dt);
 	animator->UpdateAnimation(dt);
@@ -231,7 +245,7 @@ void Renderer::FillBuffers() {
 	DrawConcreteFloor();
 
 	DrawFactory();
-	DrawLampPost();
+	DrawLampPosts();
 
 	DrawRobot();
 
@@ -345,9 +359,10 @@ void Renderer::DrawConcreteFloor() {
 	modelMatrix.ToIdentity();
 	UpdateShaderMatrices();
 
-	//glDisable(GL_CULL_FACE);
+	// Wireframe for debugging
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	concreteMap->Draw();
-	//glEnable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Renderer::DrawNode(SceneNode* n) {
@@ -384,7 +399,7 @@ void Renderer::DrawFactory() {
 	DrawNode(factory);
 }
 
-void Renderer::DrawLampPost() {
+void Renderer::DrawLampPosts() {
 	BindShader(environmentShader);
 	GLuint programLocation = environmentShader->GetProgram();
 
@@ -403,7 +418,8 @@ void Renderer::DrawLampPost() {
 	glUniform1i(glGetUniformLocation(programLocation, "hasMetallic"), 1);
 	glUniform1i(glGetUniformLocation(programLocation, "hasEmissive"), 0);
 
-	DrawNode(lampPost);
+	for (const auto& lampPost : lampPosts)
+		DrawNode(lampPost);
 }
 
 void Renderer::DrawRobot() {

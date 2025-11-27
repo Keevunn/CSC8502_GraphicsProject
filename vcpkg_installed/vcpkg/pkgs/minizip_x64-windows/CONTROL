@@ -4,5 +4,5 @@ Port-Version: 1
 Depends: vcpkg-cmake, vcpkg-cmake-config, vcpkg-cmake-get-vars, zlib
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 17f6c9d938fd7f67b1bd42c2d4a64b3a070e07f50f0f0c493b0c94b8ec608694
+Abi: 910e2f1d9bfc9b728baccbe25875186a3ec3eb77ef9986746942f1f20626d4bc
 Description: Minizip zip file manipulation library
