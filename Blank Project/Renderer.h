@@ -1,6 +1,7 @@
 #pragma once
 #include "Animation.h"
 #include "Animator.h"
+#include "LampPost.h"
 #include "RobotModel.h"
 #include "nclgl/OGLRenderer.h"
 
@@ -22,6 +23,7 @@ public:
 
 	void SetTime(float t) { currentTime = t; }
 
+
 protected:
 	void GenerateScreenTexture(GLuint& into, bool depth = false); // Makes a new texture
 	void FillBuffers(); // G-Buffer fill render pass 
@@ -34,10 +36,9 @@ protected:
 	void DrawNode(SceneNode* n);
 
 	void DrawFactory();
+	void DrawLampPost();
 
 	void DrawRobot();
-	//void DrawRobotNode(SceneNode* n);
-	void DrawRobotEmissive();
 
 	void DrawSun(Matrix4 invViewProj, float* camPos);
 	void DrawPointLights(Matrix4 invViewProj, float* camPos);
@@ -46,39 +47,47 @@ protected:
 
 	Camera* camera = nullptr;
 
-	Shader* robotShader = nullptr;
-	Shader* emissiveShader = nullptr;
-	RobotModel* robot = nullptr;
-	
-	//Animation* animation = nullptr; 
-	Animator* animator = nullptr;
+	// Skybox
+	Shader* skyboxShader = nullptr;
+
+	GLuint cubeMap;
+	Mesh* quad = nullptr;
+
+	// Light
+	Shader* sunShader;
+	Shader* pointLightShader = nullptr; // Calculates lighting
 
 	DirectionalLight* sun = nullptr;
-	Shader* sunShader;
-
-	Shader* skyboxShader = nullptr;
-	Mesh* quad = nullptr;
-	GLuint cubeMap;
-
-	Shader* environmentShader = nullptr; // Fills G-buffers
-	Factory* factory = nullptr;
 	std::vector<Light> pointLights;
 	Mesh* lightVolume = nullptr; // Sphere
 
-	Shader* pointLightShader = nullptr; // Calculates lighting
-	Shader* combineShader = nullptr;
-
+	// Terrain
 	Shader* concreteShader = nullptr;
+
 	HeightMap* concreteMap = nullptr;
 	std::unordered_map<std::string, GLuint> concreteTextures; // texture type, texture id
 
-	GLuint bufferFBO;
+	// Models
+	Shader* environmentShader = nullptr; // Fills G-buffers
+	Shader* robotShader = nullptr;
+
+	Factory* factory = nullptr;
+	
+	RobotModel* robot = nullptr;
+	Animator* animator = nullptr;
+
+	LampPost* lampPost = nullptr;
+
+	// Buffers
+	Shader* combineShader = nullptr;
+	
+	GLuint bufferFBO; // 1 depth attachment, 3 Colour attachments
+	GLuint bufferDepthTex; // Depth
 	GLuint bufferColourTex; // Albedo
 	GLuint bufferNormalTex; // Normals
-	GLuint bufferDepthTex; // Depth
 	GLuint bufferEmissiveTex; // Emission
 
-	GLuint pointLightFBO;
+	GLuint pointLightFBO; // 2 Colour attachments
 	GLuint lightDiffuseTex;
 	GLuint lightSpecularTex;
 

@@ -23,9 +23,9 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 
 	// Construction yard skybox
 	cubeMap = SOIL_load_OGL_cubemap(
-		TEXTUREDIR"/ConstructionYard/px.png", TEXTUREDIR"/ConstructionYard/nx.png",
-		TEXTUREDIR"/ConstructionYard/py.png", TEXTUREDIR"/ConstructionYard/ny.png",
-		TEXTUREDIR"/ConstructionYard/pz.png", TEXTUREDIR"/ConstructionYard/nz.png",
+		TEXTUREDIR"/CloudySky/px.png", TEXTUREDIR"/CloudySky/nx.png",
+		TEXTUREDIR"/CloudySky/py.png", TEXTUREDIR"/CloudySky/ny.png",
+		TEXTUREDIR"/CloudySky/pz.png", TEXTUREDIR"/CloudySky/nz.png",
 		SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
 	quad = Mesh::GenerateQuad();
 	skyboxShader = new Shader("SkyboxVertex.glsl", "SkyboxFragment.glsl");
@@ -54,8 +54,8 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 
 	// Scale 1 unit = 0.1m
 	// Tex size: 1024 x 1024
-	const Vector3 vertexScale = Vector3(0.2f, 1, 0.2f); // roughly 200 x 200
-	const Vector2 textureScale = Vector2(50, 50); // repeats every 4 m
+	const Vector3 vertexScale = Vector3(0.2f, 1,0.2f); // roughly 200 x 200
+	const Vector2 textureScale = Vector2(30, 30); // repeats every 8 m
 	concreteMap = new HeightMap(concreteTextures["Displacement"], vertexScale, textureScale);
 
 	concreteShader = new Shader(
@@ -77,16 +77,24 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	factory->SetTransform(cityTransformation);
 	//factory->SetModelScale(Vector3(35));
 
-	// Load model with walk anim
+	// Load robot with walk anim
 	robot = new RobotModel(MESHDIR"Robot.fbx");
-	robot->SetModelScale(Vector3(1 / 20.0f));
+	robot->SetModelScale(Vector3(1 / 60.0f));
 	robot->SetTransform(Matrix4::Translation(dimensions * Vector3(0.5f, 0, 0.5f)));
 
 	Animation* anim = new Animation(MODELSDIR"Robot/RobotModelWithWalkAnim.fbx", robot);
 	animator = new Animator(anim);
 	robotShader = new Shader("SkinningVertex.glsl", "PBRFrag.glsl");
-	emissiveShader = new Shader("EmissiveVertex.glsl", "EmissiveFrag.glsl");
-	if (!robotShader->LoadSuccess() || !emissiveShader->LoadSuccess()) return;
+
+	// Load lamp post
+	// From debugging
+	/*	Vector3(137.997, 0, 84.7741)
+		Vector3(137.997, 0, 67.2194)
+		Vector3(114.998, 0, 67.2194)	*/
+	lampPost = new LampPost(MESHDIR"LampPost/Street_light.obj");
+	lampPost->SetModelScale(Vector3(1.5));
+	lampPost->SetTransform(
+		Matrix4::Translation(Vector3(140, 0, 80)) * Matrix4::Rotation(180, Vector3(0, 1, 0)));
 	
 	// Point light and combine shaders
 	pointLightShader = new Shader("pointLightVert.glsl", "pointLightFrag.glsl");
@@ -94,7 +102,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	if (!pointLightShader->LoadSuccess() || !combineShader->LoadSuccess()) return;
 	lightVolume = Mesh::LoadFromMeshFile("Sphere.msh");
 	
-	camera = new Camera(-3, 0, dimensions * Vector3(0.5, 1, 0.5), 75);
+	camera = new Camera(-3, 0, dimensions * Vector3(0.525, 0.1, 0.5), 20);
 
 	// FBOs
 	glGenFramebuffers(1, &bufferFBO);
@@ -141,6 +149,7 @@ Renderer::~Renderer(void) {
 
 	delete robotShader;
 	delete robot;
+	delete lampPost;
 
 	delete animator;
 
@@ -154,7 +163,7 @@ Renderer::~Renderer(void) {
 	delete pointLightShader;
 	delete combineShader;
 
-	//delete terrainShader;
+	delete concreteShader;
 	delete concreteMap;
 
 	glDeleteTextures(1, &bufferColourTex);
@@ -188,9 +197,10 @@ void Renderer::UpdateScene(float dt) {
 	viewMatrix = camera->BuildViewMatrix();
 
 	factory->Update(dt);
+	lampPost->Update(dt);
 
 	robot->Update(dt);
-	//animator->UpdateAnimation(dt);
+	animator->UpdateAnimation(dt);
 }
 
 void Renderer::GenerateScreenTexture(GLuint& into, bool depth) {
@@ -221,6 +231,7 @@ void Renderer::FillBuffers() {
 	DrawConcreteFloor();
 
 	DrawFactory();
+	DrawLampPost();
 
 	DrawRobot();
 
@@ -274,6 +285,18 @@ void Renderer::CombineBuffers() {
 	glUniform1i(glGetUniformLocation(combineShader->GetProgram(), "specularLight"), 3);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, lightSpecularTex);
+
+	glUniform1i(glGetUniformLocation(combineShader->GetProgram(), "depthTex"), 4);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
+
+	Matrix4 cameraView = camera->BuildViewMatrix();
+	Matrix4 invProjView = (defaultProjMatrix * cameraView).Inverse();
+	glUniformMatrix4fv(glGetUniformLocation(combineShader->GetProgram(), "inverseProjView"), 1, false, invProjView.values);
+
+	auto camPos = camera->GetPosition();
+	glUniform3fv(glGetUniformLocation(combineShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
+
 	quad->Draw();
 }
 
@@ -361,6 +384,28 @@ void Renderer::DrawFactory() {
 	DrawNode(factory);
 }
 
+void Renderer::DrawLampPost() {
+	BindShader(environmentShader);
+	GLuint programLocation = environmentShader->GetProgram();
+
+	glUniform1i(glGetUniformLocation(programLocation, "diffuseTex"), 0);
+	glUniform1i(glGetUniformLocation(programLocation, "bumpTex"), 1);
+	glUniform1i(glGetUniformLocation(programLocation, "alphaTex"), 2);
+	glUniform1i(glGetUniformLocation(programLocation, "roughnessTex"), 3);
+	glUniform1i(glGetUniformLocation(programLocation, "metallicTex"), 4);
+	glUniform1i(glGetUniformLocation(programLocation, "emissiveTex"), 5);
+
+	glUniform1i(glGetUniformLocation(programLocation, "hasMixedPBR"), 0); //MetallicRoughness Map
+
+	glUniform1i(glGetUniformLocation(programLocation, "hasBump"), 1);
+	glUniform1i(glGetUniformLocation(programLocation, "hasOpacity"), 1);
+	glUniform1i(glGetUniformLocation(programLocation, "hasRoughness"), 1);
+	glUniform1i(glGetUniformLocation(programLocation, "hasMetallic"), 1);
+	glUniform1i(glGetUniformLocation(programLocation, "hasEmissive"), 0);
+
+	DrawNode(lampPost);
+}
+
 void Renderer::DrawRobot() {
 	BindShader(robotShader);
 	GLuint programLocation = robotShader->GetProgram();
@@ -383,32 +428,6 @@ void Renderer::DrawRobot() {
 
 	glUniform1f(glGetUniformLocation(programLocation, "emissionIntensity"), 0.5);
 	glUniform1f(glGetUniformLocation(programLocation, "time"), currentTime);
-
-	DrawNode(robot);
-}
-
-/*void Renderer::DrawRobotNode(SceneNode* n) {
-	if (n->GetMesh()) {
-		modelMatrix = n->GetWorldTransform();
-		UpdateShaderMatrices();
-
-		n->Draw(*this);
-	}
-
-
-	for (auto i = n->GetChildIteratorStart(); i != n->GetChildIteratorEnd(); ++i)
-		DrawRobotNode(*i);
-}*/
-
-void Renderer::DrawRobotEmissive() {
-	glBindFramebuffer(GL_FRAMEBUFFER, bufferEmissiveTex);
-	BindShader(emissiveShader);
-
-	glUniform1i(glGetUniformLocation(emissiveShader->GetProgram(), "alphaTex"), 2);
-	glUniform1i(glGetUniformLocation(emissiveShader->GetProgram(), "emissiveTex"), 5);
-
-	glUniform1f(glGetUniformLocation(emissiveShader->GetProgram(), "emissionIntensity"), 0.5);
-	glUniform1f(glGetUniformLocation(emissiveShader->GetProgram(), "time"), currentTime);
 
 	DrawNode(robot);
 }

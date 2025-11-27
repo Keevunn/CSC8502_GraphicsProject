@@ -2,8 +2,14 @@
 
 uniform sampler2D diffuseTex;
 uniform sampler2D emissiveTex;
+
 uniform sampler2D diffuseLight;
 uniform sampler2D specularLight;
+
+// For fog calculations
+uniform sampler2D depthTex;
+uniform vec3 cameraPos;
+uniform mat4 inverseProjView;
 
 in Vertex { 
 	vec2 texCoord;
@@ -29,9 +35,26 @@ void main() {
 	// Metal: black (no diffuse reflection)
 	vec3 diffFactor = vec3(1 - metallic);
 
-	fragColour.xyz = albedo * 0.1; // ambient
-	fragColour.xyz += albedo * light * diffFactor; // diffuse
-	fragColour.xyz += specular * specColour; // specular
-	fragColour.xyz += emissive; // emissive
+	vec3 finalColour = albedo * 0.1; // ambient
+	finalColour += albedo * light * diffFactor; // diffuse
+	finalColour += specular * specColour; // specular
+	finalColour += emissive; // emissive
+
+	float depth = texture(depthTex, IN.texCoord).r;
+	vec3 ndcPos = vec3(IN.texCoord, depth) * 2 - 1;
+	vec4 invClipPos = inverseProjView * vec4(ndcPos, 1);
+	vec3 worldPos = invClipPos.xyz / invClipPos.w;
+
+	float dist = length(worldPos - cameraPos);
+
+	// Start fading distance: 80m
+	// Opaque distance: 180m 
+	float fogStart = 25;
+	float fogEnd = 100;
+	float fogFactor = clamp((dist - fogStart) / (fogEnd - fogStart), 0, 1);
+
+	vec3 fogColour = vec3(0.2, 0.2, 0.2);
+
+	fragColour.xyz = mix(finalColour, fogColour, fogFactor);
 	fragColour.a = 1;
 }
