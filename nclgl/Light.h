@@ -15,8 +15,8 @@ public:
 	Vector3		GetPosition() const { return position; }
 	void		SetPosition(const Vector3& val) { position = val; }
 
-	float		GetRadius() const { return radius; }
-	void		SetRadius(const float val) { radius = val; }
+	float		GetRadius() const { return range; }
+	void		SetRadius(const float val) { range = val; }
 
 	Vector4		GetDiffuseColour() const { return diffColour; }
 	void		SetDiffuseColour(const Vector4& val) { diffColour = val; }
@@ -27,13 +27,13 @@ public:
 	Mesh*		GetLightVolume() const { return lightVolume; }
 	void		SetLightVolume(Mesh* m) { lightVolume = m; }
 
-	void		SetAttenuationValues(float radius, float constant, float linear, float quadratic);
+	void		SetAttenuationValues(float range, float constant, float linear, float quadratic);
 	float 		GetConstant() const { return constant; }
 	float 		GetLinear() const { return linear; }
 	float		GetQuadratic() const { return quadratic; }
-	Vector3		GetAttenuationValues() const { return {constant, linear, quadratic}; }
+	Vector4		GetAttenuationValues() const { return {range, constant, linear, quadratic}; }
 
-	Vector3 GetSuggestedAttenuationValues(float radius) const;
+	Vector3 GetSuggestedAttenuationValues(float range) const;
 
 protected:
 	Vector3		position;
@@ -43,7 +43,7 @@ protected:
 	Mesh*		lightVolume = nullptr;
 
 	// Attenuation values
-	float		radius = 0; // Range of light
+	float		range = 0; // Range of light
 	float		constant = 0; // Closer to 0 = brighter light
 	float		linear = 0; // Fades faster with distance
 	float		quadratic = 0; // Not recommended to change from suggested values (would have to recalculate light)

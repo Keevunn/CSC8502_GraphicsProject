@@ -8,7 +8,33 @@ SpotLight::SpotLight(const Vector3& position, const Vector4& diffuseColour, cons
 
 	lightVolume = Mesh::LoadFromMeshFile("Cone.msh");
 
-	float radius = position.y * std::tan(outerCutoff); // Assuming spotlight points at the ground (y=0)
-	auto attenVals = GetSuggestedAttenuationValues(radius);
-	SetAttenuationValues(radius, attenVals.x, attenVals.y, attenVals.z);
+}
+
+Matrix4 SpotLight::GetModelMatrix() const {
+	// Original cone 2 units long
+	// Tip: (0, 0, 1), Base: (0, 0, -1)
+
+	// Reset tip to origin
+	Matrix4 offset = Matrix4::Translation(Vector3(0, 0, -1));
+	
+	// Scale
+	// Range represents Hypotenuse
+	// X, Y is scaled by width (opposite)
+	// Z is scaled by length (adjacent)
+	float length = range * cos(DegToRad(outerCutoff)) * 0.5f; // * 0.5 to bring to 1 unit length 
+	float width = range * sin(DegToRad(outerCutoff)); 
+	Matrix4 scale = Matrix4::Scale(Vector3(width, width, length));
+
+	Matrix4 rotation = Matrix4::Rotation(-90, Vector3(1, 0, 0));
+
+	Matrix4 translation = Matrix4::Translation(position);
+
+	return translation * rotation * scale * offset;
+}
+
+void SpotLight::CalculateAttenuationValues(Vector3 offset) { 
+	// c++ maths expects radians
+	float range = offset.y / cos(DegToRad(outerCutoff)) * 2.0f; // Assuming spotlight points at the ground (y=0)
+	auto attenVals = GetSuggestedAttenuationValues(range);
+	SetAttenuationValues(range, attenVals.x, attenVals.y, attenVals.z);
 }

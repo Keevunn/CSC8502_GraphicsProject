@@ -38,9 +38,10 @@ protected:
 	void DrawFactory();
 	void DrawLampPosts();
 
-	void DrawRobot();
+	void DrawRobots();
 
 	void DrawSun(Matrix4 invViewProj, float* camPos);
+	void DrawSpotLights(Matrix4 invViewProj, float* camPos);
 	void DrawPointLights(Matrix4 invViewProj, float* camPos);
 
 	Matrix4 defaultProjMatrix;
@@ -54,8 +55,9 @@ protected:
 	Mesh* quad = nullptr;
 
 	// Light
-	Shader* sunShader;
-	Shader* pointLightShader = nullptr; // Calculates lighting
+	Shader* sunShader = nullptr;
+	Shader* pointLightShader = nullptr; 
+	Shader* spotLightShader = nullptr;
 
 	DirectionalLight* sun = nullptr;
 	std::vector<Light> pointLights;
@@ -73,7 +75,9 @@ protected:
 
 	Factory* factory = nullptr;
 	
-	//RobotModel* robot = nullptr;
+	RobotModel* sharedRobotMesh = nullptr;
+	Animation* sharedAnim = nullptr;
+
 	vector<RobotModel*> robots;
 	Animator* animator = nullptr;
 	Vector3 robotSpawnPoint;

@@ -13,7 +13,7 @@
 class Animation {
 public:
 	Animation() = default;
-	Animation(const std::string& animPath, RobotModel* model);
+	Animation(const std::string& animPath, const std::unordered_map<std::string, BoneInfo>& modelBoneMap);
 	~Animation();
 
 	Bone* FindBone(const std::string& name);
@@ -27,7 +27,7 @@ public:
 	std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() { return boneInfoMap; }
 
 private:
-	void ReadBones(const aiAnimation* anim, RobotModel& model);
+	void ReadBones(const aiAnimation* anim, const std::unordered_map<std::string, BoneInfo>& modelBoneMap);
 	void ReadHierarchyData(SceneNode& dest, const aiNode* src);
 
 	float duration;

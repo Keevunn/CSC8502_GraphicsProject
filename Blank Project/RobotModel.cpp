@@ -2,6 +2,8 @@
 
 #include <assimp/postprocess.h>
 
+#include "Animator.h"
+
 RobotModel::RobotModel(const std::string& path)  {
 	auto flags = aiProcess_Triangulate |
 		aiProcess_GenSmoothNormals |
@@ -12,6 +14,20 @@ RobotModel::RobotModel(const std::string& path)  {
 		aiProcess_PopulateArmatureData;
 	texDir = TEXTUREDIR"Robot/";
 	Environment::LoadScene(path, "Robot_Root", flags);
+}
+
+void RobotModel::Update(float dt) {
+	Environment::Update(dt);
+
+	animator->UpdateAnimation(dt);
+}
+
+void RobotModel::SetAnimator(Animation* anim) {
+	animator = new Animator(anim);
+
+	// Start animation at random time
+	float randomTime = (std::rand() % 100) / 100.0f;
+	animator->UpdateAnimation(randomTime);
 }
 
 void RobotModel::LoadMaterials(const aiScene* scene) {

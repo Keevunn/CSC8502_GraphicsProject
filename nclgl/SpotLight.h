@@ -7,6 +7,10 @@ public:
 	SpotLight() = default;
 	SpotLight(const Vector3& position, const Vector4& diffuseColour, const Vector4& specularColour, float innerCutoff, float outerCutoff);
 
+	Matrix4 GetModelMatrix() const;
+
+	void CalculateAttenuationValues(Vector3 offset);
+
 	Vector3		GetDirection() const { return direction; }
 	void		SetDirection(const Vector3& dir) { direction = dir; }
 

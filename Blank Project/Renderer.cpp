@@ -5,9 +5,11 @@
 #include "Factory.h"
 
 #include "nclgl/Camera.h"
+#include "nclgl/DirectionalLight.h"
 #include "nclgl/HeightMap.h"
 #include "nclgl/MeshMaterial.h"
 #include "nclgl/SceneNode.h"
+#include "nclgl/SpotLight.h"
 
 #define MODELSDIR "../Models/"
 #define ANIMATIONDIR "../Animations/"
@@ -16,7 +18,8 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	defaultProjMatrix = Matrix4::Perspective(0.1f, 10000.0f, (float)width / (float)height, 45.0f);
 
 	// Position treated as direction
-	sun = new DirectionalLight(Vector3(0.2f, -1.0f, -0.3f), Vector4(0.7f, 0.7f, 0.75f, 1));
+	//sun = new DirectionalLight(Vector3(0.2f, -1.0f, -0.3f), Vector4(0.6f, 0.6f, 0.7f, 1), Vector4(1, 1, 1, 1));
+	sun = new DirectionalLight(Vector3(0.2f, -1.0f, -0.3f), Vector4(0, 0, 0, 1), Vector4(0,0,0, 1));
 	sunShader = new Shader("combineVert.glsl", "DirectionalLightFrag.glsl");
 
 	unsigned int flags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS;
@@ -78,22 +81,22 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	//factory->SetModelScale(Vector3(35));
 
 	// Load robot with walk anim
-	RobotModel* robotMesh = new RobotModel(MESHDIR"Robot.fbx");
-	robotMesh->SetModelScale(Vector3(1 / 60.0f));
-	for (int i{}; i < 10; ++i) { // 10 in a line, 5m apart
-		RobotModel* r = new RobotModel(*robotMesh);
-		r->SetTransform(Matrix4::Translation(Vector3(130, 0, 60 + (i * 5))) * 
+	robotShader = new Shader("SkinningVertex.glsl", "PBRFrag.glsl");
+	sharedRobotMesh = new RobotModel(MESHDIR"Robot.fbx");
+	sharedRobotMesh->SetModelScale(Vector3(1 / 500.0f));
+	sharedAnim = new Animation(MODELSDIR"Robot/RobotModelWithWalkAnim.fbx", sharedRobotMesh->GetBoneInfoMap());
+
+	for (int i{}; i < 10; ++i) { // 10 in a line, 10m apart
+		RobotModel* r = new RobotModel(*sharedRobotMesh);
+		r->SetAnimator(sharedAnim);
+		r->SetTransform(Matrix4::Translation(Vector3(130, 0, 60.0f + (i * 10.0f))) * 
 			Matrix4::Rotation(180, Vector3(0, 1, 0)));
 		robots.push_back(r);
 	}
-	// TODO attach animators to each robot for independent movement
-	// TODO debug light positions so make sure only one is rendered
-	Animation* anim = new Animation(MODELSDIR"Robot/RobotModelWithWalkAnim.fbx", robot);
-	animator = new Animator(anim);
-	robotShader = new Shader("SkinningVertex.glsl", "PBRFrag.glsl");
 
 	// Load lamp post
 	// Loads 12 lamp posts
+	spotLightShader = new Shader("BasicMatrixVertex.glsl", "SpotLightFrag.glsl");
 	LampPost* lampPostMesh = new LampPost(MESHDIR"LampPost/Street_light.obj");
 	lampPostMesh->SetModelScale(Vector3(1.5));
 	for (int i{}; i < 6; ++i) { // 6 rows
@@ -108,7 +111,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	delete lampPostMesh; // Not used anymore
 
 	// Point light and combine shaders
-	pointLightShader = new Shader("pointLightVert.glsl", "pointLightFrag.glsl");
+	pointLightShader = new Shader("pointLightVert.glsl", "SpotLightFrag.glsl");
 	combineShader = new Shader("combineVert.glsl", "combineFrag.glsl");
 	if (!pointLightShader->LoadSuccess() || !combineShader->LoadSuccess()) return;
 	lightVolume = Mesh::LoadFromMeshFile("Sphere.msh");
@@ -149,8 +152,11 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 	init = true;
@@ -161,23 +167,30 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 Renderer::~Renderer(void) {
 	delete camera;
 
-	delete robotShader;
-	delete robot;
-
-	delete animator;
-
 	delete skyboxShader;
 	delete quad;
 
-	delete environmentShader;
-	delete factory;
-	delete lightVolume;
-
+	delete sunShader;
 	delete pointLightShader;
-	delete combineShader;
+	delete spotLightShader;
+	delete sun;
+	delete lightVolume;
 
 	delete concreteShader;
 	delete concreteMap;
+
+	delete environmentShader;
+	delete robotShader;
+	delete factory;
+	delete sharedRobotMesh;
+	delete sharedAnim;
+	delete animator;
+	for (const auto& robot : robots)
+		delete robot;
+	for (const auto& lampPost : lampPosts)
+		delete lampPost;
+
+	delete combineShader;
 
 	glDeleteTextures(1, &bufferColourTex);
 	glDeleteTextures(1, &bufferNormalTex);
@@ -213,8 +226,8 @@ void Renderer::UpdateScene(float dt) {
 	for (const auto& lampPost : lampPosts)
 		lampPost->Update(dt);
 
-	robot->Update(dt);
-	animator->UpdateAnimation(dt);
+	for (const auto& robot : robots)
+		robot->Update(dt);
 }
 
 void Renderer::GenerateScreenTexture(GLuint& into, bool depth) {
@@ -247,7 +260,7 @@ void Renderer::FillBuffers() {
 	DrawFactory();
 	DrawLampPosts();
 
-	DrawRobot();
+	DrawRobots();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -260,7 +273,6 @@ void Renderer::DrawLights() {
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
-	
 
 	modelMatrix.ToIdentity();
 	UpdateShaderMatrices();
@@ -270,9 +282,11 @@ void Renderer::DrawLights() {
 	auto camPos = reinterpret_cast<float*>(&camPos_Vec3);
 
 	DrawSun(invViewProj, camPos);
+	DrawSpotLights(invViewProj, camPos);
 	//DrawPointLights(invViewProj, camPos);
 
 	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -303,6 +317,14 @@ void Renderer::CombineBuffers() {
 	glUniform1i(glGetUniformLocation(combineShader->GetProgram(), "depthTex"), 4);
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
+
+	glUniform1i(glGetUniformLocation(combineShader->GetProgram(), "normTex"), 5);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, bufferNormalTex);
+
+	glUniform1i(glGetUniformLocation(combineShader->GetProgram(), "skyboxTex"), 6);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
 
 	Matrix4 cameraView = camera->BuildViewMatrix();
 	Matrix4 invProjView = (defaultProjMatrix * cameraView).Inverse();
@@ -360,16 +382,16 @@ void Renderer::DrawConcreteFloor() {
 	UpdateShaderMatrices();
 
 	// Wireframe for debugging
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	concreteMap->Draw();
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Renderer::DrawNode(SceneNode* n) {
 	if (n->GetMesh()) {
 		modelMatrix = n->GetWorldTransform();
-
 		UpdateShaderMatrices();
+
 		n->Draw(*this);
 	}
 
@@ -422,12 +444,9 @@ void Renderer::DrawLampPosts() {
 		DrawNode(lampPost);
 }
 
-void Renderer::DrawRobot() {
+void Renderer::DrawRobots() {
 	BindShader(robotShader);
 	GLuint programLocation = robotShader->GetProgram();
-
-	auto& transforms = animator->GetFinalBoneMatrices();
-	glUniformMatrix4fv(glGetUniformLocation(programLocation, "joints"), transforms.size(), false, (float*)transforms.data());
 
 	glUniform1i(glGetUniformLocation(programLocation, "diffuseTex"), 0);
 	glUniform1i(glGetUniformLocation(programLocation, "bumpTex"), 1);
@@ -445,29 +464,69 @@ void Renderer::DrawRobot() {
 	glUniform1f(glGetUniformLocation(programLocation, "emissionIntensity"), 0.5);
 	glUniform1f(glGetUniformLocation(programLocation, "time"), currentTime);
 
-	DrawNode(robot);
+	for (const auto& robot : robots) {
+		auto& transforms = robot->GetFinalBoneMatrices();
+		glUniformMatrix4fv(glGetUniformLocation(programLocation, "joints"), transforms.size(), false, (float*)transforms.data());
+		DrawNode(robot);
+	}
 }
 
 void Renderer::DrawSun(Matrix4 invViewProj, float* camPos) {
 	BindShader(sunShader);
+	GLuint programLocation = sunShader->GetProgram();
 
-	glUniform1i(glGetUniformLocation(sunShader->GetProgram(), "depthTex"), 0);
+	glUniform1i(glGetUniformLocation(programLocation, "depthTex"), 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
 
-	glUniform1i(glGetUniformLocation(sunShader->GetProgram(), "normTex"), 1);
+	glUniform1i(glGetUniformLocation(programLocation, "normTex"), 1);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, bufferNormalTex);
 
-	glUniform3fv(glGetUniformLocation(sunShader->GetProgram(), "cameraPos"), 1, camPos);
+	glUniform3fv(glGetUniformLocation(programLocation, "cameraPos"), 1, camPos);
 
-	glUniform2f(glGetUniformLocation(sunShader->GetProgram(), "pixelSize"), 1.0f / width, 1.0f / height);
+	glUniform2f(glGetUniformLocation(programLocation, "pixelSize"), 1.0f / width, 1.0f / height);
 
-	
-	glUniformMatrix4fv(glGetUniformLocation(sunShader->GetProgram(), "inverseProjView"), 1, false, invViewProj.values);
+
+	glUniformMatrix4fv(glGetUniformLocation(programLocation, "inverseProjView"), 1, false, invViewProj.values);
 
 	SetShaderLight(*sun);
 	quad->Draw();
+}
+
+void Renderer::DrawSpotLights(Matrix4 invViewProj, float* camPos) {
+	BindShader(spotLightShader);
+	GLuint programLocation = spotLightShader->GetProgram();
+
+	glCullFace(GL_FRONT);
+
+	glUniform1i(glGetUniformLocation(programLocation, "depthTex"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
+
+	glUniform1i(glGetUniformLocation(programLocation, "normTex"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, bufferNormalTex);
+
+	glUniform3fv(glGetUniformLocation(programLocation, "cameraPos"), 1, camPos);
+
+	glUniform2f(glGetUniformLocation(programLocation, "pixelSize"), 1.0f / width, 1.0f / height);
+
+	glUniformMatrix4fv(glGetUniformLocation(programLocation, "inverseProjView"), 1, false, invViewProj.values);
+
+	for (const auto& lampPost: lampPosts) {
+		SpotLight* l = lampPost->GetLight();
+
+		modelMatrix = l->GetModelMatrix();
+		UpdateShaderMatrices();
+
+		SetShaderLight(*l);
+		l->GetLightVolume()->Draw();
+	}
+	modelMatrix.ToIdentity();
+	UpdateShaderMatrices();
+
+	glCullFace(GL_BACK);
 }
 
 void Renderer::DrawPointLights(Matrix4 invViewProj, float* camPos) {
@@ -492,7 +551,7 @@ void Renderer::DrawPointLights(Matrix4 invViewProj, float* camPos) {
 	glUniformMatrix4fv(glGetUniformLocation(pointLightShader->GetProgram(), "inverseProjView"), 1, false, invViewProj.values);
 
 	for (const auto& light : pointLights) {
-		SetShaderLight(light); // TODO the light volume should be attached to the object
+		SetShaderLight(light);
 		lightVolume->Draw();
 	}
 

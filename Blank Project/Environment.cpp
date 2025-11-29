@@ -67,44 +67,43 @@ Mesh* Environment::LoadMesh(const aiMesh* aiMesh, const aiScene* scene) {
 
 void Environment::LoadMaterials(const aiScene* scene) {
 	materials.resize(scene->mNumMaterials);
-	if (scene->mNumMaterials > 0) hasMaterials = true;
 
 	for (unsigned int i{}; i < scene->mNumMaterials; ++i) {
 		aiMaterial* mat = scene->mMaterials[i];
-		aiString fileName;
+		aiString filename;
 		GLuint texID;
 
-		if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &fileName) == AI_SUCCESS) {
-			texID = LoadTexture(fileName.C_Str());
+		if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &filename) == AI_SUCCESS) {
+			texID = LoadTexture(filename.C_Str());
 			materials[i].diffuseID = texID;
 		}
 
-		if (mat->GetTexture(aiTextureType_NORMALS, 0, &fileName) == AI_SUCCESS || 
-		mat->GetTexture(aiTextureType_HEIGHT, 0, &fileName) == AI_SUCCESS) {
-			texID = LoadTexture(fileName.C_Str());
+		if (mat->GetTexture(aiTextureType_NORMALS, 0, &filename) == AI_SUCCESS || 
+		mat->GetTexture(aiTextureType_HEIGHT, 0, &filename) == AI_SUCCESS) {
+			texID = LoadTexture(filename.C_Str());
 			materials[i].bumpID = texID;
 		}
 
-		if (mat->GetTexture(aiTextureType_DIFFUSE_ROUGHNESS, 0, &fileName) == AI_SUCCESS ||
-		mat->GetTexture(aiTextureType_SPECULAR, 0, &fileName) == AI_SUCCESS ||
-		mat->GetTexture(aiTextureType_SHININESS, 0, &fileName) == AI_SUCCESS) {
-			texID = LoadTexture(fileName.C_Str());
+		if (mat->GetTexture(aiTextureType_DIFFUSE_ROUGHNESS, 0, &filename) == AI_SUCCESS ||
+		mat->GetTexture(aiTextureType_SPECULAR, 0, &filename) == AI_SUCCESS ||
+		mat->GetTexture(aiTextureType_SHININESS, 0, &filename) == AI_SUCCESS) {
+			texID = LoadTexture(filename.C_Str());
 			materials[i].roughnessID = texID;
 		}
 
-		if (mat->GetTexture(aiTextureType_OPACITY, 0, &fileName) == AI_SUCCESS) {
-			texID = LoadTexture(fileName.C_Str());
+		if (mat->GetTexture(aiTextureType_OPACITY, 0, &filename) == AI_SUCCESS) {
+			texID = LoadTexture(filename.C_Str());
 			materials[i].alphaID = texID;
 		}
 
-		if (mat->GetTexture(aiTextureType_METALNESS, 0, &fileName) == AI_SUCCESS) {
-			texID = LoadTexture(fileName.C_Str());
+		if (mat->GetTexture(aiTextureType_METALNESS, 0, &filename) == AI_SUCCESS) {
+			texID = LoadTexture(filename.C_Str());
 			materials[i].metallicID = texID;
 		}
 
-		if (mat->GetTexture(aiTextureType_EMISSIVE, 0, &fileName) == AI_SUCCESS || 
-		mat->GetTexture(aiTextureType_EMISSION_COLOR, 0, &fileName) == AI_SUCCESS) {
-			texID = LoadTexture(fileName.C_Str());
+		if (mat->GetTexture(aiTextureType_EMISSIVE, 0, &filename) == AI_SUCCESS || 
+		mat->GetTexture(aiTextureType_EMISSION_COLOR, 0, &filename) == AI_SUCCESS) {
+			texID = LoadTexture(filename.C_Str());
 			materials[i].emissiveID = texID;
 		}
 	}

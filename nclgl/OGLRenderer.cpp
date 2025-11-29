@@ -268,10 +268,10 @@ void OGLRenderer::SetShaderLight(const SpotLight& l) const {
 	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightDiffColour"), 1, (float*)&lightDiffColour);
 	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightSpecColour"), 1, (float*)&lightSpecColour);
 
-	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "attenValues"), 1, (float*)&lightAttenVals);
+	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "attenValues"), 1, (float*)&lightAttenVals);
 
-	glUniform1f(glGetUniformLocation(currentShader->GetProgram(), "lightInnerCutoff"), cos(l.GetInnerCutoff()));
-	glUniform1f(glGetUniformLocation(currentShader->GetProgram(), "lightOuterCutoff"), cos(l.GetOuterCutoff()));
+	glUniform1f(glGetUniformLocation(currentShader->GetProgram(), "lightInnerCutoff"), cos(DegToRad(l.GetInnerCutoff())));
+	glUniform1f(glGetUniformLocation(currentShader->GetProgram(), "lightOuterCutoff"), cos(DegToRad(l.GetOuterCutoff())));
 }
 
 #ifdef OPENGL_DEBUGGING

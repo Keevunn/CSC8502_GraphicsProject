@@ -38,24 +38,21 @@ void main(void) {
 
 	vec4 colour = texture(diffuseTex, IN.texCoord);
 	
-	float roughness = 1;
+	float roughness = 0.5;
 	float metallic = 0;
 
+	// if using metallic rougness map, R = Ambient Occlusion G = Roughness B = Metallic
+	// metallic roughness texture loaded into both
 	if (hasMixedPBR > 0) {
-		// R = Ambient Occlusion G = Roughness B = Metallic
-		vec3 pbrData = vec3(0, 1, 0); // ao is 0 so it's clear if hasRoughness is set incorrectly 
-		if (hasRoughness > 0)
-			pbrData = texture(roughnessTex, IN.texCoord).rgb;
-	
-		float ao = pbrData.r;
-		float roughness = pbrData.g;
-		float metallic = pbrData.b;
-
-		colour.rgb *= ao; // maybe square ao (test)
+		vec3 packedData = texture(roughnessTex, IN.texCoord).rgb; 
+		colour.rgb *= packedData.r; // apply ao
+		roughness = packedData.g;
+		metallic = packedData.b;
 	} else {
-		if (hasRoughness > 0) roughness = texture(roughnessTex, IN.texCoord).r;
-		if (hasMetallic > 0) metallic = texture(metallicTex, IN.texCoord).r;
+		if (hasRoughness > 0) roughness = texture(roughnessTex, IN.texCoord).g;
+		if (hasMetallic > 0) metallic = texture(metallicTex, IN.texCoord).b;
 	}
+	
 
 	// Metallic in colour alpha 
 	// Range 0.1 - 1.0 so its not discarded

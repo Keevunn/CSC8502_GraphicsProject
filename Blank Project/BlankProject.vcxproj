@@ -166,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Meshes\ConcreteFloor.mat" />
+    <None Include="..\Shaders\BasicMatrixVertex.glsl" />
     <None Include="..\Shaders\bufferFragment.glsl" />
     <None Include="..\Shaders\BumpFragment.glsl" />
     <None Include="..\Shaders\BumpVertex.glsl" />

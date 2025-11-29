@@ -44,7 +44,7 @@ public:
 	void SetColour(const Vector4& c) { colour = c; }
 
     Vector3 GetModelScale() const { return modelScale; }
-	void SetModelScale(const Vector3& s) { modelScale = s; }
+	virtual void SetModelScale(const Vector3& s) { modelScale = s; }
 
     Mesh* GetMesh() const { return mesh; }
 	void SetMesh(Mesh* m) { mesh = m; }

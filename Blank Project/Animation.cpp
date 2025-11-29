@@ -9,7 +9,7 @@
 
 #include "nclgl/AssimpNCLHelpers.h"
 
-Animation::Animation(const std::string& animPath, RobotModel* model) {
+Animation::Animation(const std::string& animPath, const std::unordered_map<std::string, BoneInfo>& modelBoneMap) {
 	Assimp::Importer importer;
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
 
@@ -27,7 +27,7 @@ Animation::Animation(const std::string& animPath, RobotModel* model) {
 
 	rootNode = new SceneNode();
 	ReadHierarchyData(*rootNode, skeletonRoot);
-	ReadBones(animation, *model);
+	ReadBones(animation, modelBoneMap);
 }
 
 Animation::~Animation() {
@@ -41,10 +41,8 @@ Bone* Animation::FindBone(const std::string& name) {
 	return &(*iter);
 }
 
-void Animation::ReadBones(const aiAnimation* anim, RobotModel& model) {
+void Animation::ReadBones(const aiAnimation* anim, const std::unordered_map<std::string, BoneInfo>& modelBoneMap) {
 	int size = anim->mNumChannels;
-
-	const auto& modelBoneMap = model.GetBoneInfoMap();
 
 	for (int i{}; i < size; ++i) {
 		auto channel = anim->mChannels[i]; // each channel represents the bones engaged in an animation and keyframes
