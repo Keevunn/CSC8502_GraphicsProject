@@ -19,6 +19,7 @@ public:
 private:
 	SpotLight* light;
 	Vector3 lightOffset;
+	Vector3 lightDirection;
 
 };
 

@@ -1,8 +1,7 @@
 #include "Renderer.h"
 
-#include "Animation.h"
-#include "Environment.h"
 #include "Factory.h"
+#include "KittenModel.h"
 
 #include "nclgl/Camera.h"
 #include "nclgl/DirectionalLight.h"
@@ -18,17 +17,16 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	defaultProjMatrix = Matrix4::Perspective(0.1f, 10000.0f, (float)width / (float)height, 45.0f);
 
 	// Position treated as direction
-	//sun = new DirectionalLight(Vector3(0.2f, -1.0f, -0.3f), Vector4(0.6f, 0.6f, 0.7f, 1), Vector4(1, 1, 1, 1));
-	sun = new DirectionalLight(Vector3(0.2f, -1.0f, -0.3f), Vector4(0, 0, 0, 1), Vector4(0,0,0, 1));
+	sun = new DirectionalLight(Vector3(0.2f, -1.0f, -0.3f), Vector4(0.3f, 0.35f, 0.2f, 1), Vector4(0.4f, 0.4f, 0.2f, 1));
 	sunShader = new Shader("combineVert.glsl", "DirectionalLightFrag.glsl");
 
 	unsigned int flags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS;
 
 	// Construction yard skybox
 	cubeMap = SOIL_load_OGL_cubemap(
-		TEXTUREDIR"/CloudySky/px.png", TEXTUREDIR"/CloudySky/nx.png",
-		TEXTUREDIR"/CloudySky/py.png", TEXTUREDIR"/CloudySky/ny.png",
-		TEXTUREDIR"/CloudySky/pz.png", TEXTUREDIR"/CloudySky/nz.png",
+		TEXTUREDIR"/DarkSky/px.png", TEXTUREDIR"/DarkSky/nx.png",
+		TEXTUREDIR"/DarkSky/py.png", TEXTUREDIR"/DarkSky/ny.png",
+		TEXTUREDIR"/DarkSky/pz.png", TEXTUREDIR"/DarkSky/nz.png",
 		SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
 	quad = Mesh::GenerateQuad();
 	skyboxShader = new Shader("SkyboxVertex.glsl", "SkyboxFragment.glsl");
@@ -75,40 +73,25 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 
 	// Load city scene
 	factory = new Factory(MESHDIR"/Factory/scene.gltf");
+	factory->SetTransform(Matrix4::Translation(dimensions * Vector3(0.65f, 0, 0.2f)));
+	factory->SetModelScale(Vector3(1.5f));
 
-	Matrix4 cityTransformation = Matrix4::Translation(dimensions * Vector3(0.65f, 0, 0.2f));
-	factory->SetTransform(cityTransformation);
-	//factory->SetModelScale(Vector3(35));
+	// Load Characters
+	animationShader = new Shader("SkinningVertex.glsl", "PBRFrag.glsl");
 
-	// Load robot with walk anim
-	robotShader = new Shader("SkinningVertex.glsl", "PBRFrag.glsl");
-	sharedRobotMesh = new RobotModel(MESHDIR"Robot.fbx");
-	sharedRobotMesh->SetModelScale(Vector3(1 / 500.0f));
-	sharedAnim = new Animation(MODELSDIR"Robot/RobotModelWithWalkAnim.fbx", sharedRobotMesh->GetBoneInfoMap());
+	RobotModel sharedRobotMesh = RobotModel(MODELSDIR"Robot/RobotModelWithWalkAnim.fbx");
+	sharedRobotMesh.SetModelScale(Vector3(1 / 350.0f));
+	robots = new AnimatedModelPool(sharedRobotMesh, Vector3(133, 0, 55), 165, Vector3(0, 0, 1));
 
-	for (int i{}; i < 10; ++i) { // 10 in a line, 10m apart
-		RobotModel* r = new RobotModel(*sharedRobotMesh);
-		r->SetAnimator(sharedAnim);
-		r->SetTransform(Matrix4::Translation(Vector3(130, 0, 60.0f + (i * 10.0f))) * 
-			Matrix4::Rotation(180, Vector3(0, 1, 0)));
-		robots.push_back(r);
-	}
-
-	// Load lamp post
-	// Loads 12 lamp posts
+	KittenModel sharedKittenMesh = KittenModel(MODELSDIR"KittenWithSadWalk.fbx");
+	sharedKittenMesh.SetModelScale(Vector3(1 / 100.0f));
+	sharedKittenMesh.SetTransform(Matrix4::Rotation(-90, Vector3(0, 1, 0)));
+	kittens = new AnimatedModelPool(sharedKittenMesh, Vector3(111, 0, 165), 47, Vector3(0, 0, -1));
+	
+	// Load lamp posts
 	spotLightShader = new Shader("BasicMatrixVertex.glsl", "SpotLightFrag.glsl");
-	LampPost* lampPostMesh = new LampPost(MESHDIR"LampPost/Street_light.obj");
-	lampPostMesh->SetModelScale(Vector3(1.5));
-	for (int i{}; i < 6; ++i) { // 6 rows
-		for (int j{}; j < 2; ++j) { // 2 columns
-			LampPost* lp = new LampPost(*lampPostMesh);
-			lp->SetTransform(
-				Matrix4::Translation(Vector3(110 + (j * 30), 0, 60 + (i * 20))) * Matrix4::Rotation(
-					j * 180, Vector3(0, 1, 0)));
-			lampPosts.push_back(lp);
-		}
-	}
-	delete lampPostMesh; // Not used anymore
+	LampPost lampPostMesh = LampPost(MESHDIR"LampPost/Street_light.obj");
+	lampPosts = new ModelPool(lampPostMesh, Vector3(107, 0, 60), Vector2(6, 2), 30, 20, true);
 
 	// Point light and combine shaders
 	pointLightShader = new Shader("pointLightVert.glsl", "SpotLightFrag.glsl");
@@ -116,7 +99,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	if (!pointLightShader->LoadSuccess() || !combineShader->LoadSuccess()) return;
 	lightVolume = Mesh::LoadFromMeshFile("Sphere.msh");
 
-	camera = new Camera(-3, 0, dimensions * Vector3(0.525, 0.1, 0.5), 20);
+	camera = new Camera(-10, 0, Vector3(133, 5, 165), 10);
 
 	// FBOs
 	glGenFramebuffers(1, &bufferFBO);
@@ -180,15 +163,11 @@ Renderer::~Renderer(void) {
 	delete concreteMap;
 
 	delete environmentShader;
-	delete robotShader;
+	delete animationShader;
 	delete factory;
-	delete sharedRobotMesh;
-	delete sharedAnim;
-	delete animator;
-	for (const auto& robot : robots)
-		delete robot;
-	for (const auto& lampPost : lampPosts)
-		delete lampPost;
+	delete robots;
+	delete kittens;
+	delete lampPosts;
 
 	delete combineShader;
 
@@ -223,11 +202,9 @@ void Renderer::UpdateScene(float dt) {
 	viewMatrix = camera->BuildViewMatrix();
 
 	factory->Update(dt);
-	for (const auto& lampPost : lampPosts)
-		lampPost->Update(dt);
-
-	for (const auto& robot : robots)
-		robot->Update(dt);
+	lampPosts->Update(dt);
+	robots->Update(dt);
+	kittens->Update(dt);
 }
 
 void Renderer::GenerateScreenTexture(GLuint& into, bool depth) {
@@ -261,6 +238,7 @@ void Renderer::FillBuffers() {
 	DrawLampPosts();
 
 	DrawRobots();
+	DrawKittens();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -440,13 +418,14 @@ void Renderer::DrawLampPosts() {
 	glUniform1i(glGetUniformLocation(programLocation, "hasMetallic"), 1);
 	glUniform1i(glGetUniformLocation(programLocation, "hasEmissive"), 0);
 
-	for (const auto& lampPost : lampPosts)
+	const auto pool = lampPosts->GetPool();
+	for (const auto& lampPost : pool)
 		DrawNode(lampPost);
 }
 
 void Renderer::DrawRobots() {
-	BindShader(robotShader);
-	GLuint programLocation = robotShader->GetProgram();
+	BindShader(animationShader);
+	GLuint programLocation = animationShader->GetProgram();
 
 	glUniform1i(glGetUniformLocation(programLocation, "diffuseTex"), 0);
 	glUniform1i(glGetUniformLocation(programLocation, "bumpTex"), 1);
@@ -464,10 +443,39 @@ void Renderer::DrawRobots() {
 	glUniform1f(glGetUniformLocation(programLocation, "emissionIntensity"), 0.5);
 	glUniform1f(glGetUniformLocation(programLocation, "time"), currentTime);
 
-	for (const auto& robot : robots) {
+	const auto pool = robots->GetPool();
+	for (const auto& robot : pool) {
 		auto& transforms = robot->GetFinalBoneMatrices();
 		glUniformMatrix4fv(glGetUniformLocation(programLocation, "joints"), transforms.size(), false, (float*)transforms.data());
 		DrawNode(robot);
+	}
+}
+
+void Renderer::DrawKittens() {
+	BindShader(animationShader);
+	GLuint programLocation = animationShader->GetProgram();
+
+	glUniform1i(glGetUniformLocation(programLocation, "diffuseTex"), 0);
+	glUniform1i(glGetUniformLocation(programLocation, "bumpTex"), 1);
+	glUniform1i(glGetUniformLocation(programLocation, "alphaTex"), 2);
+	glUniform1i(glGetUniformLocation(programLocation, "roughnessTex"), 3);
+	glUniform1i(glGetUniformLocation(programLocation, "metallicTex"), 4);
+	glUniform1i(glGetUniformLocation(programLocation, "emissiveTex"), 5);
+
+	glUniform1i(glGetUniformLocation(programLocation, "hasBump"), 0);
+	glUniform1i(glGetUniformLocation(programLocation, "hasOpacity"), 0);
+	glUniform1i(glGetUniformLocation(programLocation, "hasRoughness"),0);
+	glUniform1i(glGetUniformLocation(programLocation, "hasMetallic"), 0);
+	glUniform1i(glGetUniformLocation(programLocation, "hasEmissive"), 0);
+
+	glUniform1f(glGetUniformLocation(programLocation, "emissionIntensity"), 0);
+	glUniform1f(glGetUniformLocation(programLocation, "time"), currentTime);
+
+	const auto pool = kittens->GetPool();
+	for (const auto& kitten : pool) {
+		auto& transforms = kitten->GetFinalBoneMatrices();
+		glUniformMatrix4fv(glGetUniformLocation(programLocation, "joints"), transforms.size(), false, (float*)transforms.data());
+		DrawNode(kitten);
 	}
 }
 
@@ -514,7 +522,8 @@ void Renderer::DrawSpotLights(Matrix4 invViewProj, float* camPos) {
 
 	glUniformMatrix4fv(glGetUniformLocation(programLocation, "inverseProjView"), 1, false, invViewProj.values);
 
-	for (const auto& lampPost: lampPosts) {
+	const auto pool = lampPosts->GetPool();
+	for (const auto& lampPost: pool) {
 		SpotLight* l = lampPost->GetLight();
 
 		modelMatrix = l->GetModelMatrix();

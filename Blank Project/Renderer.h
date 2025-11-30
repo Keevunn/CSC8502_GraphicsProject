@@ -1,10 +1,13 @@
 #pragma once
+#include "AnimatedModelPool.h"
 #include "Animation.h"
 #include "Animator.h"
 #include "LampPost.h"
+#include "ModelPool.h"
 #include "RobotModel.h"
 #include "nclgl/OGLRenderer.h"
 
+class KittenModel;
 class Factory;
 class HeightMap;
 class Camera;
@@ -12,6 +15,7 @@ class MeshAnimation;
 class MeshMaterial;
 class SceneNode;
 class Light;
+
 
 class Renderer : public OGLRenderer {
 public:
@@ -39,6 +43,7 @@ protected:
 	void DrawLampPosts();
 
 	void DrawRobots();
+	void DrawKittens();
 
 	void DrawSun(Matrix4 invViewProj, float* camPos);
 	void DrawSpotLights(Matrix4 invViewProj, float* camPos);
@@ -71,19 +76,13 @@ protected:
 
 	// Models
 	Shader* environmentShader = nullptr; // Fills G-buffers
-	Shader* robotShader = nullptr;
+	Shader* animationShader = nullptr;
 
 	Factory* factory = nullptr;
-	
-	RobotModel* sharedRobotMesh = nullptr;
-	Animation* sharedAnim = nullptr;
 
-	vector<RobotModel*> robots;
-	Animator* animator = nullptr;
-	Vector3 robotSpawnPoint;
-	Vector3 robotKillPoint;
-
-	vector<LampPost*> lampPosts;
+	AnimatedModelPool<RobotModel>* robots;
+	AnimatedModelPool<KittenModel>* kittens;
+	ModelPool<LampPost>* lampPosts;
 
 	// Buffers
 	Shader* combineShader = nullptr;

@@ -15,11 +15,14 @@ int main()	{
 
 	w.LockMouseToWindow(true);
 	w.ShowOSPointer(false);
+	w.GetTimer()->Tick();
 
 	while(w.UpdateWindow()  && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE)){
 		renderer.SetTime(w.GetTimer()->GetTotalTimeSeconds());
 
-		renderer.UpdateScene(w.GetTimer()->GetTimeDeltaSeconds());
+		float dt = std::min(w.GetTimer()->GetTimeDeltaSeconds(), 1 / 30.0f);// min FPS: 30 fps
+		renderer.UpdateScene(dt);
+
 		renderer.RenderScene();
 		renderer.SwapBuffers();
 		if (Window::GetKeyboard()->KeyDown(KEYBOARD_F5)) {

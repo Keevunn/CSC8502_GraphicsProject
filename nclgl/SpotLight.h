@@ -5,7 +5,7 @@
 class SpotLight : public Light {
 public:
 	SpotLight() = default;
-	SpotLight(const Vector3& position, const Vector4& diffuseColour, const Vector4& specularColour, float innerCutoff, float outerCutoff);
+	SpotLight(const Vector3& direction, const Vector4& diffuseColour, const Vector4& specularColour, float innerCutoff, float outerCutoff);
 
 	Matrix4 GetModelMatrix() const;
 

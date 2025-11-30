@@ -8,7 +8,7 @@ public:
 	Environment(const Environment& other) : SceneNode(other) {
 		materials = other.materials;
 		texDir = other.texDir;
-	};
+	}
 
 protected:
 	virtual void LoadScene(const std::string& path, const std::string pName, const int postProcessingFlags);

@@ -2,8 +2,8 @@
 
 #include <cassert>
 
-SpotLight::SpotLight(const Vector3& position, const Vector4& diffuseColour, const Vector4& specularColour, float innerCutoff, float outerCutoff)
-: Light(position, diffuseColour, specularColour), direction(Vector3(0, -1, 0)), innerCutoff(innerCutoff), outerCutoff(outerCutoff) {
+SpotLight::SpotLight(const Vector3& direction, const Vector4& diffuseColour, const Vector4& specularColour, float innerCutoff, float outerCutoff)
+: Light(Vector3(0), diffuseColour, specularColour), direction(direction), innerCutoff(innerCutoff), outerCutoff(outerCutoff) {
 	assert(outerCutoff >= innerCutoff && "Outer cutoff must be greater than or equal to inner cutoff");
 
 	lightVolume = Mesh::LoadFromMeshFile("Cone.msh");
@@ -25,8 +25,23 @@ Matrix4 SpotLight::GetModelMatrix() const {
 	float width = range * sin(DegToRad(outerCutoff)); 
 	Matrix4 scale = Matrix4::Scale(Vector3(width, width, length));
 
-	Matrix4 rotation = Matrix4::Rotation(-90, Vector3(1, 0, 0));
+	// Rotation
+	// Currently points down -Z axis
+	Vector3 defaultDir = Vector3(0, 0, -1);
+	Vector3 rotAxis = Vector3::Cross(direction.Normalised(), defaultDir);
+	float dot = Vector3::Dot(direction.Normalised(), defaultDir);
+	
 
+	Matrix4 rotation;
+	if (rotAxis.Length() > 0.001f) {
+		dot = std::clamp(dot, -1.0f, 1.0f);
+		float angle = RadToDeg(acos(dot));
+		rotation = Matrix4::Rotation(-angle, rotAxis);
+	}
+	else if (dot < 0)
+		rotation = Matrix4::Rotation(180, Vector3(1, 0, 0));
+
+	// Translation
 	Matrix4 translation = Matrix4::Translation(position);
 
 	return translation * rotation * scale * offset;

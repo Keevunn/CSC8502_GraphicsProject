@@ -8,6 +8,7 @@
 #include <assimp/scene.h>
 
 #include "nclgl/AssimpNCLHelpers.h"
+#include "nclgl/SceneNode.h"
 
 Animation::Animation(const std::string& animPath, const std::unordered_map<std::string, BoneInfo>& modelBoneMap) {
 	Assimp::Importer importer;
@@ -24,6 +25,16 @@ Animation::Animation(const std::string& animPath, const std::unordered_map<std::
 	if (!skeletonRoot) skeletonRoot = scene->mRootNode;
 
 	globalInverseTransform = (AssimpNCLHelpers::GetNCLMatrix(scene->mRootNode->mTransformation)).Inverse();
+
+	rootNode = new SceneNode();
+	ReadHierarchyData(*rootNode, skeletonRoot);
+	ReadBones(animation, modelBoneMap);
+}
+
+Animation::Animation(const aiAnimation* animation, const aiNode* skeletonRoot, const std::unordered_map<std::string, BoneInfo>& modelBoneMap, const Matrix4& globalInverseTransform) 
+: globalInverseTransform(globalInverseTransform) {
+	duration = animation->mDuration;
+	ticksPerSec = animation->mTicksPerSecond;
 
 	rootNode = new SceneNode();
 	ReadHierarchyData(*rootNode, skeletonRoot);

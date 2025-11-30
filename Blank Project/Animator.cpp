@@ -1,15 +1,12 @@
 #include "Animator.h"
 
+#include <utility>
+
+#include "nclgl/SceneNode.h"
 #include "Animation.h"
-#include "Bone.h"
 
-Animator::Animator(Animation* anim) : currentAnim(anim), currentTime(0), deltaTime(0) {
-	identity.ToIdentity();
-	finalBoneMatrices.resize(128, identity);
-}
-
-Animator::~Animator() {
-	delete currentAnim;
+Animator::Animator(const std::shared_ptr<Animation>& anim) : currentAnim(anim), currentTime(0), deltaTime(0) {
+	finalBoneMatrices.resize(128, Matrix4());
 }
 
 void Animator::UpdateAnimation(float dt) {
@@ -21,7 +18,7 @@ void Animator::UpdateAnimation(float dt) {
 	}
 }
 
-void Animator::PlayAnimation(Animation* anim) {
+void Animator::PlayAnimation(const std::shared_ptr<Animation>& anim) {
 	currentAnim = anim;
 	currentTime = 0;
 }
