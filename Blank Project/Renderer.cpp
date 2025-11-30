@@ -1,6 +1,7 @@
 #include "Renderer.h"
 
 #include "Factory.h"
+#include "FactoryScene.h"
 #include "KittenModel.h"
 
 #include "nclgl/Camera.h"
@@ -14,51 +15,19 @@
 #define ANIMATIONDIR "../Animations/"
 
 Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
-	defaultProjMatrix = Matrix4::Perspective(0.1f, 10000.0f, (float)width / (float)height, 45.0f);
+	quad = Mesh::GenerateQuad();
 
-	// Position treated as direction
-	sun = new DirectionalLight(Vector3(0.2f, -1.0f, -0.3f), Vector4(0.3f, 0.35f, 0.2f, 1), Vector4(0.4f, 0.4f, 0.2f, 1));
+	// Scenes
+	factoryScene = new FactoryScene(width, height);
+
+	// Shaders
 	sunShader = new Shader("combineVert.glsl", "DirectionalLightFrag.glsl");
 
-	unsigned int flags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS;
-
-	// Construction yard skybox
-	cubeMap = SOIL_load_OGL_cubemap(
-		TEXTUREDIR"/DarkSky/px.png", TEXTUREDIR"/DarkSky/nx.png",
-		TEXTUREDIR"/DarkSky/py.png", TEXTUREDIR"/DarkSky/ny.png",
-		TEXTUREDIR"/DarkSky/pz.png", TEXTUREDIR"/DarkSky/nz.png",
-		SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
-	quad = Mesh::GenerateQuad();
+	// Skybox
 	skyboxShader = new Shader("SkyboxVertex.glsl", "SkyboxFragment.glsl");
 	if (!skyboxShader->LoadSuccess()) return;
 
 	// Concrete ground
-	MeshMaterial material("ConcreteFloor.mat"); // for a single mesh (floor)
-	const MeshMaterialEntry* matEntry = material.GetMaterialForLayer(0);
-
-	// Max supported anisotropy level of gpu
-	GLfloat maxAniso = 0.0f;
-	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAniso);
-
-	for (const auto& [type, filename] : matEntry->entries) {
-		std::string path = TEXTUREDIR + filename;
-		GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, flags);
-		if (!texID) return;
-
-		// Apply Anisotropic Filtering to fix "dithering" when camera is low
-		glBindTexture(GL_TEXTURE_2D, texID);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAniso);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		concreteTextures[type] = texID;
-	}
-
-	// Scale 1 unit = 0.1m
-	// Tex size: 1024 x 1024
-	const Vector3 vertexScale = Vector3(0.2f, 1, 0.2f); // roughly 200 x 200
-	const Vector2 textureScale = Vector2(30, 30); // repeats every 8 m
-	concreteMap = new HeightMap(concreteTextures["Displacement"], vertexScale, textureScale);
-
 	concreteShader = new Shader(
 		"ConcreteFloorVert.glsl",
 		"ConcreteFloorFrag.glsl",
@@ -66,40 +35,16 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 		"ConcreteFloorTCS.glsl",
 		"ConcreteFloorTES.glsl"); // No geometry shader
 	if (!concreteShader->LoadSuccess()) return;
-	Vector3 dimensions = concreteMap->GetHeightmapSize();
 
+	// Scene shaders
 	environmentShader = new Shader("BumpVertex.glsl", "PBRFrag.glsl");
-	if (!environmentShader->LoadSuccess()) return;
-
-	// Load city scene
-	factory = new Factory(MESHDIR"/Factory/scene.gltf");
-	factory->SetTransform(Matrix4::Translation(dimensions * Vector3(0.65f, 0, 0.2f)));
-	factory->SetModelScale(Vector3(1.5f));
-
-	// Load Characters
 	animationShader = new Shader("SkinningVertex.glsl", "PBRFrag.glsl");
-
-	RobotModel sharedRobotMesh = RobotModel(MODELSDIR"Robot/RobotModelWithWalkAnim.fbx");
-	sharedRobotMesh.SetModelScale(Vector3(1 / 350.0f));
-	robots = new AnimatedModelPool(sharedRobotMesh, Vector3(133, 0, 55), 165, Vector3(0, 0, 1));
-
-	KittenModel sharedKittenMesh = KittenModel(MODELSDIR"KittenWithSadWalk.fbx");
-	sharedKittenMesh.SetModelScale(Vector3(1 / 100.0f));
-	sharedKittenMesh.SetTransform(Matrix4::Rotation(-90, Vector3(0, 1, 0)));
-	kittens = new AnimatedModelPool(sharedKittenMesh, Vector3(111, 0, 165), 47, Vector3(0, 0, -1));
-	
-	// Load lamp posts
 	spotLightShader = new Shader("BasicMatrixVertex.glsl", "SpotLightFrag.glsl");
-	LampPost lampPostMesh = LampPost(MESHDIR"LampPost/Street_light.obj");
-	lampPosts = new ModelPool(lampPostMesh, Vector3(107, 0, 60), Vector2(6, 2), 30, 20, true);
+	if (!environmentShader->LoadSuccess() || !animationShader->LoadSuccess() || !spotLightShader->LoadSuccess()) return;
 
-	// Point light and combine shaders
-	pointLightShader = new Shader("pointLightVert.glsl", "SpotLightFrag.glsl");
+	// Combine Shaders
 	combineShader = new Shader("combineVert.glsl", "combineFrag.glsl");
-	if (!pointLightShader->LoadSuccess() || !combineShader->LoadSuccess()) return;
-	lightVolume = Mesh::LoadFromMeshFile("Sphere.msh");
-
-	camera = new Camera(-10, 0, Vector3(133, 5, 165), 10);
+	if (!combineShader->LoadSuccess()) return;
 
 	// FBOs
 	glGenFramebuffers(1, &bufferFBO);
@@ -148,27 +93,13 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 // TODO blend maps for scene 2
 
 Renderer::~Renderer(void) {
-	delete camera;
-
 	delete skyboxShader;
-	delete quad;
-
 	delete sunShader;
 	delete pointLightShader;
 	delete spotLightShader;
-	delete sun;
-	delete lightVolume;
-
 	delete concreteShader;
-	delete concreteMap;
-
 	delete environmentShader;
 	delete animationShader;
-	delete factory;
-	delete robots;
-	delete kittens;
-	delete lampPosts;
-
 	delete combineShader;
 
 	glDeleteTextures(1, &bufferColourTex);
@@ -198,13 +129,8 @@ void Renderer::RenderScene() {
 }
 
 void Renderer::UpdateScene(float dt) {
-	camera->UpdateCamera(dt);
-	viewMatrix = camera->BuildViewMatrix();
-
-	factory->Update(dt);
-	lampPosts->Update(dt);
-	robots->Update(dt);
-	kittens->Update(dt);
+	factoryScene->Update(dt);
+	viewMatrix = factoryScene->GetCamera()->BuildViewMatrix();
 }
 
 void Renderer::GenerateScreenTexture(GLuint& into, bool depth) {
@@ -230,15 +156,8 @@ void Renderer::FillBuffers() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 	
-	projMatrix = defaultProjMatrix;
-
-	DrawConcreteFloor();
-
-	DrawFactory();
-	DrawLampPosts();
-
-	DrawRobots();
-	DrawKittens();
+	projMatrix = factoryScene->GetDefaultProjMatrix();
+	factoryScene->RenderGeometry(*this);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -256,12 +175,16 @@ void Renderer::DrawLights() {
 	UpdateShaderMatrices();
 
 	Matrix4 invViewProj = (projMatrix * viewMatrix).Inverse();
-	auto camPos_Vec3 = camera->GetPosition();
+	auto camPos_Vec3 = factoryScene->GetCamera()->GetPosition();
 	auto camPos = reinterpret_cast<float*>(&camPos_Vec3);
 
+	BindShader(sunShader);
+	BindLightUniforms(sunShader->GetProgram(), invViewProj, camPos);
 	DrawSun(invViewProj, camPos);
-	DrawSpotLights(invViewProj, camPos);
-	//DrawPointLights(invViewProj, camPos);
+
+	BindShader(spotLightShader);
+	BindLightUniforms(spotLightShader->GetProgram(), invViewProj, camPos);
+	// TODO Scene->RenderLights();
 
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
@@ -302,13 +225,13 @@ void Renderer::CombineBuffers() {
 
 	glUniform1i(glGetUniformLocation(combineShader->GetProgram(), "skyboxTex"), 6);
 	glActiveTexture(GL_TEXTURE6);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, factoryScene->GetSkyboxTex());
 
-	Matrix4 cameraView = camera->BuildViewMatrix();
-	Matrix4 invProjView = (defaultProjMatrix * cameraView).Inverse();
+	Matrix4 cameraView = factoryScene->GetCamera()->BuildViewMatrix();
+	Matrix4 invProjView = (factoryScene->GetDefaultProjMatrix() * cameraView).Inverse();
 	glUniformMatrix4fv(glGetUniformLocation(combineShader->GetProgram(), "inverseProjView"), 1, false, invProjView.values);
 
-	auto camPos = camera->GetPosition();
+	auto camPos = factoryScene->GetCamera()->GetPosition();
 	glUniform3fv(glGetUniformLocation(combineShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
 
 	quad->Draw();
@@ -318,8 +241,7 @@ void Renderer::DrawSkybox() {
 	glDepthMask(GL_FALSE);
 	BindShader(skyboxShader);
 
-	projMatrix = defaultProjMatrix;
-
+	projMatrix = factoryScene->GetDefaultProjMatrix();
 	UpdateShaderMatrices();
 
 	quad->Draw();
@@ -327,7 +249,23 @@ void Renderer::DrawSkybox() {
 	glDepthMask(GL_TRUE);
 }
 
-void Renderer::DrawConcreteFloor() {
+void Renderer::DrawSpotLights(std::vector<SpotLight*> lights) {
+	glCullFace(GL_FRONT);
+
+	for (const auto& l : lights) {
+		modelMatrix = l->GetModelMatrix();
+		UpdateShaderMatrices();
+
+		SetShaderLight(*l);
+		l->GetLightVolume()->Draw();
+	}
+	modelMatrix.ToIdentity();
+	UpdateShaderMatrices();
+
+	glCullFace(GL_BACK);
+}
+
+void Renderer::DrawConcreteFloor(HeightMap* floor, std::unordered_map<std::string, GLuint> floorTextures) {
 	BindShader(concreteShader);
 	GLuint programLocation = concreteShader->GetProgram();
 
@@ -339,12 +277,12 @@ void Renderer::DrawConcreteFloor() {
 		glBindTexture(GL_TEXTURE_2D, texID);
 		};
 
-	BindTex("diffuseTex",		0,	concreteTextures["Diffuse"]);
-	BindTex("bumpTex",			1,	concreteTextures["Bump"]);
-	BindTex("aoTex",			2,	concreteTextures["AO"]);
-	BindTex("displacementTex",	3,	concreteMap->GetTexture());
-	BindTex("roughnessTex",		4,	concreteTextures["Roughness"]);
-	BindTex("noiseTex",			5,	concreteTextures["Noise"]);
+	BindTex("diffuseTex", 0, floorTextures["Diffuse"]);
+	BindTex("bumpTex", 1, floorTextures["Bump"]);
+	BindTex("aoTex", 2, floorTextures["AO"]);
+	BindTex("displacementTex", 3, floor->GetTexture());
+	BindTex("roughnessTex", 4, floorTextures["Roughness"]);
+	BindTex("noiseTex", 5, floorTextures["Noise"]);
 
 	// Tesselation level
 	// Higher = smoother geometry, more expensive
@@ -353,15 +291,14 @@ void Renderer::DrawConcreteFloor() {
 	// Displacement Strength
 	// Height of bumps in world units
 	glUniform1f(glGetUniformLocation(programLocation, "displacementStrength"), 0.04);
-
-	glUniform1i(glGetUniformLocation(programLocation, "texWidth"), concreteMap->GetTexWidth());
+	glUniform1i(glGetUniformLocation(programLocation, "texWidth"), floor->GetTexWidth());
 
 	modelMatrix.ToIdentity();
 	UpdateShaderMatrices();
 
 	// Wireframe for debugging
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	concreteMap->Draw();
+	floor->Draw();
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
@@ -377,7 +314,7 @@ void Renderer::DrawNode(SceneNode* n) {
 		DrawNode(*i);
 }
 
-void Renderer::DrawFactory() {
+void Renderer::DrawFactory(Factory* factory) {
 	BindShader(environmentShader);
 	GLuint programLocation = environmentShader->GetProgram();
 
@@ -399,7 +336,7 @@ void Renderer::DrawFactory() {
 	DrawNode(factory);
 }
 
-void Renderer::DrawLampPosts() {
+void Renderer::DrawLampPosts(const ModelPool<LampPost>* lampPosts) {
 	BindShader(environmentShader);
 	GLuint programLocation = environmentShader->GetProgram();
 
@@ -423,7 +360,7 @@ void Renderer::DrawLampPosts() {
 		DrawNode(lampPost);
 }
 
-void Renderer::DrawRobots() {
+void Renderer::DrawRobots(const AnimatedModelPool<RobotModel>* robots) {
 	BindShader(animationShader);
 	GLuint programLocation = animationShader->GetProgram();
 
@@ -451,7 +388,7 @@ void Renderer::DrawRobots() {
 	}
 }
 
-void Renderer::DrawKittens() {
+void Renderer::DrawKittens(const AnimatedModelPool<KittenModel>* kittens) {
 	BindShader(animationShader);
 	GLuint programLocation = animationShader->GetProgram();
 
@@ -498,16 +435,11 @@ void Renderer::DrawSun(Matrix4 invViewProj, float* camPos) {
 
 	glUniformMatrix4fv(glGetUniformLocation(programLocation, "inverseProjView"), 1, false, invViewProj.values);
 
-	SetShaderLight(*sun);
+	SetShaderLight(*factoryScene->GetSun());
 	quad->Draw();
 }
 
-void Renderer::DrawSpotLights(Matrix4 invViewProj, float* camPos) {
-	BindShader(spotLightShader);
-	GLuint programLocation = spotLightShader->GetProgram();
-
-	glCullFace(GL_FRONT);
-
+void Renderer::BindLightUniforms(GLuint programLocation, Matrix4 invViewProj, float* camPos) const {
 	glUniform1i(glGetUniformLocation(programLocation, "depthTex"), 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
@@ -522,23 +454,9 @@ void Renderer::DrawSpotLights(Matrix4 invViewProj, float* camPos) {
 
 	glUniformMatrix4fv(glGetUniformLocation(programLocation, "inverseProjView"), 1, false, invViewProj.values);
 
-	const auto pool = lampPosts->GetPool();
-	for (const auto& lampPost: pool) {
-		SpotLight* l = lampPost->GetLight();
-
-		modelMatrix = l->GetModelMatrix();
-		UpdateShaderMatrices();
-
-		SetShaderLight(*l);
-		l->GetLightVolume()->Draw();
-	}
-	modelMatrix.ToIdentity();
-	UpdateShaderMatrices();
-
-	glCullFace(GL_BACK);
 }
 
-void Renderer::DrawPointLights(Matrix4 invViewProj, float* camPos) {
+/*void Renderer::DrawPointLights(Matrix4 invViewProj, float* camPos) {
 	BindShader(pointLightShader);
 
 	glCullFace(GL_FRONT);
@@ -567,4 +485,4 @@ void Renderer::DrawPointLights(Matrix4 invViewProj, float* camPos) {
 	glCullFace(GL_BACK);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
-}
+}*/

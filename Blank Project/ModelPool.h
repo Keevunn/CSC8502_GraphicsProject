@@ -11,10 +11,10 @@ template <typename T>
 
 class ModelPool {
 public:
-	
-	ModelPool(T sharedMesh, const Vector3& spawnPoint) : sharedMesh(std::move(sharedMesh)), instanceCount(0), spawnPoint(spawnPoint) {}
+	ModelPool() = default;
+	ModelPool(const T& sharedMesh, const Vector3& spawnPoint) : sharedMesh(std::move(sharedMesh)), instanceCount(0), spawnPoint(spawnPoint) {}
 	// Handles translations
-	ModelPool(T sharedMesh, const Vector3& spawnPoint, int instanceCount, float separationDistance = 20.0f) : sharedMesh(sharedMesh), instanceCount(instanceCount), spawnPoint(spawnPoint) {
+	ModelPool(const T& sharedMesh, const Vector3& spawnPoint, int instanceCount, float separationDistance = 20.0f) : sharedMesh(sharedMesh), instanceCount(instanceCount), spawnPoint(spawnPoint) {
 		static_assert(std::is_base_of_v<Environment, T>, "T must derive from Environment");
 
 		Vector3 startPos = spawnPoint;

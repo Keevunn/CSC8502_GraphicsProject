@@ -152,6 +152,7 @@
     <ClCompile Include="Bone.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Factory.cpp" />
+    <ClCompile Include="FactoryScene.cpp" />
     <ClCompile Include="KittenModel.cpp" />
     <ClCompile Include="LampPost.cpp" />
     <ClCompile Include="ModelPool.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Bone.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="Factory.h" />
+    <ClInclude Include="FactoryScene.h" />
     <ClInclude Include="KittenModel.h" />
     <ClInclude Include="LampPost.h" />
     <ClInclude Include="ModelPool.h" />

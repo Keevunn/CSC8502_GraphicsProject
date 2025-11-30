@@ -1,12 +1,11 @@
 #pragma once
 #include "AnimatedModelPool.h"
-#include "Animation.h"
-#include "Animator.h"
 #include "LampPost.h"
 #include "ModelPool.h"
 #include "RobotModel.h"
 #include "nclgl/OGLRenderer.h"
 
+class FactoryScene;
 class KittenModel;
 class Factory;
 class HeightMap;
@@ -27,6 +26,17 @@ public:
 
 	void SetTime(float t) { currentTime = t; }
 
+	void DrawSkybox();
+	void DrawSpotLights(std::vector<SpotLight*> lights);
+	void DrawPointLights(std::vector<SpotLight*> lights);
+
+	// Factory Scene
+	void DrawConcreteFloor(HeightMap* floor, std::unordered_map<std::string, GLuint> floorTextures);
+	void DrawFactory(Factory* factory);
+	void DrawLampPosts(const ModelPool<LampPost>* lampPosts);
+	void DrawRobots(const AnimatedModelPool<RobotModel>* robots);
+	void DrawKittens(const AnimatedModelPool<KittenModel>* kittens);
+
 
 protected:
 	void GenerateScreenTexture(GLuint& into, bool depth = false); // Makes a new texture
@@ -34,55 +44,28 @@ protected:
 	void DrawLights(); // Lighting render pass
 	void CombineBuffers(); // Combination render pass
 
-	void DrawSkybox();
-
-	void DrawConcreteFloor();
 	void DrawNode(SceneNode* n);
 
-	void DrawFactory();
-	void DrawLampPosts();
-
-	void DrawRobots();
-	void DrawKittens();
-
 	void DrawSun(Matrix4 invViewProj, float* camPos);
-	void DrawSpotLights(Matrix4 invViewProj, float* camPos);
-	void DrawPointLights(Matrix4 invViewProj, float* camPos);
 
-	Matrix4 defaultProjMatrix;
+	void BindLightUniforms(GLuint programLocation, Matrix4 invViewProj, float* camPos) const;
 
-	Camera* camera = nullptr;
+	FactoryScene* factoryScene;
 
 	// Skybox
 	Shader* skyboxShader = nullptr;
-
-	GLuint cubeMap;
-	Mesh* quad = nullptr;
 
 	// Light
 	Shader* sunShader = nullptr;
 	Shader* pointLightShader = nullptr; 
 	Shader* spotLightShader = nullptr;
 
-	DirectionalLight* sun = nullptr;
-	std::vector<Light> pointLights;
-	Mesh* lightVolume = nullptr; // Sphere
-
 	// Terrain
 	Shader* concreteShader = nullptr;
-
-	HeightMap* concreteMap = nullptr;
-	std::unordered_map<std::string, GLuint> concreteTextures; // texture type, texture id
 
 	// Models
 	Shader* environmentShader = nullptr; // Fills G-buffers
 	Shader* animationShader = nullptr;
-
-	Factory* factory = nullptr;
-
-	AnimatedModelPool<RobotModel>* robots;
-	AnimatedModelPool<KittenModel>* kittens;
-	ModelPool<LampPost>* lampPosts;
 
 	// Buffers
 	Shader* combineShader = nullptr;
@@ -96,6 +79,8 @@ protected:
 	GLuint pointLightFBO; // 2 Colour attachments
 	GLuint lightDiffuseTex;
 	GLuint lightSpecularTex;
+
+	Mesh* quad;
 
 private:
 	float currentTime;

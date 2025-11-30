@@ -9,10 +9,11 @@
 template <typename T>
 class AnimatedModelPool : public ModelPool<T> { 
 public:
+	AnimatedModelPool() = default;
 	// Handles translations
 	// worldMoveDir - Direction character is moving in world
 	// KillPoint - Z coordinate of point that triggers respawn
-	AnimatedModelPool(T sharedAnimatedMesh, const Vector3& spawnPos, float killPoint, const Vector3& worldMoveDir, float separationDistance = 5.0f) :
+	AnimatedModelPool(const T& sharedAnimatedMesh, const Vector3& spawnPos, float killPoint, const Vector3& worldMoveDir, float separationDistance = 5.0f) :
 	ModelPool<T>(std::move(sharedAnimatedMesh), spawnPos), killPoint(killPoint), worldMoveDir(worldMoveDir) {
 		static_assert(std::is_base_of_v<AnimatedModel, T>, "T must derive from AnimatedModel");
 

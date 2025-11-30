@@ -3,7 +3,6 @@
 SceneNode::SceneNode(const SceneNode& other) {
 	mesh = other.mesh;
 	colour = other.colour;
-	texture = other.texture;
 	material = other.material;
 
 	transform = other.transform;

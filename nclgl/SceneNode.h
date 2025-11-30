@@ -17,7 +17,7 @@ struct MaterialTextures {
 class SceneNode {
 public:
 	SceneNode(Mesh* mesh = nullptr, const Vector4& colour = Vector4(1, 1, 1, 1))
-		: mesh(mesh), modelScale(Vector3(1, 1, 1)), colour(colour), distanceFromCamera(0), boundingRadius(1), texture(0) {}
+		: mesh(mesh), modelScale(Vector3(1, 1, 1)), colour(colour), distanceFromCamera(0), boundingRadius(1) {}
 	SceneNode(const SceneNode& other);
 
 	virtual ~SceneNode(void);
@@ -27,9 +27,6 @@ public:
 
 	float GetCameraDistance() const { return distanceFromCamera; }
 	void SetCameraDistance(float f) { distanceFromCamera = f; }
-
-	GLuint GetTexture() const { return texture; }
-	void SetTexture(GLuint tex) { texture = tex; }
 
 	MaterialTextures GetMaterial() const { return material; }
 	void SetMaterial(MaterialTextures mat) { material = mat; }
@@ -72,7 +69,6 @@ public:
 
 	float distanceFromCamera;
 	float boundingRadius;
-	GLuint texture; // diffuse texture
 
 	MaterialTextures material;
 

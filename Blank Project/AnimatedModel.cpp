@@ -59,8 +59,6 @@ Mesh* AnimatedModel::LoadMesh(const aiMesh* aiMesh, const aiScene* scene) {
 
 void AnimatedModel::LoadAnimation(const aiScene* scene) {
 	assert(scene->mNumAnimations != 0);
-	for (int i{} ; i < scene->mNumAnimations ; ++i)
-		std::cout << scene->mAnimations[i]->mName.C_Str() << "\n";
 	const aiAnimation* anim = scene->mAnimations[0];
 	const aiNode* skeltonRoot = FindSkeletonRoot(scene);
 	const Matrix4 globalInverseTransform = AssimpNCLHelpers::GetNCLMatrix(scene->mRootNode->mTransformation).Inverse();
