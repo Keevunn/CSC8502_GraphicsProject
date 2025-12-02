@@ -13,6 +13,7 @@ uniform sampler2D normTex;
 uniform sampler2D depthTex;
 uniform vec3 cameraPos;
 uniform mat4 inverseProjView;
+uniform float fogDensity;
 
 in Vertex { 
 	vec2 texCoord;
@@ -67,6 +68,6 @@ void main() {
 
 	vec3 fogColour = vec3(0.2, 0.2, 0.2);
 
-	fragColour.xyz = mix(finalColour, fogColour, fogFactor);
+	fragColour.xyz = mix(finalColour, fogColour, fogFactor * fogDensity);
 	fragColour.a = 1;
 }

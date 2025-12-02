@@ -33,6 +33,14 @@ void Camera::UpdateCamera(float dt) {
 		position.y += dist;
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_CONTROL)) // Tutorial notes used space
 		position.y -= dist;
+
+	/* for mapping camera track
+	 if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_RETURN))
+		std::cout << "Position: " << position
+		<< "Pitch: " << pitch << "\n"
+		<< "Yaw: " << yaw << "\n";
+	*/
+
 }
 
 Matrix4 Camera::BuildViewMatrix() const {

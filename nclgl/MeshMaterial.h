@@ -28,6 +28,7 @@ public:
 	MeshMaterial(const std::string& filename);
 	~MeshMaterial() {}
 	const MeshMaterialEntry* GetMaterialForLayer(int i) const;
+	const std::vector<MeshMaterialEntry> GetMaterials() const { return materialLayers; }
 
 protected:
 	std::vector<MeshMaterialEntry>	materialLayers;

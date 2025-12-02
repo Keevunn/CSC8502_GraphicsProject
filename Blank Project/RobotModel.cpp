@@ -4,7 +4,7 @@
 
 #include "Animator.h"
 
-RobotModel::RobotModel(const std::string& path)  {
+RobotModel::RobotModel(const std::string& path, const std::string& animName)  {
 	auto flags = aiProcess_Triangulate |
 		aiProcess_GenSmoothNormals |
 		aiProcess_CalcTangentSpace |
@@ -15,7 +15,7 @@ RobotModel::RobotModel(const std::string& path)  {
 	texDir = TEXTUREDIR"Robot/";
 	velocity = Vector3(0, 0, 3);
 	modelScale = Vector3(1 / 400.0f);
-	AnimatedModel::LoadScene(path, "Robot_Root", flags);
+	LoadScene(path, "Robot_Root", flags, true, animName);
 }
 
 void RobotModel::LoadMaterials(const aiScene* scene) {

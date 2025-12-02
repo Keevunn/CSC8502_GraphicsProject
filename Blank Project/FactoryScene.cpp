@@ -17,10 +17,27 @@ FactoryScene::~FactoryScene() {
 	delete kittens;
 }
 
-void FactoryScene::Initialise(float width, float height) {
+void FactoryScene::Initialise(Renderer& renderer) {
 	sun = new DirectionalLight(Vector3(0.2f, -1.0f, -0.3f), Vector4(0.3f, 0.35f, 0.2f, 1), Vector4(0.4f, 0.4f, 0.2f, 1));
-	defaultProjMatrix = Matrix4::Perspective(0.1f, 10000.0f, width / height, 30.0f);
-	camera = new Camera(-10, 0, Vector3(133, 5, 165), 10);
+	fogDensity = 1.0f;
+	float aspect = static_cast<float>(renderer.GetWidth()) / static_cast<float>(renderer.GetHeight());
+	defaultProjMatrix = Matrix4::Perspective(0.1f, 10000.0f, aspect, 30.0f);
+
+	camera = new Camera(-10, 0, Vector3(133, 5, 165), 5);
+
+	cameraPath = {
+		CameraWaypoint(Vector3(116.783f,0.833334f,150.984f), 8.41f, 144.9f, 8),
+		CameraWaypoint(Vector3(120.159f,5.16667f,107.662f), -9.65001f, 150.99f, 6),
+		CameraWaypoint(Vector3(118.779f,2.16667f,48.5625f), -3.84001f, 155.4f),
+		CameraWaypoint(Vector3(124.472f,1.66667f,57.2041f), 8.12999f, 49.1402f,4),
+		CameraWaypoint(Vector3(115.33f,21.8333f,79.3439f), -17.42f, 13.3002f),
+		CameraWaypoint(Vector3(77.9001f,21.8333f,65.8089f), -14.97f, 310.16f, 4),
+		CameraWaypoint(Vector3(118.012f,13.8333f,63.8634f), -23.09f, 321.64f, 4),
+		CameraWaypoint(Vector3(125.919f,3.16667f,72.7766f), 3.99997f, 341.94f, 7),
+		CameraWaypoint(Vector3(127.392f,8.33333f,106.161f), -9.72003f, 344.46f, 8),
+		CameraWaypoint(Vector3(138.147f,1.83333f,113.891f), 8.68997f,26.6f, 8),
+		CameraWaypoint(Vector3(135.394f,2.33333f,168.181f), -2.65003f, 11.2699f)
+	};
 
 	skybox = SOIL_load_OGL_cubemap(
 		TEXTUREDIR"/DarkSky/px.png", TEXTUREDIR"/DarkSky/nx.png",
@@ -65,19 +82,25 @@ void FactoryScene::Initialise(float width, float height) {
 	lampPosts = new ModelPool(lampPostMesh, Vector3(107, 0, 60), Vector2(6, 2), 30, 20, true);
 
 	// Load Characters
-	RobotModel sharedRobotMesh = RobotModel(MODELSDIR"Robot/RobotModelWithWalkAnim.fbx");
+	RobotModel sharedRobotMesh = RobotModel(MODELSDIR"Robot/RobotModelWithWalkAnim.fbx", "SadWalk");
 	sharedRobotMesh.SetModelScale(Vector3(1 / 350.0f));
 	robots = new AnimatedModelPool(sharedRobotMesh, Vector3(133, 0, 55), 165, Vector3(0, 0, 1));
+	robots->PlayAnimation("SadWalk");
 
-	KittenModel sharedKittenMesh = KittenModel(MODELSDIR"KittenWithSadWalk.fbx");
-	sharedKittenMesh.SetModelScale(Vector3(1 / 100.0f));
-	sharedKittenMesh.SetTransform(Matrix4::Rotation(-90, Vector3(0, 1, 0)));
+	KittenModel sharedKittenMesh = KittenModel(*renderer.GetGlobalKittenModel());
+	Matrix4 initialTransform = sharedKittenMesh.GetTransform();
+
+	sharedKittenMesh.SetMovementVelocity(Vector3(0, 2.5f, 0));
+	sharedKittenMesh.SetModelScale(sharedKittenMesh.GetModelScale() * 0.5);
+	sharedKittenMesh.SetTransform(Matrix4::Rotation(180, Vector3(0, 1, 0)) * initialTransform);
 	kittens = new AnimatedModelPool(sharedKittenMesh, Vector3(111, 0, 165), 47, Vector3(0, 0, -1));
+	kittens->PlayAnimation("SadWalk");
 
+	init = true;
 }
 
 void FactoryScene::Update(float dt) {
-	camera->UpdateCamera(dt);
+	Scene::Update(dt);
 
 	factory->Update(dt);
 	lampPosts->Update(dt);

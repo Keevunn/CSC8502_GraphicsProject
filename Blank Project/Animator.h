@@ -9,9 +9,10 @@ class Animation;
 class Animator {
 public:
 	Animator(const std::shared_ptr<Animation>& anim);
+	Animator(const Animator& other);
 
 	void UpdateAnimation(float dt);
-	void PlayAnimation(const std::shared_ptr<Animation>& anim);
+	void PlayAnimation(const std::shared_ptr<Animation>& anim, float startTime = 0);
 
 	void CalculateBoneTransform(const SceneNode* node, Matrix4 parentTransform);
 
@@ -22,8 +23,5 @@ private:
 	std::vector<Matrix4> finalBoneMatrices;
 	std::shared_ptr<Animation> currentAnim = nullptr; // Deleted in AnimatedModel
 	float currentTime;
-	float deltaTime;
-
-	Matrix4 identity;
 };
 

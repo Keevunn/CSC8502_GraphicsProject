@@ -6,7 +6,7 @@
 
 Bone::Bone(std::string name, const int ID, const aiNodeAnim* channel) : name(std::move(name)), ID(ID) {
 	numPositions = channel->mNumPositionKeys;
-	for (int posIndex = 0; posIndex < numPositions; ++ posIndex) {
+	for (int posIndex = 0; posIndex < numPositions; ++posIndex) {
 		KeyPosition data;
 		data.position = channel->mPositionKeys[posIndex].mValue;
 		data.timeStamp = channel->mPositionKeys[posIndex].mTime;

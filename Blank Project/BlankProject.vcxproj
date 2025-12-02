@@ -156,6 +156,7 @@
     <ClCompile Include="KittenModel.cpp" />
     <ClCompile Include="LampPost.cpp" />
     <ClCompile Include="ModelPool.cpp" />
+    <ClCompile Include="NatureScene.cpp" />
     <ClCompile Include="RobotModel.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -172,38 +173,34 @@
     <ClInclude Include="KittenModel.h" />
     <ClInclude Include="LampPost.h" />
     <ClInclude Include="ModelPool.h" />
+    <ClInclude Include="NatureScene.h" />
     <ClInclude Include="RobotModel.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Meshes\ConcreteFloor.mat" />
+    <None Include="..\Meshes\NatureSceneBlendMap.mat" />
     <None Include="..\Shaders\BasicMatrixVertex.glsl" />
-    <None Include="..\Shaders\bufferFragment.glsl" />
-    <None Include="..\Shaders\BumpFragment.glsl" />
+    <None Include="..\Shaders\BasicTCS.glsl" />
+    <None Include="..\Shaders\BasicTessellationVert.glsl" />
     <None Include="..\Shaders\BumpVertex.glsl" />
     <None Include="..\Shaders\combineFrag.glsl" />
     <None Include="..\Shaders\combineVert.glsl" />
     <None Include="..\Shaders\ConcreteFloorFrag.glsl" />
-    <None Include="..\Shaders\ConcreteFloorTCS.glsl" />
     <None Include="..\Shaders\ConcreteFloorTES.glsl" />
-    <None Include="..\Shaders\ConcreteFloorVert.glsl" />
     <None Include="..\Shaders\DirectionalLightFrag.glsl" />
-    <None Include="..\Shaders\EmissiveFrag.glsl" />
-    <None Include="..\Shaders\EmissiveVertex.glsl" />
-    <None Include="..\Shaders\EnvironmentFrag.glsl" />
-    <None Include="..\Shaders\MixedPBRFrag.glsl" />
-    <None Include="..\Shaders\NoisyTexturedFragment.glsl" />
+    <None Include="..\Shaders\NatureSceneTerrainFrag.glsl" />
+    <None Include="..\Shaders\NatureSceneTerrainTES.glsl" />
     <None Include="..\Shaders\PBRFrag.glsl" />
-    <None Include="..\Shaders\pointLightFrag.glsl" />
-    <None Include="..\Shaders\pointLightVert.glsl" />
-    <None Include="..\Shaders\SceneFragment.glsl" />
+    <None Include="..\Shaders\ReflectFragment.glsl" />
+    <None Include="..\Shaders\ReflectVertex.glsl" />
     <None Include="..\Shaders\SkinningVertex.glsl" />
     <None Include="..\Shaders\SkyboxFragment.glsl" />
     <None Include="..\Shaders\SkyboxVertex.glsl" />
     <None Include="..\Shaders\SpotLightFrag.glsl" />
-    <None Include="..\Shaders\TexturedFragment.glsl" />
-    <None Include="..\Shaders\TexturedVertex.glsl" />
+    <None Include="..\Shaders\WaterFrag.glsl" />
+    <None Include="..\Shaders\WaterTES.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

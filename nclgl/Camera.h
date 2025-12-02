@@ -25,6 +25,9 @@ public:
 	Vector3 GetPosition() const { return position; }
 	void SetPosition(Vector3 val) { position = val; }
 
+	float GetSpeed() const { return speed; }
+	void SetSpeed(float val) { speed = val; }
+
 protected:
 	float pitch;
 	float yaw;

@@ -5,6 +5,8 @@
 #include "RobotModel.h"
 #include "nclgl/OGLRenderer.h"
 
+class Scene;
+class NatureScene;
 class FactoryScene;
 class KittenModel;
 class Factory;
@@ -28,7 +30,7 @@ public:
 
 	void DrawSkybox();
 	void DrawSpotLights(std::vector<SpotLight*> lights);
-	void DrawPointLights(std::vector<SpotLight*> lights);
+	//void DrawPointLights(std::vector<SpotLight*> lights);
 
 	// Factory Scene
 	void DrawConcreteFloor(HeightMap* floor, std::unordered_map<std::string, GLuint> floorTextures);
@@ -36,6 +38,17 @@ public:
 	void DrawLampPosts(const ModelPool<LampPost>* lampPosts);
 	void DrawRobots(const AnimatedModelPool<RobotModel>* robots);
 	void DrawKittens(const AnimatedModelPool<KittenModel>* kittens);
+	void DrawKittens(const vector<KittenModel*>& kittens);
+
+	// Nature Scene
+	void DrawTerrain(HeightMap* terrain, GLuint blendMapID, std::unordered_map<std::string, GLuint> baseTextures, std::unordered_map<std::string, GLuint> sandTextures,
+					std::unordered_map<std::string, GLuint> grassTextures, std::unordered_map<std::string, GLuint> rockTextures);
+	void DrawWater(GLuint waterTex, GLuint skybox, HeightMap* waterMap);
+
+	int GetWidth() const { return width; }
+	int GetHeight() const { return height; }
+
+	std::shared_ptr<KittenModel> GetGlobalKittenModel() const { return globalKittenModel; }
 
 
 protected:
@@ -46,11 +59,13 @@ protected:
 
 	void DrawNode(SceneNode* n);
 
-	void DrawSun(Matrix4 invViewProj, float* camPos);
+	void DrawSun();
 
 	void BindLightUniforms(GLuint programLocation, Matrix4 invViewProj, float* camPos) const;
 
 	FactoryScene* factoryScene;
+	NatureScene* natureScene;
+	Scene* currentScene;
 
 	// Skybox
 	Shader* skyboxShader = nullptr;
@@ -62,10 +77,14 @@ protected:
 
 	// Terrain
 	Shader* concreteShader = nullptr;
+	Shader* natureShader = nullptr;
+	Shader* waterShader = nullptr;
 
 	// Models
 	Shader* environmentShader = nullptr; // Fills G-buffers
 	Shader* animationShader = nullptr;
+
+	std::shared_ptr<KittenModel> globalKittenModel;
 
 	// Buffers
 	Shader* combineShader = nullptr;

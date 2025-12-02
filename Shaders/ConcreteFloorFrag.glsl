@@ -36,8 +36,8 @@ void main(void) {
 
 	mat3 TBN = mat3(normalize(tangent_FSin), normalize(bitangent_FSin), normalize(normal_FSin));
 
-	vec3 normal = normalize(normal_FSin);
-	normal = texture2D(bumpTex, texCoord_FSin).rgb * 2.0 - 1.0; // range: -1 to 1
+	//vec3 normal = normalize(normal_FSin);
+	vec3 normal = texture2D(bumpTex, texCoord_FSin).rgb * 2.0 - 1.0; // range: -1 to 1
 	normal = normalize(TBN * normalize(normal));
 
 	// roughness stored in normal alpha (used in light pass)

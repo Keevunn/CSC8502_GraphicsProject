@@ -56,6 +56,9 @@
     <ClCompile Include="FactoryScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NatureScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -100,34 +103,32 @@
     <ClInclude Include="FactoryScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NatureScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Shaders\TexturedFragment.glsl" />
     <None Include="..\Shaders\SkinningVertex.glsl" />
     <None Include="..\Meshes\ConcreteFloor.mat" />
-    <None Include="..\Shaders\TexturedVertex.glsl" />
-    <None Include="..\Shaders\NoisyTexturedFragment.glsl" />
     <None Include="..\Shaders\SkyboxFragment.glsl" />
     <None Include="..\Shaders\SkyboxVertex.glsl" />
-    <None Include="..\Shaders\BumpFragment.glsl" />
     <None Include="..\Shaders\BumpVertex.glsl" />
-    <None Include="..\Shaders\pointLightFrag.glsl" />
-    <None Include="..\Shaders\pointLightVert.glsl" />
     <None Include="..\Shaders\combineFrag.glsl" />
     <None Include="..\Shaders\combineVert.glsl" />
-    <None Include="..\Shaders\bufferFragment.glsl" />
-    <None Include="..\Shaders\SceneFragment.glsl" />
     <None Include="..\Shaders\DirectionalLightFrag.glsl" />
-    <None Include="..\Shaders\EnvironmentFrag.glsl" />
-    <None Include="..\Shaders\EmissiveFrag.glsl" />
-    <None Include="..\Shaders\EmissiveVertex.glsl" />
     <None Include="..\Shaders\PBRFrag.glsl" />
-    <None Include="..\Shaders\ConcreteFloorTCS.glsl" />
     <None Include="..\Shaders\ConcreteFloorTES.glsl" />
-    <None Include="..\Shaders\ConcreteFloorVert.glsl" />
     <None Include="..\Shaders\ConcreteFloorFrag.glsl" />
-    <None Include="..\Shaders\MixedPBRFrag.glsl" />
     <None Include="..\Shaders\SpotLightFrag.glsl" />
     <None Include="..\Shaders\BasicMatrixVertex.glsl" />
+    <None Include="..\Shaders\ReflectFragment.glsl" />
+    <None Include="..\Shaders\ReflectVertex.glsl" />
+    <None Include="..\Shaders\WaterFrag.glsl" />
+    <None Include="..\Shaders\WaterTES.glsl" />
+    <None Include="..\Meshes\NatureSceneBlendMap.mat" />
+    <None Include="..\Shaders\BasicTessellationVert.glsl" />
+    <None Include="..\Shaders\BasicTCS.glsl" />
+    <None Include="..\Shaders\NatureSceneTerrainFrag.glsl" />
+    <None Include="..\Shaders\NatureSceneTerrainTES.glsl" />
   </ItemGroup>
 </Project>

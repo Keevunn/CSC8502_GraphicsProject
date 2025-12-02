@@ -10,7 +10,7 @@
 
 class RobotModel : public AnimatedModel {
 public:
-	RobotModel(const std::string& path);
+	RobotModel(const std::string& path, const std::string& animName);
 
 protected:
 	void LoadMaterials(const aiScene* scene) override;

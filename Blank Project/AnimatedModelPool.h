@@ -32,6 +32,11 @@ public:
 		}
 	}
 
+	void PlayAnimation(const std::string& animName) {
+		for (const auto& model : this->pool)
+			model->PlayAnimation(animName);
+	}
+
 	void Update(float dt) override {
 		for (const auto& model : this->pool) {
 			model->Update(dt);

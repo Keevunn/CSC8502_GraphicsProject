@@ -9,8 +9,8 @@
 AnimatedModel::AnimatedModel(const AnimatedModel& other) : Environment(other) {
 	boneInfoMap = other.boneInfoMap;
 	boneCounter = other.boneCounter;
-	animation = other.animation;
-	SetAnimator(animation);
+	animationMap = other.animationMap;
+	animator = other.animator ? new Animator(*other.animator) : nullptr;
 	velocity = other.velocity;
 }
 
@@ -22,22 +22,25 @@ void AnimatedModel::Update(float dt) {
 	Environment::Update(dt);
 	animator->UpdateAnimation(dt);
 
-	transform = transform * Matrix4::Translation(velocity * dt);
+	if (velocity != Vector3(0))
+		transform = transform * Matrix4::Translation(velocity * dt);
 }
 
 void AnimatedModel::SetAnimator(const std::shared_ptr<Animation>& anim) {
-	animator = new Animator(anim);
-
-	// Start animation at random time
-	float randomTime = (std::rand() % 100) / 100.0f;
-	animator->UpdateAnimation(randomTime);
+	if (!animator) {
+		animator = new Animator(anim);
+		// Start animation at random time
+		float randomTime = (std::rand() % 100) / 100.0f;
+		animator->PlayAnimation(anim, randomTime);
+	}
+	
 }
 
 void AnimatedModel::Move(const Vector3& pos) {
 	transform = transform * Matrix4::Translation(pos);
 }
 
-void AnimatedModel::LoadScene(const std::string& path, const std::string pName, const int postProcessingFlags) {
+void AnimatedModel::LoadScene(const std::string& path, const std::string pName, const int postProcessingFlags, bool sanitiseInput, const std::string& animName) {
 	Assimp::Importer importer;
 
 	const aiScene* scene = importer.ReadFile(path, postProcessingFlags);
@@ -50,21 +53,25 @@ void AnimatedModel::LoadScene(const std::string& path, const std::string pName, 
 
 	LoadMaterials(scene);
 	ProcessNode(scene->mRootNode, scene, this);
-	LoadAnimation(scene);
+	LoadAnimation(scene, animName, sanitiseInput);
 }
 
 Mesh* AnimatedModel::LoadMesh(const aiMesh* aiMesh, const aiScene* scene) {
 	return Mesh::LoadFromAssimpMesh(aiMesh, scene, boneInfoMap, boneCounter);
 }
 
-void AnimatedModel::LoadAnimation(const aiScene* scene) {
+// Assumes each scene has a single animation
+
+void AnimatedModel::LoadAnimation(const aiScene* scene, const std::string& animName, bool sanitiseInput) {
 	assert(scene->mNumAnimations != 0);
 	const aiAnimation* anim = scene->mAnimations[0];
 	const aiNode* skeltonRoot = FindSkeletonRoot(scene);
 	const Matrix4 globalInverseTransform = AssimpNCLHelpers::GetNCLMatrix(scene->mRootNode->mTransformation).Inverse();
 
-	animation = std::make_shared<Animation>(anim, skeltonRoot, boneInfoMap, globalInverseTransform);
-	SetAnimator(animation);
+	auto animation = std::make_shared<Animation>(anim, skeltonRoot, boneInfoMap, globalInverseTransform, sanitiseInput);
+	animationMap[animName] = std::move(animation);
+	SetAnimator(animationMap[animName]);
+	
 }
 
 

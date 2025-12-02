@@ -37,8 +37,9 @@ void main(void) {
 	}
 
 	vec4 colour = texture(diffuseTex, IN.texCoord);
+	if (colour.a < 0.1) discard;
 	
-	float roughness = 0.5;
+	float roughness = 0;
 	float metallic = 0;
 
 	// if using metallic rougness map, R = Ambient Occlusion G = Roughness B = Metallic
@@ -53,16 +54,14 @@ void main(void) {
 		if (hasMetallic > 0) metallic = texture(metallicTex, IN.texCoord).b;
 	}
 	
-
 	// Metallic in colour alpha 
 	// Range 0.1 - 1.0 so its not discarded
 	fragColour[0] = vec4(colour.rgb, 0.1 + (metallic * 0.9)); 
 
 	// Calculate normals
-	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
-
 	vec3 normal = normalize(IN.normal);
 	if (hasBump > 0) {
+		mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
 		normal = texture2D(bumpTex, IN.texCoord).rgb * 2.0 - 1.0; // range: -1 to 1
 		normal = normalize(TBN * normalize(normal));
 	}

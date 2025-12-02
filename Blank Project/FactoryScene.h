@@ -14,10 +14,10 @@ class LampPost;
 class FactoryScene : public Scene {
 public:
 	FactoryScene() = default;
-	FactoryScene(float width, float height) { FactoryScene::Initialise(width, height); }
+	FactoryScene(Renderer& renderer) { FactoryScene::Initialise(renderer); }
 	~FactoryScene() override;
 
-	void Initialise(float width, float height) override;
+	void Initialise(Renderer& renderer) override;
 	void Update(float dt) override;
 
 	void RenderGeometry(Renderer& renderer) override;

@@ -5,12 +5,17 @@
 #include "nclgl/SceneNode.h"
 #include "Animation.h"
 
-Animator::Animator(const std::shared_ptr<Animation>& anim) : currentAnim(anim), currentTime(0), deltaTime(0) {
+Animator::Animator(const std::shared_ptr<Animation>& anim) : currentAnim(anim), currentTime(0) {
+	finalBoneMatrices.resize(128, Matrix4());
+}
+
+Animator::Animator(const Animator& other) {
+	currentAnim = other.currentAnim;
+	currentTime = other.currentTime;
 	finalBoneMatrices.resize(128, Matrix4());
 }
 
 void Animator::UpdateAnimation(float dt) {
-	deltaTime = dt;
 	if (currentAnim) {
 		currentTime += currentAnim->GetTicksPerSec() * dt;
 		currentTime = fmod(currentTime, currentAnim->GetDuration());
@@ -18,9 +23,9 @@ void Animator::UpdateAnimation(float dt) {
 	}
 }
 
-void Animator::PlayAnimation(const std::shared_ptr<Animation>& anim) {
+void Animator::PlayAnimation(const std::shared_ptr<Animation>& anim, float startTime) {
 	currentAnim = anim;
-	currentTime = 0;
+	currentTime = startTime;
 }
 
 void Animator::CalculateBoneTransform(const SceneNode* node, Matrix4 parentTransform) {

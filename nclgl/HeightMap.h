@@ -11,6 +11,7 @@ public:
 	Vector3 GetHeightmapSize() const { return heightmapSize; }
 	
 	GLuint GetTexture() const { return texture; }
+	void SetTexture(GLuint tex) { texture = tex; }
 
 	int GetTexWidth() const { return texWidth; }
 	int GetTexHeight() const { return texHeight; }

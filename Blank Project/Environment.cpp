@@ -112,7 +112,7 @@ void Environment::LoadMaterials(const aiScene* scene) {
 // If fails to load texture, prints error message, returns 0
 GLuint Environment::LoadTexture(const std::string filename, const bool useRGB) const {
 	const std::string path = texDir + filename;
-	const unsigned int flags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS;
+	const unsigned int flags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y /*| SOIL_FLAG_TEXTURE_REPEATS*/;
 
 	GLuint texID = SOIL_load_OGL_texture(path.c_str(), useRGB ? SOIL_LOAD_RGB : SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, flags);
 	if (!texID) 

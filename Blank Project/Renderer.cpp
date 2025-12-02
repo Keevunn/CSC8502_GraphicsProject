@@ -3,6 +3,7 @@
 #include "Factory.h"
 #include "FactoryScene.h"
 #include "KittenModel.h"
+#include "NatureScene.h"
 
 #include "nclgl/Camera.h"
 #include "nclgl/DirectionalLight.h"
@@ -17,31 +18,54 @@
 Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	quad = Mesh::GenerateQuad();
 
+	// Load all animations once
+	globalKittenModel = std::make_shared<KittenModel>(MODELSDIR"KittenSadWalk.fbx", Vector3(), "SadWalk");
+	globalKittenModel->LoadAnimationFromFile(MODELSDIR"KittenDancing1.fbx", "Dancing1");
+	globalKittenModel->LoadAnimationFromFile(MODELSDIR"KittenDancing2.fbx", "Dancing2");
+	globalKittenModel->LoadAnimationFromFile(MODELSDIR"KittenSittingPose.fbx", "SittingPose");
+	globalKittenModel->LoadAnimationFromFile(MODELSDIR"KittenSwingingLegs.fbx", "SwingingLegs");
+	globalKittenModel->LoadAnimationFromFile(MODELSDIR"KittenTreadingWater.fbx", "TreadingWater");
+
 	// Scenes
-	factoryScene = new FactoryScene(width, height);
+	factoryScene = new FactoryScene(*this);
+	natureScene = new NatureScene(*this);
+	if (!natureScene->LoadSuccess() || !factoryScene->LoadSuccess()) return;
+
+	currentScene = natureScene;
 
 	// Shaders
+	// Sun
 	sunShader = new Shader("combineVert.glsl", "DirectionalLightFrag.glsl");
-
+	if (!sunShader->LoadSuccess()) return;
 	// Skybox
 	skyboxShader = new Shader("SkyboxVertex.glsl", "SkyboxFragment.glsl");
 	if (!skyboxShader->LoadSuccess()) return;
-
 	// Concrete ground
 	concreteShader = new Shader(
-		"ConcreteFloorVert.glsl",
+		"BasicTessellationVert.glsl",
 		"ConcreteFloorFrag.glsl",
-		"",
-		"ConcreteFloorTCS.glsl",
-		"ConcreteFloorTES.glsl"); // No geometry shader
-	if (!concreteShader->LoadSuccess()) return;
-
+		"", // No geometry shader
+		"BasicTCS.glsl",
+		"ConcreteFloorTES.glsl"); 
+	waterShader = new Shader(
+		"BasicTessellationVert.glsl",
+		"WaterFrag.glsl",
+		"", // No geometry shader
+		"BasicTCS.glsl",
+		"WaterTES.glsl");
+	natureShader = new Shader(
+		"BasicTessellationVert.glsl",
+		"NatureSceneTerrainFrag.glsl",
+		"", // No geometry shader
+		"BasicTCS.glsl",
+		"NatureSceneTerrainTES.glsl");
+	if (!concreteShader->LoadSuccess() || !waterShader->LoadSuccess() || !natureShader->LoadSuccess()) return;
 	// Scene shaders
 	environmentShader = new Shader("BumpVertex.glsl", "PBRFrag.glsl");
+	//waterShader = new Shader("WaterVert.glsl", "WaterFrag.glsl");
 	animationShader = new Shader("SkinningVertex.glsl", "PBRFrag.glsl");
 	spotLightShader = new Shader("BasicMatrixVertex.glsl", "SpotLightFrag.glsl");
 	if (!environmentShader->LoadSuccess() || !animationShader->LoadSuccess() || !spotLightShader->LoadSuccess()) return;
-
 	// Combine Shaders
 	combineShader = new Shader("combineVert.glsl", "combineFrag.glsl");
 	if (!combineShader->LoadSuccess()) return;
@@ -98,6 +122,7 @@ Renderer::~Renderer(void) {
 	delete pointLightShader;
 	delete spotLightShader;
 	delete concreteShader;
+	delete waterShader;
 	delete environmentShader;
 	delete animationShader;
 	delete combineShader;
@@ -125,12 +150,17 @@ void Renderer::RenderScene() {
 	DrawLights();
 	CombineBuffers();
 
-	//DrawRobotEmissive();
 }
 
 void Renderer::UpdateScene(float dt) {
-	factoryScene->Update(dt);
-	viewMatrix = factoryScene->GetCamera()->BuildViewMatrix();
+	currentScene->Update(dt);
+	viewMatrix = currentScene->GetCamera()->BuildViewMatrix();
+
+	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_TAB)) {
+		if (currentScene == factoryScene) currentScene = natureScene;
+		else currentScene = factoryScene;
+		currentScene->ResetPathTime();
+	}
 }
 
 void Renderer::GenerateScreenTexture(GLuint& into, bool depth) {
@@ -154,10 +184,11 @@ void Renderer::FillBuffers() {
 
 	glClearColor(0, 0, 0, 0); // Clear to transparent black so combine shader discards empty pixels
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
 	
-	projMatrix = factoryScene->GetDefaultProjMatrix();
-	factoryScene->RenderGeometry(*this);
+	/*projMatrix = factoryScene->GetDefaultProjMatrix();
+	factoryScene->RenderGeometry(*this);*/
+	projMatrix = currentScene->GetDefaultProjMatrix();
+	currentScene->RenderGeometry(*this);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -174,17 +205,8 @@ void Renderer::DrawLights() {
 	modelMatrix.ToIdentity();
 	UpdateShaderMatrices();
 
-	Matrix4 invViewProj = (projMatrix * viewMatrix).Inverse();
-	auto camPos_Vec3 = factoryScene->GetCamera()->GetPosition();
-	auto camPos = reinterpret_cast<float*>(&camPos_Vec3);
-
-	BindShader(sunShader);
-	BindLightUniforms(sunShader->GetProgram(), invViewProj, camPos);
-	DrawSun(invViewProj, camPos);
-
-	BindShader(spotLightShader);
-	BindLightUniforms(spotLightShader->GetProgram(), invViewProj, camPos);
-	// TODO Scene->RenderLights();
+	DrawSun();
+	currentScene->RenderLights(*this);
 
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
@@ -225,14 +247,16 @@ void Renderer::CombineBuffers() {
 
 	glUniform1i(glGetUniformLocation(combineShader->GetProgram(), "skyboxTex"), 6);
 	glActiveTexture(GL_TEXTURE6);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, factoryScene->GetSkyboxTex());
+	glBindTexture(GL_TEXTURE_CUBE_MAP, currentScene->GetSkyboxTex());
 
-	Matrix4 cameraView = factoryScene->GetCamera()->BuildViewMatrix();
-	Matrix4 invProjView = (factoryScene->GetDefaultProjMatrix() * cameraView).Inverse();
+	Matrix4 cameraView = currentScene->GetCamera()->BuildViewMatrix();
+	Matrix4 invProjView = (currentScene->GetDefaultProjMatrix() * cameraView).Inverse();
 	glUniformMatrix4fv(glGetUniformLocation(combineShader->GetProgram(), "inverseProjView"), 1, false, invProjView.values);
 
-	auto camPos = factoryScene->GetCamera()->GetPosition();
+	auto camPos = currentScene->GetCamera()->GetPosition();
 	glUniform3fv(glGetUniformLocation(combineShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
+
+	glUniform1f(glGetUniformLocation(combineShader->GetProgram(), "fogDensity"), currentScene->GetFogDensity());
 
 	quad->Draw();
 }
@@ -241,7 +265,12 @@ void Renderer::DrawSkybox() {
 	glDepthMask(GL_FALSE);
 	BindShader(skyboxShader);
 
-	projMatrix = factoryScene->GetDefaultProjMatrix();
+	glUniform1i(glGetUniformLocation(skyboxShader->GetProgram(), "cubeTex"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, currentScene->GetSkyboxTex());
+
+	//projMatrix = factoryScene->GetDefaultProjMatrix();
+	projMatrix = currentScene->GetDefaultProjMatrix();
 	UpdateShaderMatrices();
 
 	quad->Draw();
@@ -249,7 +278,15 @@ void Renderer::DrawSkybox() {
 	glDepthMask(GL_TRUE);
 }
 
+
 void Renderer::DrawSpotLights(std::vector<SpotLight*> lights) {
+	BindShader(spotLightShader);
+
+	Matrix4 invViewProj = (projMatrix * viewMatrix).Inverse();
+	auto camPos_Vec3 = currentScene->GetCamera()->GetPosition();
+	auto camPos = reinterpret_cast<float*>(&camPos_Vec3);
+	BindLightUniforms(spotLightShader->GetProgram(), invViewProj, camPos);
+
 	glCullFace(GL_FRONT);
 
 	for (const auto& l : lights) {
@@ -389,6 +426,11 @@ void Renderer::DrawRobots(const AnimatedModelPool<RobotModel>* robots) {
 }
 
 void Renderer::DrawKittens(const AnimatedModelPool<KittenModel>* kittens) {
+	const auto pool = kittens->GetPool();
+	DrawKittens(pool);
+}
+
+void Renderer::DrawKittens(const std::vector<KittenModel*>& kittens) {
 	BindShader(animationShader);
 	GLuint programLocation = animationShader->GetProgram();
 
@@ -401,24 +443,120 @@ void Renderer::DrawKittens(const AnimatedModelPool<KittenModel>* kittens) {
 
 	glUniform1i(glGetUniformLocation(programLocation, "hasBump"), 0);
 	glUniform1i(glGetUniformLocation(programLocation, "hasOpacity"), 0);
-	glUniform1i(glGetUniformLocation(programLocation, "hasRoughness"),0);
+	glUniform1i(glGetUniformLocation(programLocation, "hasRoughness"), 0);
 	glUniform1i(glGetUniformLocation(programLocation, "hasMetallic"), 0);
 	glUniform1i(glGetUniformLocation(programLocation, "hasEmissive"), 0);
 
 	glUniform1f(glGetUniformLocation(programLocation, "emissionIntensity"), 0);
 	glUniform1f(glGetUniformLocation(programLocation, "time"), currentTime);
 
-	const auto pool = kittens->GetPool();
-	for (const auto& kitten : pool) {
+	
+	for (KittenModel* kitten : kittens) {
 		auto& transforms = kitten->GetFinalBoneMatrices();
 		glUniformMatrix4fv(glGetUniformLocation(programLocation, "joints"), transforms.size(), false, (float*)transforms.data());
 		DrawNode(kitten);
 	}
 }
 
-void Renderer::DrawSun(Matrix4 invViewProj, float* camPos) {
+void Renderer::DrawTerrain(HeightMap* terrain, GLuint blendMapID, std::unordered_map<string, GLuint> baseTextures, std::unordered_map<string, GLuint> sandTextures, 
+                           std::unordered_map<string, GLuint> grassTextures, std::unordered_map<string, GLuint> rockTextures) {
+	BindShader(natureShader);
+	GLuint programLocation = natureShader->GetProgram();
+	glPatchParameteri(GL_PATCH_VERTICES, 3);
+
+	auto BindTex = [&](const char* name, int slot, GLuint texID) {
+		glUniform1i(glGetUniformLocation(programLocation, name), slot);
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTexture(GL_TEXTURE_2D, texID);
+		};
+
+	BindTex("displacementTex", 0, terrain->GetTexture());
+	BindTex("blendMap", 1, blendMapID);
+
+	// Bind base textures
+	BindTex("baseDiffuseTex", 2, baseTextures["Diffuse"]);
+	BindTex("baseBumpTex", 3, baseTextures["Bump"]);
+	BindTex("baseAOTex", 4, baseTextures["AO"]);
+	BindTex("baseRoughnessTex", 5, baseTextures["Roughness"]);
+	BindTex("baseHeightMap", 6, baseTextures["Displacement"]);
+
+	// Bind sand textures
+	BindTex("sandDiffuseTex", 7, sandTextures["Diffuse"]);
+	BindTex("sandBumpTex", 8, sandTextures["Bump"]);
+	BindTex("sandAOTex", 9, sandTextures["AO"]);
+	BindTex("sandRoughnessTex", 10, sandTextures["Roughness"]);
+	BindTex("sandHeightMap", 11, sandTextures["Displacement"]);
+
+	// Bind grass textures
+	BindTex("grassDiffuseTex", 12, grassTextures["Diffuse"]);
+	BindTex("grassBumpTex", 13, grassTextures["Bump"]);
+	BindTex("grassAOTex", 14, grassTextures["AO"]);
+	BindTex("grassRoughnessTex", 15, grassTextures["Roughness"]);
+	BindTex("grassHeightMap", 16, grassTextures["Displacement"]);
+
+	// Bind rock textures
+	BindTex("rockDiffuseTex", 17, rockTextures["Diffuse"]);
+	BindTex("rockBumpTex", 18, rockTextures["Bump"]);
+	BindTex("rockAOTex", 19, rockTextures["AO"]);
+	BindTex("rockRoughnessTex", 20, rockTextures["Roughness"]);
+	BindTex("rockHeightMap", 21, rockTextures["Displacement"]);
+
+	// Displacement Strength
+	// Height of bumps in world units
+	glUniform1f(glGetUniformLocation(programLocation, "displacementStrength"), 25);
+	glUniform1i(glGetUniformLocation(programLocation, "texWidth"), terrain->GetTexWidth());
+	glUniform1f(glGetUniformLocation(programLocation, "texScale"), 60);
+	glUniform1f(glGetUniformLocation(programLocation, "tessLevel"), 32.0f);
+
+	modelMatrix.ToIdentity();
+	UpdateShaderMatrices();
+
+	// Wireframe for debugging
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	terrain->Draw();
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void Renderer::DrawWater(GLuint waterTex, GLuint skybox, HeightMap* waterMap) {
+	BindShader(waterShader);
+	GLuint programLocation = waterShader->GetProgram();
+	glPatchParameteri(GL_PATCH_VERTICES, 3);
+
+	auto camPos_Vec3 = natureScene->GetCamera()->GetPosition();
+	auto camPos = reinterpret_cast<float*>(&camPos_Vec3);
+	glUniform3fv(glGetUniformLocation(programLocation, "cameraPos"), 1, camPos);
+
+	glUniform1i(glGetUniformLocation(programLocation, "opacityTex"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, waterTex);
+
+	glUniform1i(glGetUniformLocation(programLocation, "cubeTex"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, skybox);
+
+	glUniform1f(glGetUniformLocation(programLocation, "tessLevel"), 32.0f);
+
+	glUniform1f(glGetUniformLocation(programLocation, "time"), currentTime);
+
+	Vector4 blue = Vector4(99.0f / 255.0f, 216.0f / 255.0f, 1, 1);
+	glUniform4fv(glGetUniformLocation(programLocation, "colour"), 1, (float*)&blue);
+
+	Vector3 mapSize = waterMap->GetHeightmapSize();
+	Vector3 pos = Vector3(0, 5, 0); //5 units high
+	modelMatrix = Matrix4::Translation(pos);
+	UpdateShaderMatrices();
+
+	waterMap->Draw();
+}
+
+void Renderer::DrawSun() {
 	BindShader(sunShader);
 	GLuint programLocation = sunShader->GetProgram();
+
+	Matrix4 invViewProj = (projMatrix * viewMatrix).Inverse();
+	auto camPos_Vec3 = currentScene->GetCamera()->GetPosition();
+	auto camPos = reinterpret_cast<float*>(&camPos_Vec3);
+	BindLightUniforms(sunShader->GetProgram(), invViewProj, camPos);
 
 	glUniform1i(glGetUniformLocation(programLocation, "depthTex"), 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -435,7 +573,7 @@ void Renderer::DrawSun(Matrix4 invViewProj, float* camPos) {
 
 	glUniformMatrix4fv(glGetUniformLocation(programLocation, "inverseProjView"), 1, false, invViewProj.values);
 
-	SetShaderLight(*factoryScene->GetSun());
+	SetShaderLight(*currentScene->GetSun());
 	quad->Draw();
 }
 

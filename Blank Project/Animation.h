@@ -15,7 +15,7 @@ class Animation {
 public:
 	Animation() = default;
 	Animation(const std::string& animPath, const std::unordered_map<std::string, BoneInfo>& modelBoneMap);
-	Animation(const aiAnimation* animation, const aiNode* skeletonRoot, const std::unordered_map<std::string, BoneInfo>& modelBoneMap, const Matrix4& globalInverseTransform = Matrix4());
+	Animation(const aiAnimation* animation, const aiNode* skeletonRoot, const std::unordered_map<std::string, BoneInfo>& modelBoneMap, const Matrix4& globalInverseTransform = Matrix4(), bool sanitiseInput = true);
 	~Animation();
 
 	Bone* FindBone(const std::string& name);
@@ -29,8 +29,8 @@ public:
 	std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() { return boneInfoMap; }
 
 private:
-	void ReadBones(const aiAnimation* anim, const std::unordered_map<std::string, BoneInfo>& modelBoneMap);
-	void ReadHierarchyData(SceneNode& dest, const aiNode* src);
+	void ReadBones(const aiAnimation* anim, const std::unordered_map<std::string, BoneInfo>& modelBoneMap, bool sanitiseInput);
+	void ReadHierarchyData(SceneNode& dest, const aiNode* src, bool sanitiseInput);
 
 	float duration;
 	float ticksPerSec;

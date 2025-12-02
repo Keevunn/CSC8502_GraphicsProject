@@ -33,11 +33,6 @@ void LampPost::Update(float dt) {
 
 	Vector3 worldDir = (worldTransform * Vector4(lightDirection.x, lightDirection.y, lightDirection.z, 0)).ToVector3();
 	light->SetDirection(worldDir.Normalised());
-
-	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_RETURN)) {
-		std::cout << "Light Pos: " << light->GetPosition() << "\n";
-		std::cout << "Light Dir: " << light->GetDirection() << "\n";
-	}
 }
 
 void LampPost::SetModelScale(const Vector3& s) {

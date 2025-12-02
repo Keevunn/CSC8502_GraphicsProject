@@ -1,0 +1,37 @@
+MeshMat
+1
+4
+4
+Terrain Base
+5
+Diffuse:/TerrainBase/concrete_wall_10_basecolor_2k.png
+Bump:/TerrainBase/concrete_wall_10_normal_gl_2k.png
+AO:/TerrainBase/concrete_wall_10_ambientocclusion_2k.png
+Displacement:/TerrainBase/concrete_wall_10_height_2k.png
+Roughness:/TerrainBase/concrete_wall_10_roughness_2k.png
+Sandy Ground
+5
+Diffuse:/Sand/sand_03_color_2k.png
+Bump:/Sand/sand_03_normal_gl_2k.png
+AO:/Sand/sand_03_ambient_occlusion_2k.png
+Displacement:/Sand/sand_03_height_2k.png
+Roughness:/Sand/sand_03_roughness_2k.png
+Grassy Ground
+5
+Diffuse:/Grass/grass_02_base_2k.png
+Bump:/Grass/grass_02_normal_gl_2k.png
+AO:/Grass/grass_02_amibent_occlusion_2k.png
+Displacement:/Grass/grass_02_height_2k.png
+Roughness:/Grass/grass_02_roughness_2k.png
+Rocky Ground
+6
+Diffuse:/RockyGround/ground_stones_02_basecolor_2k.png
+Bump:/RockyGround/ground_stones_02_normal_gl_2k.png
+AO:/RockyGround/ground_stones_02_ambientOcclusion_2k.png
+Displacement:/RockyGround/ground_stones_02_height_2k.png
+Roughness:/RockyGround/ground_stones_02_roughness_2k.png
+Metallic:/RockyGround/ground_stones_02_metallic_2k.png
+0
+1
+2
+3
