@@ -185,8 +185,6 @@ void Renderer::FillBuffers() {
 	glClearColor(0, 0, 0, 0); // Clear to transparent black so combine shader discards empty pixels
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
-	/*projMatrix = factoryScene->GetDefaultProjMatrix();
-	factoryScene->RenderGeometry(*this);*/
 	projMatrix = currentScene->GetDefaultProjMatrix();
 	currentScene->RenderGeometry(*this);
 
@@ -269,7 +267,6 @@ void Renderer::DrawSkybox() {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, currentScene->GetSkyboxTex());
 
-	//projMatrix = factoryScene->GetDefaultProjMatrix();
 	projMatrix = currentScene->GetDefaultProjMatrix();
 	UpdateShaderMatrices();
 
@@ -593,34 +590,3 @@ void Renderer::BindLightUniforms(GLuint programLocation, Matrix4 invViewProj, fl
 	glUniformMatrix4fv(glGetUniformLocation(programLocation, "inverseProjView"), 1, false, invViewProj.values);
 
 }
-
-/*void Renderer::DrawPointLights(Matrix4 invViewProj, float* camPos) {
-	BindShader(pointLightShader);
-
-	glCullFace(GL_FRONT);
-	glDepthFunc(GL_ALWAYS);
-	glDepthMask(GL_FALSE);
-
-	glUniform1i(glGetUniformLocation(pointLightShader->GetProgram(), "depthTex"), 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
-
-	glUniform1i(glGetUniformLocation(pointLightShader->GetProgram(), "normTex"), 1);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, bufferNormalTex);
-
-	glUniform3fv(glGetUniformLocation(pointLightShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
-
-	glUniform2f(glGetUniformLocation(pointLightShader->GetProgram(), "pixelSize"), 1.0f / width, 1.0f / height);
-
-	glUniformMatrix4fv(glGetUniformLocation(pointLightShader->GetProgram(), "inverseProjView"), 1, false, invViewProj.values);
-
-	for (const auto& light : pointLights) {
-		SetShaderLight(light);
-		lightVolume->Draw();
-	}
-
-	glCullFace(GL_BACK);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-}*/
